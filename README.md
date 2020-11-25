@@ -1,5 +1,5 @@
 # Zack.EFCore.Batch
-[ÖÐÎÄÎÄµµ Chinese version](/Zack.EFCore.Batch/blob/main/README_CN.md)  
+[ä¸­æ–‡æ–‡æ¡£ Chinese version](/Zack.EFCore.Batch/blob/main/README_CN.md)  
 
  Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities.
  This libary supports Entity Framework Core 5.0 and above.  
