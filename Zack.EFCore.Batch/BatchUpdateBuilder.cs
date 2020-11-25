@@ -117,7 +117,7 @@ namespace Zack.EFCore.Batch
 
         public async Task<int> ExecuteAsync()
         {
-            string sql = GenerateSQL(predicate,out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate,out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {
@@ -131,9 +131,9 @@ namespace Zack.EFCore.Batch
             }
         }
 
-        public int Execute(Expression<Func<TEntity, bool>> predicate = null)
+        public int Execute()
         {
-            string sql = GenerateSQL(predicate, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {
