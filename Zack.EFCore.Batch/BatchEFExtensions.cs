@@ -96,6 +96,14 @@ namespace System.Linq
             BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx);
             return builder;
         }
+
+        /// <summary>
+        /// parse select statement of queryable
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="queryable"></param>
+        /// <param name="ctx"></param>
+        /// <returns></returns>
         public static SelectParsingResult Parse<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx)
         {
             SelectParsingResult parsingResult = new SelectParsingResult();
@@ -127,27 +135,24 @@ namespace System.Linq
             selectExpression = _relationalParameterBasedSqlProcessor.Optimize(selectExpression, queryContext.ParameterValues, out bool canCache);
             IQuerySqlGeneratorFactory querySqlGeneratorFactory = ctx.GetService<IQuerySqlGeneratorFactory>();
             ZackQuerySqlGenerator querySqlGenerator = querySqlGeneratorFactory.Create() as ZackQuerySqlGenerator;
-            querySqlGenerator.IsForSingleTable = true;
             if (querySqlGenerator==null)
             {
                 throw new InvalidOperationException("please UserBatchEF() first!");
             }
+            querySqlGenerator.IsForSingleTable = true;
             querySqlGenerator.GetCommand(selectExpression);
             parsingResult.Parameters = queryContext.ParameterValues;
-            parsingResult.SelectSql = querySqlGenerator.SelectSql;
             parsingResult.PredicateSQL = querySqlGenerator.PredicateSQL;
             parsingResult.ProjectionSQL = querySqlGenerator.ProjectionSQL;
             TableExpression tableExpression = selectExpression.Tables[0] as TableExpression;
             parsingResult.TableName = tableExpression.Table.Name;
-            parsingResult.TableAlias = tableExpression.Alias;
-            parsingResult.AliasSeparator = querySqlGenerator.GetAliasSeparator();
 
             return parsingResult;
         }
 
         public static void UserBatchEF(this DbContextOptionsBuilder optBuilder)
         {
-            optBuilder.ReplaceService< IQuerySqlGeneratorFactory, ZackQuerySqlGeneratorFactory>();
+           optBuilder.ReplaceService< IQuerySqlGeneratorFactory, ZackQuerySqlGeneratorFactory>();
         }
     }
 }

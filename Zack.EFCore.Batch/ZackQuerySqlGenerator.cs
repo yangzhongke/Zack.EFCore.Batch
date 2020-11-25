@@ -10,8 +10,16 @@ namespace Zack.EFCore.Batch
 {
     public class ZackQuerySqlGenerator: QuerySqlGenerator
     {
+		/// <summary>
+		/// columns of the select statement
+		/// </summary>
 		private List<string> _projectionSQL = new List<string>();
 
+		/// <summary>
+		/// if IsForSingleTable=true, there will be no alias in  PredicateSQL and PredicateSQL
+		/// like: select [b].[Id] from [T_Books] AS [b] 
+		/// select [Id] from [T_Books]
+		/// </summary>
 		public bool IsForSingleTable { get; set; } = false;
 
 		public IEnumerable<string> ProjectionSQL 
@@ -22,23 +30,13 @@ namespace Zack.EFCore.Batch
             }
 		}
 
+		/// <summary>
+		/// the where clause
+		/// </summary>
 		public string PredicateSQL
         {
 			get;
 			private set;
-        }
-
-		public string SelectSql
-        {
-			get
-            {
-				return this.Sql.ToString();
-            }
-        }
-
-		public string GetAliasSeparator()
-        {
-			return this.AliasSeparator;
         }
 
 		private ISqlGenerationHelper _sqlGenerationHelper;
@@ -48,7 +46,8 @@ namespace Zack.EFCore.Batch
 			this._sqlGenerationHelper = sqlGenerationHelper;
         }
 
-		private bool IsNonComposedSetOperation(SelectExpression selectExpression)
+		//from ef core
+		private static bool IsNonComposedSetOperation(SelectExpression selectExpression)
 		{
 			if (selectExpression.Offset == null && selectExpression.Limit == null && !selectExpression.IsDistinct && selectExpression.Predicate == null && selectExpression.Having == null && selectExpression.Orderings.Count == 0 && selectExpression.GroupBy.Count == 0 && selectExpression.Tables.Count == 1)
 			{
@@ -70,6 +69,7 @@ namespace Zack.EFCore.Batch
 			return false;
 		}
 
+		//from ef core
 		private void GenerateList<T>(IReadOnlyList<T> items, Action<T> generationAction, Action<IRelationalCommandBuilder> joinAction = null)
 		{
 			if (joinAction == null)
@@ -89,6 +89,13 @@ namespace Zack.EFCore.Batch
 			}
 		}
 
+		/// <summary>
+		/// exclude the oldSQL from newSQL
+		/// Diff("abc","abc12")=="12"
+		/// </summary>
+		/// <param name="oldSQL"></param>
+		/// <param name="newSQL"></param>
+		/// <returns></returns>
 		private static string Diff(string oldSQL, string newSQL)
         {
 			if(!newSQL.StartsWith(oldSQL))
@@ -121,9 +128,9 @@ namespace Zack.EFCore.Batch
 			{
 				GenerateList(selectExpression.Projection, delegate (ProjectionExpression e)
 				{
-					var oldSQL = Sql.ToString();//zack's code
+					var oldSQL = Sql.Build().CommandText;//zack's code
 					Visit(e);
-					string column = Diff(oldSQL, this.Sql.ToString()); //zack's code
+					string column = Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
 					this._projectionSQL.Add(column); //zack's code
 				});
 			}
@@ -150,9 +157,9 @@ namespace Zack.EFCore.Batch
 			if (selectExpression.Predicate != null)
 			{
 				Sql.AppendLine().Append("WHERE ");
-				var oldSQL = Sql.ToString();//zack's code
+				var oldSQL = Sql.Build().CommandText;//zack's code
 				Visit(selectExpression.Predicate);
-				this.PredicateSQL = Diff(oldSQL, this.Sql.ToString()); //zack's code
+				this.PredicateSQL = Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
 			}
 			if (selectExpression.GroupBy.Count > 0)
 			{

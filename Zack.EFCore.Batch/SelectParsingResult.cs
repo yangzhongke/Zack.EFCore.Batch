@@ -4,31 +4,32 @@ namespace Zack.EFCore.Batch
 {
     public class SelectParsingResult
     {
-        public string SelectSql { get; internal set; }
+        /// <summary>
+        /// parameters of query
+        /// </summary>
         public IReadOnlyDictionary<string, object> Parameters { get; internal set; }
+       
+        
         public string TableName
         {
             get;
             internal set;
         }
-        public string TableAlias
-        {
-            get;
-            internal set;
-        }
+
+        /// <summary>
+        /// columns of select
+        /// </summary>
         public IEnumerable<string> ProjectionSQL
         {
             get;
             internal set;
         }
 
-        public string PredicateSQL
-        {
-            get;
-            internal set;
-        }
+        /// <summary>
+        /// where clause
+        /// </summary>
 
-        public string AliasSeparator
+        public string PredicateSQL
         {
             get;
             internal set;
