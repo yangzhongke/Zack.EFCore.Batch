@@ -10,7 +10,7 @@
 第二步:
 把如下代码添加到你的DbContext类的OnConfiguring方法中：
 ```
- optionsBuilder.UserBatchEF();
+ optionsBuilder.UseBatchEF();
 ```
 第三步:
 使用DbContext的扩展方法DeleteRangeAsync()来删除一批数据.

@@ -16,7 +16,6 @@ namespace System.Linq
 {
     public static class BatchEFExtensions
     {
-
         private static string GenerateDeleteSQL<TEntity>(DbContext ctx, Expression<Func<TEntity, bool>> predicate,
             out IReadOnlyDictionary<string, object> parameters) where TEntity:class
         {
@@ -52,6 +51,7 @@ namespace System.Linq
             }
             using (var cmd = conn.CreateCommand())
             {
+                cmd.ApplyCurrentTransaction(ctx);      
                 cmd.CommandText = sql;
                 cmd.AddParameters(parameters);
                 return await cmd.ExecuteNonQueryAsync();
@@ -69,13 +69,23 @@ namespace System.Linq
             }
             using (var cmd = conn.CreateCommand())
             {
+                cmd.ApplyCurrentTransaction(ctx);
                 cmd.CommandText = sql;
                 cmd.AddParameters(parameters);
                 return cmd.ExecuteNonQuery();
             }
         }
 
-        public static void AddParameters(this IDbCommand cmd, IReadOnlyDictionary<string, object> parameters)
+        internal static void ApplyCurrentTransaction(this IDbCommand cmd,DbContext dbContext)
+        {
+            var tx = dbContext.Database.CurrentTransaction;
+            if (tx != null)
+            {
+                cmd.Transaction = tx.GetDbTransaction();
+            }
+        }
+
+        internal static void AddParameters(this IDbCommand cmd, IReadOnlyDictionary<string, object> parameters)
         {
             foreach (var p in parameters)
             {
@@ -137,7 +147,7 @@ namespace System.Linq
             ZackQuerySqlGenerator querySqlGenerator = querySqlGeneratorFactory.Create() as ZackQuerySqlGenerator;
             if (querySqlGenerator==null)
             {
-                throw new InvalidOperationException("please UserBatchEF() first!");
+                throw new InvalidOperationException("please add dbContext.UseBatchEF() to OnConfiguring first!");
             }
             querySqlGenerator.IsForSingleTable = true;
             querySqlGenerator.GetCommand(selectExpression);
@@ -148,11 +158,6 @@ namespace System.Linq
             parsingResult.TableName = tableExpression.Table.Name;
 
             return parsingResult;
-        }
-
-        public static void UserBatchEF(this DbContextOptionsBuilder optBuilder)
-        {
-           optBuilder.ReplaceService< IQuerySqlGeneratorFactory, ZackQuerySqlGeneratorFactory>();
         }
     }
 }

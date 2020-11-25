@@ -125,6 +125,7 @@ namespace Zack.EFCore.Batch
             }
             using (var cmd = conn.CreateCommand())
             {
+                cmd.ApplyCurrentTransaction(this.dbContext);
                 cmd.CommandText = sql;
                 cmd.AddParameters(parameters);
                 return await cmd.ExecuteNonQueryAsync();
@@ -141,6 +142,7 @@ namespace Zack.EFCore.Batch
             }
             using (var cmd = conn.CreateCommand())
             {
+                cmd.ApplyCurrentTransaction(this.dbContext);
                 cmd.CommandText = sql;
                 cmd.AddParameters(parameters);
                 return cmd.ExecuteNonQuery();

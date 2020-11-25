@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Demo
 {
@@ -13,7 +12,7 @@ namespace Demo
             string connStr = "Server=.;Database=demo1;Trusted_Connection=True;MultipleActiveResultSets=true";
             optionsBuilder.UseSqlServer(connStr);
 
-            optionsBuilder.UserBatchEF();
+            optionsBuilder.UseBatchEF();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -12,7 +12,7 @@
  Step 2:
  Add the following code to OnConfiguring of your DbContext
 ```
- optionsBuilder.UserBatchEF();
+ optionsBuilder.UseBatchEF();
 ```
 Step 3:
 Using the extension method DeleteRangeAsync() of DbContext to delete a set of records.
