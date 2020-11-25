@@ -5,6 +5,7 @@
     <RepositoryUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</RepositoryUrl>
     <PackageProjectUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
