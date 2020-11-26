@@ -10,20 +10,25 @@
  Install-Package Zack.EFCore.Batch
 ```
  Step 2:
- Add the following code to OnConfiguring of your DbContext
+ Add the following code into OnConfiguring() method of your DbContext
 ```
  optionsBuilder.UseBatchEF();
 ```
 Step 3:
-Using the extension method DeleteRangeAsync() of DbContext to delete a set of records.
+Use the extension method DeleteRangeAsync() of DbContext to delete a set of records.
 The parameter of DeleteRangeAsync() is the lambda expression of the filter
  Example code:
 ```
 await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == "zack yang"); 
 ```
+
+The code above will execute the following SQL statement on database：
+Delete FROM [T_Books] WHERE ([Price] > @__p_0) OR ([AuthorName] = @__s_1)
+
+
 and the DeleteRange() is the synchronous version of DeleteRangeAsync().
 
-Using the extension method BatchUpdate() of DbContext to create a BatchUpdateBuilder.
+Use the extension method BatchUpdate() of DbContext to create a BatchUpdateBuilder.
 There are four methods in BatchUpdateBuilder as follows
 * Set() is used for assigning a value to a property. The first parameter of the method is the lambda expression of the property, and the second one is the lambda expression of the value.
 * Where() is used for setting the filter expression
@@ -39,3 +44,12 @@ await ctx.BatchUpdate<Book>()
     .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack"))
     .ExecuteAsync();
 ```
+The code above will execute the following SQL statement on database(MS SQLServer)：
+
+Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] = COALESCE(SUBSTRING([Title], 3 + 1, 2), N'') + COALESCE(UPPER([AuthorName]), N''), [PubTime] = GETDATE()
+WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
+
+
+This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
+
+[Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  

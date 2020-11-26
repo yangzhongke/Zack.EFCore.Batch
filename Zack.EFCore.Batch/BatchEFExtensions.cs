@@ -16,7 +16,7 @@ namespace System.Linq
 {
     public static class BatchEFExtensions
     {
-        private static string GenerateDeleteSQL<TEntity>(DbContext ctx, Expression<Func<TEntity, bool>> predicate,
+        private static string GenerateDeleteSQL<TEntity>(DbContext ctx, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
             out IReadOnlyDictionary<string, object> parameters) where TEntity:class
         {
             IQueryable<TEntity> queryable = ctx.Set<TEntity>();
@@ -28,7 +28,7 @@ namespace System.Linq
             {
                 queryable = queryable.Where(e => 1==1);
             }
-            var parsingResult = queryable.Parse(ctx);
+            var parsingResult = queryable.Parse(ctx, ignoreQueryFilters);
             ISqlGenerationHelper sqlGenHelpr = ctx.GetService<ISqlGenerationHelper>();
             string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName);
             StringBuilder sbSQL = new StringBuilder();
@@ -40,10 +40,11 @@ namespace System.Linq
             parameters = parsingResult.Parameters;
             return sbSQL.ToString();
         }
-        public static async Task<int> DeleteRangeAsync<TEntity>(this DbContext ctx,Expression<Func<TEntity,bool>> predicate=null)
+        public static async Task<int> DeleteRangeAsync<TEntity>(this DbContext ctx,
+            Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false)
             where TEntity:class
         {
-            string sql = GenerateDeleteSQL(ctx, predicate, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             var conn = ctx.Database.GetDbConnection();
             if(conn.State!= ConnectionState.Open)
             {
@@ -58,10 +59,10 @@ namespace System.Linq
             }
         }
 
-        public static int DeleteRange<TEntity>(this DbContext ctx, Expression<Func<TEntity, bool>> predicate=null)
+        public static int DeleteRange<TEntity>(this DbContext ctx, Expression<Func<TEntity, bool>> predicate=null, bool ignoreQueryFilters = false)
             where TEntity : class
         {
-            string sql = GenerateDeleteSQL(ctx, predicate, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             var conn = ctx.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {
@@ -114,8 +115,12 @@ namespace System.Linq
         /// <param name="queryable"></param>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public static SelectParsingResult Parse<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx)
+        public static SelectParsingResult Parse<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx,bool ignoreQueryFilters) where TEntity:class
         {
+            if(ignoreQueryFilters)
+            {
+                queryable = queryable.IgnoreQueryFilters();
+            }            
             SelectParsingResult parsingResult = new SelectParsingResult();
             Expression query = queryable.Expression;
             var databaseDependencies = ctx.GetService<DatabaseDependencies>();
@@ -149,7 +154,7 @@ namespace System.Linq
             {
                 throw new InvalidOperationException("please add dbContext.UseBatchEF() to OnConfiguring first!");
             }
-            querySqlGenerator.IsForSingleTable = true;
+            querySqlGenerator.IsForBatchEF = true;
             querySqlGenerator.GetCommand(selectExpression);
             parsingResult.Parameters = queryContext.ParameterValues;
             parsingResult.PredicateSQL = querySqlGenerator.PredicateSQL;

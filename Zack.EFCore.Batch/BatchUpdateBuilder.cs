@@ -51,7 +51,7 @@ namespace Zack.EFCore.Batch
                 ), parameter);
         }
 
-        private string GenerateSQL(Expression<Func<TEntity, bool>> predicate,out IReadOnlyDictionary<string, object> parameters)
+        private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters)
         {
             if (setters.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace Zack.EFCore.Batch
                 queryable = queryable.Where(predicate);
             }
             IQueryable<object> selectQueryable = queryable.Select(selectExpression);
-            var parsingResult = selectQueryable.Parse(this.dbContext);
+            var parsingResult = selectQueryable.Parse(this.dbContext, ignoreQueryFilters);
             string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName);
             StringBuilder sbSQL = new StringBuilder();
             sbSQL.Append("Update ").Append(tableName).Append(" ")
@@ -115,9 +115,9 @@ namespace Zack.EFCore.Batch
             return this;
         }
 
-        public async Task<int> ExecuteAsync()
+        public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false)
         {
-            string sql = GenerateSQL(this.predicate,out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {
@@ -132,9 +132,9 @@ namespace Zack.EFCore.Batch
             }
         }
 
-        public int Execute()
+        public int Execute(bool ignoreQueryFilters=false)
         {
-            string sql = GenerateSQL(this.predicate, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {

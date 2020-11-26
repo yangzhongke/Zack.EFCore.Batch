@@ -16,11 +16,10 @@ namespace Zack.EFCore.Batch
 		private List<string> _projectionSQL = new List<string>();
 
 		/// <summary>
-		/// if IsForSingleTable=true, there will be no alias in  PredicateSQL and PredicateSQL
-		/// like: select [b].[Id] from [T_Books] AS [b] 
-		/// select [Id] from [T_Books]
+		/// if IsForSingleTable=true, ZackQuerySqlGenerator will change the default behavior to capture PredicateSQL and so on.
+		/// if IsForSingleTable=false, ZackQuerySqlGenerator will use all the implementations of base class
 		/// </summary>
-		public bool IsForSingleTable { get; set; } = false;
+		public bool IsForBatchEF { get; set; } = false;
 
 		public IEnumerable<string> ProjectionSQL 
 		{ 
@@ -107,6 +106,10 @@ namespace Zack.EFCore.Batch
 
 		protected override Expression VisitSelect(SelectExpression selectExpression)
         {
+			if(!IsForBatchEF)
+            {
+				return base.VisitSelect(selectExpression);
+            }
 			if (IsNonComposedSetOperation(selectExpression))
 			{
 				GenerateSetOperation((SetOperationBase)selectExpression.Tables[0]);
@@ -186,7 +189,7 @@ namespace Zack.EFCore.Batch
 
         protected override Expression VisitColumn(ColumnExpression columnExpression)
         {
-			if(IsForSingleTable)
+			if(IsForBatchEF)
             {
 				Sql.Append(_sqlGenerationHelper.DelimitIdentifier(columnExpression.Name));
 				return columnExpression;
@@ -199,7 +202,7 @@ namespace Zack.EFCore.Batch
 
         protected override Expression VisitTable(TableExpression tableExpression)
         {
-			if (IsForSingleTable)
+			if (IsForBatchEF)
 			{
 				Sql.Append(_sqlGenerationHelper.DelimitIdentifier(tableExpression.Name));
 				return tableExpression;

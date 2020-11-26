@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Demo
 {
@@ -13,12 +14,14 @@ namespace Demo
             optionsBuilder.UseSqlServer(connStr);
 
             optionsBuilder.UseBatchEF();
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+            modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime>DateTime.Now);
         }
     }
 }

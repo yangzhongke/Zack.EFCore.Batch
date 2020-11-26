@@ -19,6 +19,11 @@ DeleteRangeAsync()的参数就是过滤条件的lambda表达式。
 ```
 await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == "zack yang"); 
 ```
+
+上面的代码将会在数据库中执行如下SQL语句：
+Delete FROM [T_Books] WHERE ([Price] > @__p_0) OR ([AuthorName] = @__s_1)
+
+
 DeleteRange()方法是DeleteRangeAsync()的同步方法版本。
 
 使用DbContext的扩展方法BatchUpdate()来创建一个BatchUpdateBuilder对象。
@@ -37,3 +42,13 @@ await ctx.BatchUpdate<Book>()
     .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack"))
     .ExecuteAsync();
 ```
+
+上面的代码将会在数据库中执行如下SQL语句：
+Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] = COALESCE(SUBSTRING([Title], 3 + 1, 2), N'') + COALESCE(UPPER([AuthorName]), N''), [PubTime] = GETDATE()
+WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
+
+
+这个开发包使用EF Core实现的lambda表达式到SQL语句的翻译，所以几乎所有EF Core支持的lambda表达式写法都被支持。
+[关于这个库的开发报告（B站）](https://www.bilibili.com/read/cv8545714)  
+
+[关于这个库的开发报告（今日头条）](https://www.toutiao.com/i6899423396355293708/)  

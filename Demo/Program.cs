@@ -7,10 +7,12 @@ namespace Demo
 {
     class Program
     {
+
         static async Task Main(string[] args)
         {
             using (TestDbContext ctx = new TestDbContext())
             {
+                
                 int n = Convert.ToInt32("3");
                 string s = "hello";
                 ctx.Database.BeginTransaction();
@@ -22,8 +24,9 @@ namespace Demo
                     .Set(b=>b.PubTime,b=>DateTime.Now)
                 .ExecuteAsync(b=>b.Id>n);
                 //.ExecuteAsync();*/
+               // ctx.Books.ToList();
                 
-                await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == s);
+                await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == s,true);
                 await ctx.BatchUpdate<Book>()
                     .Set(b => b.Price, b => b.Price + 3)
                     .Set(b => b.Title, b => s)
