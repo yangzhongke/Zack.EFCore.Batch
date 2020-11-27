@@ -11,20 +11,21 @@
 ```
  Step 2:
  Add the following code into OnConfiguring() method of your DbContext
-```
+```csharp
  optionsBuilder.UseBatchEF();
 ```
 Step 3:
 Use the extension method DeleteRangeAsync() of DbContext to delete a set of records.
 The parameter of DeleteRangeAsync() is the lambda expression of the filter
  Example code:
-```
+```csharp
 await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == "zack yang"); 
 ```
 
 The code above will execute the following SQL statement on database：
+```SQL
 Delete FROM [T_Books] WHERE ([Price] > @__p_0) OR ([AuthorName] = @__s_1)
-
+```
 
 and the DeleteRange() is the synchronous version of DeleteRangeAsync().
 
@@ -45,10 +46,10 @@ await ctx.BatchUpdate<Book>()
     .ExecuteAsync();
 ```
 The code above will execute the following SQL statement on database(MS SQLServer)：
-
+```SQL
 Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] = COALESCE(SUBSTRING([Title], 3 + 1, 2), N'') + COALESCE(UPPER([AuthorName]), N''), [PubTime] = GETDATE()
 WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
-
+```
 
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
 
