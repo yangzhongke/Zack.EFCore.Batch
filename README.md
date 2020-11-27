@@ -17,7 +17,7 @@
 Step 3:
 Use the extension method DeleteRangeAsync() of DbContext to delete a set of records.
 The parameter of DeleteRangeAsync() is the lambda expression of the filter
- Example code:
+Example code:
 ```csharp
 await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == "zack yang"); 
 ```
@@ -36,7 +36,7 @@ There are four methods in BatchUpdateBuilder as follows
 * ExecuteAsync() is an asynchronous method that can execute the BatchUpdateBuilder, and the Execute() is a synchronous alternative of ExecuteAsync()
 
  Example code:
- ```csharp
+```csharp
 await ctx.BatchUpdate<Book>()
     .Set(b => b.Price, b => b.Price + 3)
     .Set(b => b.Title, b => s)
@@ -53,6 +53,7 @@ WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack
 
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
 
-This library uses EF Core to implement the SQL translation, so that it is not focused exclusively on any specific database. It supports all the database which EF Core supports. It means that if you are using a database that does not already have an EF Core 5 Provider, the library will not support it either.
+The following databases have been tested that they can work well with Zack.EFCore.Batch: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL). 
+In theory, as long as a database has its EF Core 5 Provider , the database can be supported by this library. In another words, if you are using a database that does not already have an EF Core 5 Provider, the library will not support it either.
 
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  

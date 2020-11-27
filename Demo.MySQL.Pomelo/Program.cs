@@ -15,16 +15,7 @@ namespace Demo
                 
                 int n = Convert.ToInt32("3");
                 string s = "hello";
-                ctx.Database.BeginTransaction();
-                /*
-                List<long> ids = new List<long> { 3, 5, 8 };
-                int i = await ctx.DeleteRangeAsync<Book>(b => b.Price > n || ids.Contains(b.Id) || b.AuthorName == s);
-                //int i = await ctx.DeleteRangeAsync<Book>();
-                await ctx.BatchUpdate<Book>().Set(b => b.Price, b => b.Price+3).Set(b => b.Title, b => s)
-                    .Set(b=>b.PubTime,b=>DateTime.Now)
-                .ExecuteAsync(b=>b.Id>n);
-                //.ExecuteAsync();*/
-               // ctx.Books.ToList();
+                //ctx.Database.BeginTransaction();
                 
                 await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == s,true);
                 await ctx.BatchUpdate<Book>()
@@ -34,10 +25,6 @@ namespace Demo
                     .Set(b => b.PubTime, b => DateTime.Now)
                     .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack"))
                     .ExecuteAsync();
-                ctx.Books.ToQueryString();
-                /*
-                string sss = ctx.Books.Where(b=>b.Id>2).Select(b => new { a=b.Title.Substring(3),w=b.Price+3 }).ToQueryString();
-                Console.WriteLine(sss);*/
             }
         }
     }
