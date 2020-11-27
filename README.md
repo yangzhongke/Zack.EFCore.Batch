@@ -45,12 +45,14 @@ await ctx.BatchUpdate<Book>()
     .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack"))
     .ExecuteAsync();
 ```
-The code above will execute the following SQL statement on database(MS SQLServer)：
+The code above will execute the following SQL statement on database：
 ```SQL
 Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] = COALESCE(SUBSTRING([Title], 3 + 1, 2), N'') + COALESCE(UPPER([AuthorName]), N''), [PubTime] = GETDATE()
 WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
 ```
 
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
+
+This library uses EF Core to implement the SQL translation, so that it is not focused exclusively on any specific database. It supports all the database which EF Core supports. It means that if you are using a database that does not already have a EF Core 5 Provider, the library will not support it either.
 
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  

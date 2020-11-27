@@ -50,7 +50,9 @@ Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] =
 WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
 ```
 
-这个开发包使用EF Core实现的lambda表达式到SQL语句的翻译，所以几乎所有EF Core支持的lambda表达式写法都被支持。  
+这个开发包使用EF Core实现的lambda表达式到SQL语句的翻译，所以几乎所有EF Core支持的lambda表达式写法都被支持。
+
+这个库使用EF Core来实现SQL翻译，因此它不是只能用在某种特定的数据库上。只要EF Core 支持的数据库，它都支持。这也就意味着，如果您用的数据库还没有对应EF Core 5的Provider，那么这个库也就不支持。  
 
 [关于这个库的开发报告（B站）](https://www.bilibili.com/read/cv8545714)  
 
