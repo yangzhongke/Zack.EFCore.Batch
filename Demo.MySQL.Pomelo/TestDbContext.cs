@@ -11,6 +11,7 @@ namespace Demo
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.LogTo(Console.WriteLine);
             string connStr = "server=localhost;user=root;password=root;database=ef";
             optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)),
                         mySqlOptions => mySqlOptions

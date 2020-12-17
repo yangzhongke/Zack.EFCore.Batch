@@ -10,7 +10,7 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Zack.EFCore.Batch;
+using Zack.EFCore.Batch.Internal;
 
 namespace System.Linq
 {
@@ -54,7 +54,7 @@ namespace System.Linq
             {
                 cmd.ApplyCurrentTransaction(ctx);      
                 cmd.CommandText = sql;
-                cmd.AddParameters(parameters);
+                cmd.AddParameters(ctx,parameters);
                 return await cmd.ExecuteNonQueryAsync();
             }
         }
@@ -72,7 +72,7 @@ namespace System.Linq
             {
                 cmd.ApplyCurrentTransaction(ctx);
                 cmd.CommandText = sql;
-                cmd.AddParameters(parameters);
+                cmd.AddParameters(ctx, parameters);
                 return cmd.ExecuteNonQuery();
             }
         }
@@ -86,15 +86,23 @@ namespace System.Linq
             }
         }
 
-        internal static void AddParameters(this IDbCommand cmd, IReadOnlyDictionary<string, object> parameters)
+        internal static void AddParameters(this IDbCommand cmd, DbContext ctx, IReadOnlyDictionary<string, object> parameters)
         {
+            var typeMapping = ctx.GetService<IRelationalTypeMappingSource>();
             foreach (var p in parameters)
             {
-                //ignore values of IList, Array
-                if (p.Value != null && p.Value is System.Collections.IEnumerable && !(p.Value is string))
+                if(p.Value!=null)
                 {
-                    continue;
-                }
+                    var mappedType = typeMapping.FindMapping(p.Value.GetType());
+                    //the parameter type is not supported by underlying database.
+                    //the value may be EF.Functions.ContainsOrEqual, int[] that have been translated into SQL clause.
+                    //like Where(m => EF.Functions.ContainsOrEqual(m.IPv4.Value, ip)), and Where(p=>ids.Contains(p.Id)),
+                    //so it's ignored.
+                    if (mappedType==null)
+                    {
+                        continue;
+                    }
+                }                
                 var dbParam = cmd.CreateParameter();
                 dbParam.ParameterName = p.Key;
                 dbParam.Value = p.Value;
@@ -149,7 +157,7 @@ namespace System.Linq
             SelectExpression selectExpression = (SelectExpression)shapedQueryExpression2.QueryExpression;
             selectExpression = _relationalParameterBasedSqlProcessor.Optimize(selectExpression, queryContext.ParameterValues, out bool canCache);
             IQuerySqlGeneratorFactory querySqlGeneratorFactory = ctx.GetService<IQuerySqlGeneratorFactory>();
-            ZackQuerySqlGenerator querySqlGenerator = querySqlGeneratorFactory.Create() as ZackQuerySqlGenerator;
+            IZackQuerySqlGenerator querySqlGenerator = querySqlGeneratorFactory.Create() as IZackQuerySqlGenerator;
             if (querySqlGenerator==null)
             {
                 throw new InvalidOperationException("please add dbContext.UseBatchEF() to OnConfiguring first!");

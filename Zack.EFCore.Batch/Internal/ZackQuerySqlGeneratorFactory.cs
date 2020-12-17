@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Zack.EFCore.Batch
+namespace Zack.EFCore.Batch.Internal
 {
     public class ZackQuerySqlGeneratorFactory : IQuerySqlGeneratorFactory
     {
@@ -15,6 +15,10 @@ namespace Zack.EFCore.Batch
         }
         public QuerySqlGenerator Create()
         {
+            if(_sqlGenerationHelper.GetType().Name.Contains("Npgsql"))
+            {
+                throw new System.Exception("If Npgsql.EntityFrameworkCore.PostgreSQL is used, please use the Postgresql-specific NuGet Package instead, called 'Zack.EFCore.Batch.Npgsql' https://www.nuget.org/packages/Zack.EFCore.Batch.Npgsql");
+            }
             return new ZackQuerySqlGenerator(this.dependencies, this._sqlGenerationHelper);
         }
     }

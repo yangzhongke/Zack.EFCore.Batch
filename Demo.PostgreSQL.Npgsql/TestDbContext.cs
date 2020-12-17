@@ -10,11 +10,12 @@ namespace Demo
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connStr = "Host=172.26.0.4;Database=my_db;Username=postgres;Password=123456";
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.LogTo(Console.WriteLine);
+            string connStr = "Host=127.0.0.1;Database=test;Username=postgres;Password=123456;Keepalive=30";
             optionsBuilder.UseNpgsql(connStr);
-
-            optionsBuilder.UseBatchEF();
-            
+            optionsBuilder.UseBatchEF_Npgsql();
+            //optionsBuilder.UseBatchEF();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

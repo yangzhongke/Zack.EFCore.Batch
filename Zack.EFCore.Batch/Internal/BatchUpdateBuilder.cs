@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zack.EFCore.Batch
+namespace Zack.EFCore.Batch.Internal
 {
     public class BatchUpdateBuilder<TEntity> where TEntity:class
     {
@@ -123,11 +123,12 @@ namespace Zack.EFCore.Batch
             {
                 await conn.OpenAsync();
             }
+            this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
             using (var cmd = conn.CreateCommand())
             {
                 cmd.ApplyCurrentTransaction(this.dbContext);
                 cmd.CommandText = sql;
-                cmd.AddParameters(parameters);
+                cmd.AddParameters(dbContext, parameters);
                 return await cmd.ExecuteNonQueryAsync();
             }
         }
@@ -140,11 +141,12 @@ namespace Zack.EFCore.Batch
             {
                 conn.Open();
             }
+            this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
             using (var cmd = conn.CreateCommand())
             {
                 cmd.ApplyCurrentTransaction(this.dbContext);
                 cmd.CommandText = sql;
-                cmd.AddParameters(parameters);
+                cmd.AddParameters(dbContext,parameters);
                 return cmd.ExecuteNonQuery();
             }
         }

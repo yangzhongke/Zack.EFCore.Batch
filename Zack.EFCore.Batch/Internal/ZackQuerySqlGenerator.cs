@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Zack.EFCore.Batch
+namespace Zack.EFCore.Batch.Internal
 {
-    public class ZackQuerySqlGenerator: QuerySqlGenerator
-    {
+    public class ZackQuerySqlGenerator: QuerySqlGenerator, IZackQuerySqlGenerator
+	{
 		/// <summary>
 		/// columns of the select statement
 		/// </summary>
@@ -19,7 +19,7 @@ namespace Zack.EFCore.Batch
 		/// if IsForSingleTable=true, ZackQuerySqlGenerator will change the default behavior to capture PredicateSQL and so on.
 		/// if IsForSingleTable=false, ZackQuerySqlGenerator will use all the implementations of base class
 		/// </summary>
-		public bool IsForBatchEF { get; set; } = false;
+		public bool IsForBatchEF { get; set; }
 
 		public IEnumerable<string> ProjectionSQL 
 		{ 
@@ -43,66 +43,9 @@ namespace Zack.EFCore.Batch
             :base(dependencies)
         {
 			this._sqlGenerationHelper = sqlGenerationHelper;
+			this.IsForBatchEF = false;
         }
-
-		//from ef core
-		private static bool IsNonComposedSetOperation(SelectExpression selectExpression)
-		{
-			if (selectExpression.Offset == null && selectExpression.Limit == null && !selectExpression.IsDistinct && selectExpression.Predicate == null && selectExpression.Having == null && selectExpression.Orderings.Count == 0 && selectExpression.GroupBy.Count == 0 && selectExpression.Tables.Count == 1)
-			{
-				TableExpressionBase tableExpressionBase = selectExpression.Tables[0];
-				SetOperationBase setOperation = tableExpressionBase as SetOperationBase;
-				if (setOperation != null && selectExpression.Projection.Count == setOperation.Source1.Projection.Count)
-				{
-					return selectExpression.Projection.Select(delegate (ProjectionExpression pe, int index)
-					{
-						ColumnExpression columnExpression = pe.Expression as ColumnExpression;
-						if (columnExpression != null && string.Equals(columnExpression.Table.Alias, setOperation.Alias, StringComparison.OrdinalIgnoreCase))
-						{
-							return string.Equals(columnExpression.Name, setOperation.Source1.Projection[index].Alias, StringComparison.OrdinalIgnoreCase);
-						}
-						return false;
-					}).All((bool e) => e);
-				}
-			}
-			return false;
-		}
-
-		//from ef core
-		private void GenerateList<T>(IReadOnlyList<T> items, Action<T> generationAction, Action<IRelationalCommandBuilder> joinAction = null)
-		{
-			if (joinAction == null)
-			{
-				joinAction = delegate (IRelationalCommandBuilder isb)
-				{
-					isb.Append(", ");
-				};
-			}
-			for (int i = 0; i < items.Count; i++)
-			{
-				if (i > 0)
-				{
-					joinAction(Sql);
-				}
-				generationAction(items[i]);
-			}
-		}
-
-		/// <summary>
-		/// exclude the oldSQL from newSQL
-		/// Diff("abc","abc12")=="12"
-		/// </summary>
-		/// <param name="oldSQL"></param>
-		/// <param name="newSQL"></param>
-		/// <returns></returns>
-		private static string Diff(string oldSQL, string newSQL)
-        {
-			if(!newSQL.StartsWith(oldSQL))
-            {
-				throw new ArgumentException("!newSQL.StartsWith(oldSQL)",nameof(newSQL));
-            }
-			return newSQL.Substring(oldSQL.Length);
-        }
+		
 
 		protected override Expression VisitSelect(SelectExpression selectExpression)
         {
@@ -110,7 +53,7 @@ namespace Zack.EFCore.Batch
             {
 				return base.VisitSelect(selectExpression);
             }
-			if (IsNonComposedSetOperation(selectExpression))
+			if (BatchUtils.IsNonComposedSetOperation(selectExpression))
 			{
 				GenerateSetOperation((SetOperationBase)selectExpression.Tables[0]);
 				return selectExpression;
@@ -129,11 +72,11 @@ namespace Zack.EFCore.Batch
 			GenerateTop(selectExpression);
 			if (selectExpression.Projection.Any())
 			{
-				GenerateList(selectExpression.Projection, delegate (ProjectionExpression e)
+				BatchUtils.GenerateList(selectExpression.Projection,Sql, delegate (ProjectionExpression e)
 				{
 					var oldSQL = Sql.Build().CommandText;//zack's code
 					Visit(e);
-					string column = Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
+					string column = BatchUtils.Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
 					this._projectionSQL.Add(column); //zack's code
 				});
 			}
@@ -145,7 +88,7 @@ namespace Zack.EFCore.Batch
 			if (selectExpression.Tables.Any())
 			{
 				Sql.AppendLine().Append("FROM ");
-				GenerateList(selectExpression.Tables, delegate (TableExpressionBase e)
+				BatchUtils.GenerateList(selectExpression.Tables, Sql,delegate (TableExpressionBase e)
 				{
 					Visit(e);
 				}, delegate (IRelationalCommandBuilder sql)
@@ -162,12 +105,12 @@ namespace Zack.EFCore.Batch
 				Sql.AppendLine().Append("WHERE ");
 				var oldSQL = Sql.Build().CommandText;//zack's code
 				Visit(selectExpression.Predicate);
-				this.PredicateSQL = Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
+				this.PredicateSQL = BatchUtils.Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
 			}
 			if (selectExpression.GroupBy.Count > 0)
 			{
 				Sql.AppendLine().Append("GROUP BY ");
-				GenerateList(selectExpression.GroupBy, delegate (SqlExpression e)
+				BatchUtils.GenerateList(selectExpression.GroupBy,Sql, delegate (SqlExpression e)
 				{
 					Visit(e);
 				});

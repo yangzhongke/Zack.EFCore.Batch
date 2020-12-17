@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch", "Zack.EFCore.Batch\Zack.EFCore.Batch.csproj", "{0B4A4CCC-59F5-4B71-8BBC-12D0F3BA3569}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.MySQL.Pomelo", "Demo.MySQL.Pomelo\Demo.MySQL.Pomelo.csproj", "{116C8229-621F-4CC7-97E5-8CE250A2EE42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.MySQL.Pomelo", "Demo.MySQL.Pomelo\Demo.MySQL.Pomelo.csproj", "{116C8229-621F-4CC7-97E5-8CE250A2EE42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.PostgreSQL.Npgsql", "Demo.PostgreSQL.Npgsql\Demo.PostgreSQL.Npgsql.csproj", "{F29D3347-AF1B-4781-9682-65225DC4D7ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.PostgreSQL.Npgsql", "Demo.PostgreSQL.Npgsql\Demo.PostgreSQL.Npgsql.csproj", "{F29D3347-AF1B-4781-9682-65225DC4D7ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.MSSQLServer", "Demo.MSSQLServer\Demo.MSSQLServer.csproj", "{2CC6BEEC-7930-4D95-A542-F05FCEDF47D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zack.EFCore.Batch.Npgsql", "Zack.EFCore.Batch.Npgsql\Zack.EFCore.Batch.Npgsql.csproj", "{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2CC6BEEC-7930-4D95-A542-F05FCEDF47D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CC6BEEC-7930-4D95-A542-F05FCEDF47D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CC6BEEC-7930-4D95-A542-F05FCEDF47D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

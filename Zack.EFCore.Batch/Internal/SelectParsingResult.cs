@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Zack.EFCore.Batch
+namespace Zack.EFCore.Batch.Internal
 {
     public class SelectParsingResult
     {

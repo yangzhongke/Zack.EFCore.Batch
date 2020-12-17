@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
-using Zack.EFCore.Batch;
+using Zack.EFCore.Batch.Internal;
 
 namespace Microsoft.EntityFrameworkCore
 {

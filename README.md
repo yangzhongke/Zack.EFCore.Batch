@@ -9,11 +9,17 @@
 ```
  Install-Package Zack.EFCore.Batch
 ```
+
+**Attention:** As for Postgresql (using Npgsql.EntityFrameworkCore.PostgreSQL) users, please use  Install-Package Zack.EFCore.Batch.Npgsql instead.
+
  Step 2:
  Add the following code into OnConfiguring() method of your DbContext
 ```csharp
  optionsBuilder.UseBatchEF();
 ```
+
+**Attention:** As for Postgresql users, please use optionsBuilder.UseBatchEF_Npgsql() instead.
+
 Step 3:
 Use the extension method DeleteRangeAsync() of DbContext to delete a set of records.
 The parameter of DeleteRangeAsync() is the lambda expression of the filter
