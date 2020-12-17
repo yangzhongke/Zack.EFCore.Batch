@@ -7,14 +7,14 @@
 ```
 Install-Package Zack.EFCore.Batch
 ```
-**注意：**对于Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用Install-Package Zack.EFCore.Batch.Npgsql 代替。
+**注意：** 对于Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用Install-Package Zack.EFCore.Batch.Npgsql 代替。
 
 第二步:
 把如下代码添加到你的DbContext类的OnConfiguring方法中：
 ```csharp
  optionsBuilder.UseBatchEF();
 ```
-**注意：**对于Postgresql用户，请使用optionsBuilder.UseBatchEF_Npgsql()代替。
+**注意：** 对于Postgresql用户，请使用optionsBuilder.UseBatchEF_Npgsql()代替。
 
 第三步:
 使用DbContext的扩展方法DeleteRangeAsync()来删除一批数据.
