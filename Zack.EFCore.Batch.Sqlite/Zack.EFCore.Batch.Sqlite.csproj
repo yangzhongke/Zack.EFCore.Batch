@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.2.1</Version>
+    <Description>A Sqlite-specific version of Zack.EFCore.Batch.
+Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0 and above.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
+	  <PackageReference Include="Zack.EFCore.Batch" Version="1.2.1" />
+  </ItemGroup>
+
+</Project>

@@ -10,12 +10,15 @@ MS SQLServer用户，请使用Install-Package Zack.EFCore.Batch.MSSQL
 
 MySQL（使用Pomelo.EntityFrameworkCore.MySql）用户，请使用Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 
+Sqlite用户，请使用Install-Package Zack.EFCore.Batch.Sqlite
+
 第二步:
 根据不同的数据库，请分别把如下代码添加到你的DbContext类的OnConfiguring方法中：
 ```csharp
 optionsBuilder.UseBatchEF_MSSQL();// MSSQL Server 用户用这个
 optionsBuilder.UseBatchEF_Npgsql();//Postgresql 用户用这个
 optionsBuilder.UseBatchEF_MySQLPomelo();//MySQL 用户用这个
+optionsBuilder.UseBatchEF_Sqlite();//Sqlite 用户用这个
 ```
 
 第三步:

@@ -13,12 +13,16 @@ As for MS SQLServer users, please use: Install-Package Zack.EFCore.Batch.MSSQL
 
 As for MySQL(with Pomelo.EntityFrameworkCore.MySql) users, please use: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 
+As for Sqlite users, please use: Install-Package Zack.EFCore.Batch.Sqlite
+
  Step 2:
  Depending on the database, add the following code into OnConfiguring() method of your DbContext respectively.
 ```csharp
 optionsBuilder.UseBatchEF_MSSQL();// as for MSSQL Server
 optionsBuilder.UseBatchEF_Npgsql();//as for Postgresql
 optionsBuilder.UseBatchEF_MySQLPomelo();//as for MySQL
+optionsBuilder.UseBatchEF_Sqlite();//as for Sqlite
+
 ```
 
 Step 3:
