@@ -2,9 +2,7 @@
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 
@@ -23,7 +21,7 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
 		/// </summary>
 		public bool IsForBatchEF { get; set; }
 
-		public IEnumerable<string> ProjectionSQL
+		public List<string> ProjectionSQL
 		{
 			get
 			{
@@ -37,10 +35,10 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
 		public string PredicateSQL
 		{
 			get;
-			private set;
+			set;
 		}
 
-		private ISqlGenerationHelper _sqlGenerationHelper;
+        private ISqlGenerationHelper _sqlGenerationHelper;
 		public ZackQuerySqlGenerator_MSSQL(QuerySqlGeneratorDependencies dependencies, ISqlGenerationHelper sqlGenerationHelper)
 			: base(dependencies)
 		{
@@ -55,81 +53,7 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
 			{
 				return base.VisitSelect(selectExpression);
 			}
-			if (BatchUtils.IsNonComposedSetOperation(selectExpression))
-			{
-				GenerateSetOperation((SetOperationBase)selectExpression.Tables[0]);
-				return selectExpression;
-			}
-			IDisposable disposable = null;
-			if (selectExpression.Alias != null)
-			{
-				Sql.AppendLine("(");
-				disposable = Sql.Indent();
-			}
-			Sql.Append("SELECT ");
-			if (selectExpression.IsDistinct)
-			{
-				Sql.Append("DISTINCT ");
-			}
-			GenerateTop(selectExpression);
-			if (selectExpression.Projection.Any())
-			{
-				BatchUtils.GenerateList(selectExpression.Projection, Sql, delegate (ProjectionExpression e)
-				{
-					var oldSQL = Sql.Build().CommandText;//zack's code
-					Visit(e);
-					string column = BatchUtils.Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
-					this._projectionSQL.Add(column); //zack's code
-				});
-			}
-			else
-			{
-				Sql.Append("1");
-				this._projectionSQL.Add("1");//zack's code
-			}
-			if (selectExpression.Tables.Any())
-			{
-				Sql.AppendLine().Append("FROM ");
-				BatchUtils.GenerateList(selectExpression.Tables, Sql, delegate (TableExpressionBase e)
-				{
-					Visit(e);
-				}, delegate (IRelationalCommandBuilder sql)
-				{
-					sql.AppendLine();
-				});
-			}
-			else
-			{
-				GeneratePseudoFromClause();
-			}
-			if (selectExpression.Predicate != null)
-			{
-				Sql.AppendLine().Append("WHERE ");
-				var oldSQL = Sql.Build().CommandText;//zack's code
-				Visit(selectExpression.Predicate);
-				this.PredicateSQL = BatchUtils.Diff(oldSQL, this.Sql.Build().CommandText); //zack's code
-			}
-			if (selectExpression.GroupBy.Count > 0)
-			{
-				Sql.AppendLine().Append("GROUP BY ");
-				BatchUtils.GenerateList(selectExpression.GroupBy, Sql, delegate (SqlExpression e)
-				{
-					Visit(e);
-				});
-			}
-			if (selectExpression.Having != null)
-			{
-				Sql.AppendLine().Append("HAVING ");
-				Visit(selectExpression.Having);
-			}
-			GenerateOrderings(selectExpression);
-			GenerateLimitOffset(selectExpression);
-			if (selectExpression.Alias != null)
-			{
-				disposable.Dispose();
-				Sql.AppendLine().Append(")" + AliasSeparator + _sqlGenerationHelper.DelimitIdentifier(selectExpression.Alias));
-			}
-			return selectExpression;
+			return SqlGeneratorUtils.VisitSelect(this, this._sqlGenerationHelper, selectExpression);
 		}
 
 		protected override Expression VisitColumn(ColumnExpression columnExpression)
@@ -157,5 +81,35 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
 				return base.VisitTable(tableExpression);
 			}
 		}
+		public IRelationalCommandBuilder P_Sql => this.Sql;
+		public string P_AliasSeparator => this.AliasSeparator;
+
+
+		public void P_GenerateSetOperation(SetOperationBase setOperation)
+        {
+			this.GenerateSetOperation(setOperation);
+		}
+
+        public void P_GenerateTop(SelectExpression selectExpression)
+        {
+			this.GenerateTop(selectExpression);
+
+		}
+
+        public void P_GeneratePseudoFromClause()
+        {
+			this.GeneratePseudoFromClause();
+
+		}
+
+        public void P_GenerateOrderings(SelectExpression selectExpression)
+        {
+            this.GenerateOrderings(selectExpression);
+        }
+
+        public void P_GenerateLimitOffset(SelectExpression selectExpression)
+        {
+            this.GenerateLimitOffset(selectExpression);
+        }
     }
 }

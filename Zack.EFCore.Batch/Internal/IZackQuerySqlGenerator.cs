@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Zack.EFCore.Batch.Internal
 {
@@ -8,7 +9,7 @@ namespace Zack.EFCore.Batch.Internal
     {
 		public bool IsForBatchEF { get; set; }
 
-		public IEnumerable<string> ProjectionSQL
+		public List<string> ProjectionSQL
 		{
 			get;
 		}
@@ -19,8 +20,25 @@ namespace Zack.EFCore.Batch.Internal
 		public string PredicateSQL
 		{
 			get;
+			set;
 		}
 
 		public IRelationalCommand GetCommand(SelectExpression selectExpression);
+
+		public IRelationalCommandBuilder P_Sql { get; }
+
+		public Expression Visit(Expression node);
+
+		public void P_GenerateSetOperation(SetOperationBase setOperation);
+
+		public void P_GenerateTop(SelectExpression selectExpression);
+
+		public void P_GeneratePseudoFromClause();
+
+		public void P_GenerateOrderings(SelectExpression selectExpression);
+
+		public void P_GenerateLimitOffset(SelectExpression selectExpression);
+
+		public string P_AliasSeparator { get; }
 	}
 }

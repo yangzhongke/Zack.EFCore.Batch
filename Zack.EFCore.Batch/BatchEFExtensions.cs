@@ -45,6 +45,7 @@ namespace System.Linq
             where TEntity:class
         {
             string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            ctx.Log(sql);
             var conn = ctx.Database.GetDbConnection();
             if(conn.State!= ConnectionState.Open)
             {
@@ -63,6 +64,7 @@ namespace System.Linq
             where TEntity : class
         {
             string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            ctx.Log(sql);
             var conn = ctx.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {
