@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
+    <ProjectReference Include="..\Zack.EFCore.Batch.MySQL.Pomelo\Zack.EFCore.Batch.MySQL.Pomelo.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,15 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Query.ExpressionVisitors.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Zack.EFCore.Batch.Internal;
 
-namespace Zack.EFCore.Batch.Internal
+namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
 {
-    public class ZackQuerySqlGenerator: QuerySqlGenerator, IZackQuerySqlGenerator
-	{
+    class ZackQuerySqlGenerator_MySQLPomelo : MySqlQuerySqlGenerator, IZackQuerySqlGenerator
+    {
 		/// <summary>
 		/// columns of the select statement
 		/// </summary>
@@ -21,38 +25,38 @@ namespace Zack.EFCore.Batch.Internal
 		/// </summary>
 		public bool IsForBatchEF { get; set; }
 
-		public IEnumerable<string> ProjectionSQL 
-		{ 
+		public IEnumerable<string> ProjectionSQL
+		{
 			get
-            {
+			{
 				return this._projectionSQL;
-            }
+			}
 		}
 
 		/// <summary>
 		/// the where clause
 		/// </summary>
 		public string PredicateSQL
-        {
+		{
 			get;
 			private set;
-        }
+		}
 
 		private ISqlGenerationHelper _sqlGenerationHelper;
-		public ZackQuerySqlGenerator(QuerySqlGeneratorDependencies dependencies, ISqlGenerationHelper sqlGenerationHelper)
-            :base(dependencies)
-        {
+		public ZackQuerySqlGenerator_MySQLPomelo(QuerySqlGeneratorDependencies dependencies, ISqlGenerationHelper sqlGenerationHelper, MySqlSqlExpressionFactory sqlExpressionFactory, IMySqlOptions options)
+			: base(dependencies, sqlExpressionFactory, options)
+		{
 			this._sqlGenerationHelper = sqlGenerationHelper;
 			this.IsForBatchEF = false;
-        }
-		
+		}
+
 
 		protected override Expression VisitSelect(SelectExpression selectExpression)
-        {
-			if(!IsForBatchEF)
-            {
+		{
+			if (!IsForBatchEF)
+			{
 				return base.VisitSelect(selectExpression);
-            }
+			}
 			if (BatchUtils.IsNonComposedSetOperation(selectExpression))
 			{
 				GenerateSetOperation((SetOperationBase)selectExpression.Tables[0]);
@@ -72,7 +76,7 @@ namespace Zack.EFCore.Batch.Internal
 			GenerateTop(selectExpression);
 			if (selectExpression.Projection.Any())
 			{
-				BatchUtils.GenerateList(selectExpression.Projection,Sql, delegate (ProjectionExpression e)
+				BatchUtils.GenerateList(selectExpression.Projection, Sql, delegate (ProjectionExpression e)
 				{
 					var oldSQL = Sql.Build().CommandText;//zack's code
 					Visit(e);
@@ -88,7 +92,7 @@ namespace Zack.EFCore.Batch.Internal
 			if (selectExpression.Tables.Any())
 			{
 				Sql.AppendLine().Append("FROM ");
-				BatchUtils.GenerateList(selectExpression.Tables, Sql,delegate (TableExpressionBase e)
+				BatchUtils.GenerateList(selectExpression.Tables, Sql, delegate (TableExpressionBase e)
 				{
 					Visit(e);
 				}, delegate (IRelationalCommandBuilder sql)
@@ -110,7 +114,7 @@ namespace Zack.EFCore.Batch.Internal
 			if (selectExpression.GroupBy.Count > 0)
 			{
 				Sql.AppendLine().Append("GROUP BY ");
-				BatchUtils.GenerateList(selectExpression.GroupBy,Sql, delegate (SqlExpression e)
+				BatchUtils.GenerateList(selectExpression.GroupBy, Sql, delegate (SqlExpression e)
 				{
 					Visit(e);
 				});
@@ -130,21 +134,21 @@ namespace Zack.EFCore.Batch.Internal
 			return selectExpression;
 		}
 
-        protected override Expression VisitColumn(ColumnExpression columnExpression)
-        {
-			if(IsForBatchEF)
-            {
+		protected override Expression VisitColumn(ColumnExpression columnExpression)
+		{
+			if (IsForBatchEF)
+			{
 				Sql.Append(_sqlGenerationHelper.DelimitIdentifier(columnExpression.Name));
 				return columnExpression;
 			}
 			else
-            {
+			{
 				return base.VisitColumn(columnExpression);
-            }
+			}
 		}
 
-        protected override Expression VisitTable(TableExpression tableExpression)
-        {
+		protected override Expression VisitTable(TableExpression tableExpression)
+		{
 			if (IsForBatchEF)
 			{
 				Sql.Append(_sqlGenerationHelper.DelimitIdentifier(tableExpression.Name));
@@ -153,7 +157,7 @@ namespace Zack.EFCore.Batch.Internal
 			else
 			{
 				return base.VisitTable(tableExpression);
-			}			
-        }
+			}
+		}
     }
 }

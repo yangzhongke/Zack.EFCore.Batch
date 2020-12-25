@@ -17,8 +17,7 @@ namespace Demo
                         mySqlOptions => mySqlOptions
                             .CharSetBehavior(CharSetBehavior.NeverAppend));
 
-            optionsBuilder.UseBatchEF();
-            
+            optionsBuilder.UseBatchEF_MySQLPomelo();            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

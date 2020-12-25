@@ -6,11 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
+    <ProjectReference Include="..\Zack.EFCore.Batch.MSSQL\Zack.EFCore.Batch.MSSQL.csproj" />
   </ItemGroup>
 
 </Project>

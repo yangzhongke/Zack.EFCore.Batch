@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.2</Version>
+    <Version>1.2.0</Version>
     <Authors>Zack Yang(杨中科)</Authors>
     <Description>A Postgresql-specific version of Zack.EFCore.Batch.
 Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0 and above.</Description>
@@ -11,7 +11,7 @@ Using this library, Entity Framework Core users can delete or update multiple re
 
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0" />
-    <PackageReference Include="Zack.EFCore.Batch" Version="1.1.2" />
+    <PackageReference Include="Zack.EFCore.Batch" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

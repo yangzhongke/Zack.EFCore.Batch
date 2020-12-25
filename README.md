@@ -5,20 +5,21 @@
  This libary supports Entity Framework Core 5.0 and above.  
 
  Instructions:  
- Step 1:
-```
- Install-Package Zack.EFCore.Batch
-```
+ Step 1, Install NuGet Package:
 
-**Attention:** As for Postgresql (using Npgsql.EntityFrameworkCore.PostgreSQL) users, please use  Install-Package Zack.EFCore.Batch.Npgsql instead.
+As for Postgresql (with Npgsql.EntityFrameworkCore.PostgreSQL) users, please use: Install-Package Zack.EFCore.Batch.Npgsql
+
+As for MS SQLServer users, please use: Install-Package Zack.EFCore.Batch.MSSQL
+
+As for MySQL(with Pomelo.EntityFrameworkCore.MySql) users, please use: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 
  Step 2:
- Add the following code into OnConfiguring() method of your DbContext
+ Depending on the database, add the following code into OnConfiguring() method of your DbContext respectively.
 ```csharp
- optionsBuilder.UseBatchEF();
+optionsBuilder.UseBatchEF_MSSQL();// as for MSSQL Server
+optionsBuilder.UseBatchEF_Npgsql();//as for Postgresql
+optionsBuilder.UseBatchEF_MySQLPomelo();//as for MySQL
 ```
-
-**Attention:** As for Postgresql users, please use optionsBuilder.UseBatchEF_Npgsql() instead.
 
 Step 3:
 Use the extension method DeleteRangeAsync() of DbContext to delete a set of records.
@@ -60,6 +61,6 @@ WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
 
 The following databases have been tested that they can work well with Zack.EFCore.Batch: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL). 
-In theory, as long as a database has its EF Core 5 Provider , the database can be supported by this library. In another words, if you are using a database that does not already have an EF Core 5 Provider, the library will not support it either.
+In theory, as long as a database has its EF Core 5 Provider , the database can be supported by this library. If you are using a database that is not currently supported, please submit an issue. I can usually complete the development within one working day.
 
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  

@@ -25,6 +25,9 @@ namespace Demo
                     .Set(b => b.PubTime, b => DateTime.Now)
                     .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack")|| nums.Contains(b.Id))
                     .ExecuteAsync();
+
+                var b = await ctx.Books.OrderBy(b => b.PubTime).FirstOrDefaultAsync();
+                Console.WriteLine(b);
             }
         }
     }

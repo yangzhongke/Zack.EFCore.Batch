@@ -10,11 +10,10 @@ namespace Demo
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.LogTo(Console.WriteLine);
             string connStr = "Server=.;Database=demo1;Trusted_Connection=True;MultipleActiveResultSets=true";
             optionsBuilder.UseSqlServer(connStr);
-
-            optionsBuilder.UseBatchEF();
-            
+            optionsBuilder.UseBatchEF_MSSQL();            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

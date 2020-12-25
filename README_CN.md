@@ -3,18 +3,20 @@
 这个开发包支持 Entity Framework Core 5.0以及更高版。  
 
 操作说明:  
-第一步:
-```
-Install-Package Zack.EFCore.Batch
-```
-**注意：** 对于Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用Install-Package Zack.EFCore.Batch.Npgsql 代替。
+第一步，安装NuGet包:
+Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用Install-Package Zack.EFCore.Batch.Npgsql
+
+MS SQLServer用户，请使用Install-Package Zack.EFCore.Batch.MSSQL
+
+MySQL（使用Pomelo.EntityFrameworkCore.MySql）用户，请使用Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 
 第二步:
-把如下代码添加到你的DbContext类的OnConfiguring方法中：
+根据不同的数据库，请分别把如下代码添加到你的DbContext类的OnConfiguring方法中：
 ```csharp
- optionsBuilder.UseBatchEF();
+optionsBuilder.UseBatchEF_MSSQL();// MSSQL Server 用户用这个
+optionsBuilder.UseBatchEF_Npgsql();//Postgresql 用户用这个
+optionsBuilder.UseBatchEF_MySQLPomelo();//MySQL 用户用这个
 ```
-**注意：** 对于Postgresql用户，请使用optionsBuilder.UseBatchEF_Npgsql()代替。
 
 第三步:
 使用DbContext的扩展方法DeleteRangeAsync()来删除一批数据.
@@ -58,7 +60,7 @@ WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack
 
 以下数据库已经过测试，可以被Zack.EFCore.Batch支持: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL)。
 
-理论上来说，只要一个数据库有对应的EF Core 5的Provider，那么Zack.EFCore.Batch就可以支持这个数据库。换句话说，如果您使用的数据库还没有EF Core 5 provider，那么Zack.EFCore.Batch也不会支持它。
+理论上来说，只要一个数据库有对应的EF Core 5的Provider，那么Zack.EFCore.Batch就可以支持这个数据库。如果您使用的数据库目前不在被支持的范围内，请提交Issue，我一般可以在一个工作日内开发完成。
 
 
 [关于这个库的开发报告（B站）](https://www.bilibili.com/read/cv8545714)  
