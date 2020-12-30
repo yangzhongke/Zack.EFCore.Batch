@@ -14,5 +14,14 @@ namespace Demo.PostgreSQL.Npgsql.heggi
         }
 
         public DbSet<User> User { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder
+                .Entity<User>()
+                .Property(m => m.Status)
+                .HasConversion(new CustomEnumConverter<SessStatus>());
+        }
     }
 }

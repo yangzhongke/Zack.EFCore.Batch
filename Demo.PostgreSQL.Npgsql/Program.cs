@@ -1,18 +1,30 @@
 ﻿using Demo.PostgreSQL.Npgsql.heggi;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Demo
 {
     class Program
     {
-
         static async Task Main(string[] args)
         {
-            
+            using (var ctx = new AppDbContext())
+            {
+                /*
+                User u = new User();
+                u.Uid = Guid.NewGuid().ToString();
+                u.Status = SessStatus.Stopping;
+                db.Add(u);
+                db.SaveChanges();*/
+                
+                ctx.BatchUpdate<User>()
+                  .Set(m => m.Status, m => SessStatus.Stopreq) // '1' in DB, must be 'stopreq'
+                  .Set(m=>m.Uid,m=>m.Uid+"1")
+                  .Where(m=>m.Status== SessStatus.Active)
+                  .Execute();
+                //var u = ctx.User.Select(u=>new { u.Status, b=SessStatus.Active }).FirstOrDefault();
+            }
+            /*
             var db = new AppDbContext();
             var ip = IPAddress.Parse("1.0.0.1");
 
@@ -24,7 +36,7 @@ namespace Demo
             db.BatchUpdate<User>().Set(b => b.Uid, b => b.Uid + 3)
                 .Where(m => EF.Functions.ContainsOrEqual(m.IPv4.Value, ip))
                 .Execute();
-
+            
             using (TestDbContext ctx = new TestDbContext())
             {
                 ctx.Books.ToList();
@@ -43,7 +55,7 @@ namespace Demo
 
                 var b = await ctx.Books.OrderBy(b => b.PubTime).FirstOrDefaultAsync();
                 Console.WriteLine(b);
-            }
+            }*/
         }
     }
 }

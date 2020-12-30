@@ -15,5 +15,7 @@ namespace Demo.PostgreSQL.Npgsql.heggi
 
         [Column("ip")]
         public (IPAddress, int)? IPv4 { get; set; }
+
+        public SessStatus Status { get; set; }
     }
 }

@@ -28,27 +28,13 @@ namespace Zack.EFCore.Batch.Internal
         /// <param name="name">something like: b=>b.Age</param>
         /// <param name="value">something like: b=>b.Age+1</param>
         /// <returns></returns>
-        public BatchUpdateBuilder<TEntity> Set(Expression<Func<TEntity, object>> name, 
-            Expression<Func<TEntity, object>> value)
+        public BatchUpdateBuilder<TEntity> Set<TP>(Expression<Func<TEntity, TP>> name, 
+            Expression<Func<TEntity, TP>> value)
         {
-            setters.Add(new Setter<TEntity> { Name=name,Value=value});
+            MemberExpression propExpression = name.Body as MemberExpression;
+            string propertyName = propExpression.Member.Name;
+            setters.Add(new Setter<TEntity> { Name=name,Value=value,PropertyType=typeof(TP),PropertyName= propertyName });
             return this;
-        }
-
-        /// <summary>
-        /// from https://stackoverflow.com/questions/47513122/entity-framework-core-dynamically-build-select-list-with-navigational-propertie
-        /// </summary>
-        /// <param name="members"></param>
-        /// <returns></returns>
-        private Expression<Func<TEntity, object>> ToDynamicColumns(IEnumerable<LambdaExpression> members)
-        {
-            var parameter = Expression.Parameter(typeof(TEntity), "e");
-            return Expression.Lambda<Func<TEntity, object>>(
-                Expression.NewArrayInit(
-                    typeof(object),
-                    members.Select(m => Expression.Convert(Expression.Invoke(m, parameter), typeof(object))
-                    )
-                ), parameter);
         }
 
         private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters)
@@ -56,22 +42,29 @@ namespace Zack.EFCore.Batch.Internal
             if (setters.Count <= 0)
             {
                 throw new InvalidOperationException("At least a Set() should be used.");
-            }
+            }       
 
             ISqlGenerationHelper sqlGenHelpr = this.dbContext.GetService<ISqlGenerationHelper>();
 
             //every pair of name=value are converted into two columns of Select,
             //for example, Set(b=>b.Age,b=>b.Age+3).Set(b=>b.Name,b=>"tom") is converted into
-            //Select(b=>new{b.Age,F1=b.Age+3,b.Name,F2="tom"})            
-            List<LambdaExpression> columnExpressions = new List<LambdaExpression>();
-            foreach (var setter in this.setters)
+            //Select(b=>new{b.Age,F1=b.Age+3,b.Name,F2="tom"})     
+            var parameter = Expression.Parameter(typeof(TEntity), "e");
+            Expression[] initializers = new Expression[setters.Count*2];
+            for(var i=0;i<setters.Count;i++)
             {
-                columnExpressions.Add(setter.Name);
-                columnExpressions.Add(setter.Value);
+                var setter = setters[i];
+                var propertyType = typeof(object);
+                initializers[i * 2] = Expression.Convert(Expression.Invoke(setter.Name, parameter), propertyType);
+                initializers[i * 2+1] = Expression.Convert(Expression.Invoke(setter.Value, parameter), propertyType);
             }
-            var selectExpression = ToDynamicColumns(columnExpressions);
 
-            IQueryable<TEntity> queryable = this.dbContext.Set<TEntity>();
+            // from https://stackoverflow.com/questions/47513122/entity-framework-core-dynamically-build-select-list-with-navigational-propertie
+            NewArrayExpression newArrayExp = Expression.NewArrayInit(
+                    typeof(object), initializers);
+            var selectExpression = Expression.Lambda<Func<TEntity, object>>(newArrayExp, parameter);
+
+            IQueryable <TEntity> queryable = this.dbContext.Set<TEntity>();
             if(predicate!=null)
             {
                 queryable = queryable.Where(predicate);
@@ -90,9 +83,31 @@ namespace Zack.EFCore.Batch.Internal
             //combine every two adjacent columns into an assignment expression,
             //for example, select Age,Age+3,Name,"tom" is converted into
             //Age=Age+3,Name="tom"
+            var entityType = dbContext.Model.FindEntityType(typeof(TEntity));
+            IRelationalTypeMappingSource typeMappingSrc = dbContext.GetService<IRelationalTypeMappingSource>();
             for (int i = 0; i < columns.Length; i = i + 2)
             {
-                sbSQL.Append(columns[i]).Append(" = ").Append(columns[i + 1]);
+                string columnName = columns[i];
+                string columnValue = columns[i + 1];
+                var setter = setters[i / 2];
+                var property = entityType.GetProperty(setter.PropertyName);
+                var valueConverter = property.GetValueConverter();
+                
+                //fix bug start: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/4
+                if (valueConverter!=null&&setter.PropertyType.IsEnum)
+                {
+                    //when expression is put in Select(u=>u.Status), it will not be converted by converter,
+                    //so I need convert it manually.
+                    int intValue = Convert.ToInt32(columnValue);
+                    Enum enumValue = EnumHelper.FromInt(setter.PropertyType, intValue);
+                    object convertedValue = valueConverter.ConvertToProvider(enumValue);
+                    var typeMapping = typeMappingSrc.FindMapping(property);
+                    //single quote string const
+                    columnValue = typeMapping.GenerateProviderValueSqlLiteral(convertedValue);
+                }
+                //fix bug end
+
+                sbSQL.Append(columnName).Append(" = ").Append(columnValue);
                 if (i < columns.Length - 2)
                 {
                     sbSQL.Append(", ");
@@ -154,7 +169,11 @@ namespace Zack.EFCore.Batch.Internal
 
     class Setter<TEntity>
     {
-        public Expression<Func<TEntity, object>> Name { get; set; }
-        public Expression<Func<TEntity, object>> Value { get; set; }
+        //public Expression<Func<TEntity, object>> Name { get; set; }
+        //public Expression<Func<TEntity, object>> Value { get; set; }
+        public LambdaExpression Name { get; set; }
+        public LambdaExpression Value { get; set; }
+        public Type PropertyType { get; set; }
+        public string PropertyName { get; set; }
     }
 }
