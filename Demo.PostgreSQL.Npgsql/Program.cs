@@ -19,6 +19,7 @@ namespace Demo
                 
                 ctx.BatchUpdate<User>()
                   .Set(m => m.Status, m => SessStatus.Stopreq) // '1' in DB, must be 'stopreq'
+                  //.Set(m=>m.Status,m=>m.Uid=="a"?SessStatus.Stopreq:SessStatus.Stopping) //not supported. Only assignment of constant values to enumerated types is supported currently.
                   .Set(m=>m.Uid,m=>m.Uid+"1")
                   .Where(m=>m.Status== SessStatus.Active)
                   .Execute();

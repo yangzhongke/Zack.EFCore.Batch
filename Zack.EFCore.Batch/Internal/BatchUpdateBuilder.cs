@@ -96,6 +96,10 @@ namespace Zack.EFCore.Batch.Internal
                 //fix bug start: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/4
                 if (valueConverter!=null&&setter.PropertyType.IsEnum)
                 {
+                    if(!(setter.Value.Body is ConstantExpression))
+                    {
+                        throw new NotSupportedException("Only assignment of constant values to enumerated types is supported currently.");
+                    }
                     //when expression is put in Select(u=>u.Status), it will not be converted by converter,
                     //so I need convert it manually.
                     int intValue = Convert.ToInt32(columnValue);
