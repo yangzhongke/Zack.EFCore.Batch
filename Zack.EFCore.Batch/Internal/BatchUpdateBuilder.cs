@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Zack.EFCore.Batch.Internal
@@ -134,7 +135,7 @@ namespace Zack.EFCore.Batch.Internal
             return this;
         }
 
-        public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false)
+        public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
         {
             string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
@@ -148,7 +149,7 @@ namespace Zack.EFCore.Batch.Internal
                 cmd.ApplyCurrentTransaction(this.dbContext);
                 cmd.CommandText = sql;
                 cmd.AddParameters(dbContext, parameters);
-                return await cmd.ExecuteNonQueryAsync();
+                return await cmd.ExecuteNonQueryAsync(cancellationToken);
             }
         }
 

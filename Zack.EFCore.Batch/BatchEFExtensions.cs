@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Zack.EFCore.Batch.Internal;
 
@@ -41,7 +42,7 @@ namespace System.Linq
             return sbSQL.ToString();
         }
         public static async Task<int> DeleteRangeAsync<TEntity>(this DbContext ctx,
-            Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false)
+            Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
             where TEntity:class
         {
             string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
@@ -56,7 +57,7 @@ namespace System.Linq
                 cmd.ApplyCurrentTransaction(ctx);      
                 cmd.CommandText = sql;
                 cmd.AddParameters(ctx,parameters);
-                return await cmd.ExecuteNonQueryAsync();
+                return await cmd.ExecuteNonQueryAsync(cancellationToken);
             }
         }
 
