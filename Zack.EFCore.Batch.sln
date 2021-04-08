@@ -17,9 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MSSQL", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MySQL.Pomelo", "Zack.EFCore.Batch.MySQL.Pomelo\Zack.EFCore.Batch.MySQL.Pomelo.csproj", "{BC6BD6C1-42F1-4DB0-9E20-36CDC3C27B75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zack.EFCore.Batch.Sqlite", "Zack.EFCore.Batch.Sqlite\Zack.EFCore.Batch.Sqlite.csproj", "{CB0B511D-3A9B-4688-AB47-F5E3C87D994B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Sqlite", "Zack.EFCore.Batch.Sqlite\Zack.EFCore.Batch.Sqlite.csproj", "{CB0B511D-3A9B-4688-AB47-F5E3C87D994B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Sqlite", "Demo.Sqlite\Demo.Sqlite.csproj", "{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Sqlite", "Demo.Sqlite\Demo.Sqlite.csproj", "{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zack.EFCore.Batch.Oracle", "Zack.EFCore.Batch.Oracle\Zack.EFCore.Batch.Oracle.csproj", "{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Oracle", "Demo.Oracle\Demo.Oracle.csproj", "{825F0F76-BD61-43E6-8627-B5130FA5F74A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{825F0F76-BD61-43E6-8627-B5130FA5F74A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{825F0F76-BD61-43E6-8627-B5130FA5F74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{825F0F76-BD61-43E6-8627-B5130FA5F74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{825F0F76-BD61-43E6-8627-B5130FA5F74A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
