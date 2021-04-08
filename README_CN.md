@@ -12,6 +12,8 @@ MySQL（使用Pomelo.EntityFrameworkCore.MySql）用户，请使用Install-Package Zack.EF
 
 Sqlite用户，请使用Install-Package Zack.EFCore.Batch.Sqlite
 
+Oracle用户，请使用Install-Package Zack.EFCore.Batch.Oracle
+
 第二步:
 根据不同的数据库，请分别把如下代码添加到你的DbContext类的OnConfiguring方法中：
 ```csharp
@@ -19,6 +21,7 @@ optionsBuilder.UseBatchEF_MSSQL();// MSSQL Server 用户用这个
 optionsBuilder.UseBatchEF_Npgsql();//Postgresql 用户用这个
 optionsBuilder.UseBatchEF_MySQLPomelo();//MySQL 用户用这个
 optionsBuilder.UseBatchEF_Sqlite();//Sqlite 用户用这个
+optionsBuilder.UseBatchEF_Oracle();//Oracle 用户用这个
 ```
 
 第三步:
@@ -61,7 +64,7 @@ WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack
 
 这个开发包使用EF Core实现的lambda表达式到SQL语句的翻译，所以几乎所有EF Core支持的lambda表达式写法都被支持。
 
-以下数据库已经过测试，可以被Zack.EFCore.Batch支持: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL)。
+以下数据库已经过测试，可以被Zack.EFCore.Batch支持: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL), Oracle(Oracle.EntityFrameworkCore)。
 
 理论上来说，只要一个数据库有对应的EF Core 5的Provider，那么Zack.EFCore.Batch就可以支持这个数据库。如果您使用的数据库目前不在被支持的范围内，请提交Issue，我一般可以在一个工作日内开发完成。
 

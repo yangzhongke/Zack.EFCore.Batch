@@ -15,6 +15,9 @@ As for MySQL(with Pomelo.EntityFrameworkCore.MySql) users, please use: Install-P
 
 As for Sqlite users, please use: Install-Package Zack.EFCore.Batch.Sqlite
 
+As for Oracle users, please use: Install-Package Zack.EFCore.Batch.Oracle
+
+
  Step 2:
  Depending on the database, add the following code into OnConfiguring() method of your DbContext respectively.
 ```csharp
@@ -22,6 +25,7 @@ optionsBuilder.UseBatchEF_MSSQL();// as for MSSQL Server
 optionsBuilder.UseBatchEF_Npgsql();//as for Postgresql
 optionsBuilder.UseBatchEF_MySQLPomelo();//as for MySQL
 optionsBuilder.UseBatchEF_Sqlite();//as for Sqlite
+optionsBuilder.UseBatchEF_Oracle();//as for Oracle
 
 ```
 
@@ -64,7 +68,7 @@ WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack
 
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
 
-The following databases have been tested that they can work well with Zack.EFCore.Batch: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL). 
+The following databases have been tested that they can work well with Zack.EFCore.Batch: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL), Oracle(Oracle.EntityFrameworkCore). 
 In theory, as long as a database has its EF Core 5 Provider , the database can be supported by this library. If you are using a database that is not currently supported, please submit an issue. I can usually complete the development within one working day.
 
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  
