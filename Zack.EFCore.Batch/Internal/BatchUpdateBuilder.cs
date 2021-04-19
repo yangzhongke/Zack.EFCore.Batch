@@ -72,7 +72,7 @@ namespace Zack.EFCore.Batch.Internal
             }
             IQueryable<object> selectQueryable = queryable.Select(selectExpression);
             var parsingResult = selectQueryable.Parse(this.dbContext, ignoreQueryFilters);
-            string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName);
+            string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName,parsingResult.Schema);
             StringBuilder sbSQL = new StringBuilder();
             sbSQL.Append("Update ").Append(tableName).Append(" ")
                 .Append("SET ");

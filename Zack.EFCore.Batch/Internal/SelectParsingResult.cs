@@ -9,7 +9,13 @@ namespace Zack.EFCore.Batch.Internal
         /// </summary>
         public IReadOnlyDictionary<string, object> Parameters { get; internal set; }
        
-        
+
+        public string Schema
+        {
+            get;
+            internal set;
+        }
+
         public string TableName
         {
             get;

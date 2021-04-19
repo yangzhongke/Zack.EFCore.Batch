@@ -31,7 +31,7 @@ namespace System.Linq
             }
             var parsingResult = queryable.Parse(ctx, ignoreQueryFilters);
             ISqlGenerationHelper sqlGenHelpr = ctx.GetService<ISqlGenerationHelper>();
-            string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName);
+            string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName,parsingResult.Schema);
             StringBuilder sbSQL = new StringBuilder();
             sbSQL.Append("Delete FROM ").Append(tableName);
             if(!string.IsNullOrWhiteSpace(parsingResult.PredicateSQL))
@@ -172,7 +172,7 @@ namespace System.Linq
             parsingResult.ProjectionSQL = querySqlGenerator.ProjectionSQL;
             TableExpression tableExpression = selectExpression.Tables[0] as TableExpression;
             parsingResult.TableName = tableExpression.Table.Name;
-
+            parsingResult.Schema = tableExpression.Schema;
             return parsingResult;
         }
     }
