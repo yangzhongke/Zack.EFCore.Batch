@@ -28,6 +28,11 @@ namespace Demo
 
                 var b = await ctx.Books.OrderBy(b => b.PubTime).FirstOrDefaultAsync();
                 Console.WriteLine(b);
+                await ctx.Books2.DeleteRangeAsync(ctx, b => b.AuthorName == "zack");
+                await ctx.Books2.BatchUpdate(ctx)
+                    .Set(b => b.Price, b => 3.0)
+                    .Where(b => b.Id > 5)
+                    .ExecuteAsync();
             }
         }
     }

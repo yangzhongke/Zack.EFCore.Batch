@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.Sqlite.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20201225143228_Init")]
-    partial class Init
+    [Migration("20210420042740_Books2")]
+    partial class Books2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,7 +52,7 @@ namespace Demo.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("T_Books");
+                    b.ToTable("Book");
                 });
 #pragma warning restore 612, 618
         }

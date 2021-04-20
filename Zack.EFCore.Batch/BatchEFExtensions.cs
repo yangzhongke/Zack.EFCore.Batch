@@ -17,10 +17,10 @@ namespace System.Linq
 {
     public static class BatchEFExtensions
     {
-        private static string GenerateDeleteSQL<TEntity>(DbContext ctx, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
+        private static string GenerateDeleteSQL<TEntity>(DbContext ctx,DbSet<TEntity> dbSet, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
             out IReadOnlyDictionary<string, object> parameters) where TEntity:class
         {
-            IQueryable<TEntity> queryable = ctx.Set<TEntity>();
+            IQueryable<TEntity> queryable = dbSet;
             if(predicate!=null)
             {
                 queryable = queryable.Where(predicate);
@@ -41,31 +41,61 @@ namespace System.Linq
             parameters = parsingResult.Parameters;
             return sbSQL.ToString();
         }
+
         public static async Task<int> DeleteRangeAsync<TEntity>(this DbContext ctx,
-            Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
-            where TEntity:class
+            Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
+            where TEntity : class
         {
-            string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            DbSet<TEntity> dbSet = ctx.Set<TEntity>();
+            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             ctx.Log(sql);
+            return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
+        }
+
+        private static async Task<int> ExecuteSQLAsync(DbContext ctx, string sql, IReadOnlyDictionary<string, object> parameters, CancellationToken cancellationToken)
+        {
             var conn = ctx.Database.GetDbConnection();
-            if(conn.State!= ConnectionState.Open)
+            if (conn.State != ConnectionState.Open)
             {
                 await conn.OpenAsync();
             }
             using (var cmd = conn.CreateCommand())
             {
-                cmd.ApplyCurrentTransaction(ctx);      
+                cmd.ApplyCurrentTransaction(ctx);
                 cmd.CommandText = sql;
-                cmd.AddParameters(ctx,parameters);
+                cmd.AddParameters(ctx, parameters);
                 return await cmd.ExecuteNonQueryAsync(cancellationToken);
             }
+        }
+
+        public static async Task<int> DeleteRangeAsync<TEntity>(this DbSet<TEntity> dbSet, DbContext ctx,
+            Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
+            where TEntity:class
+        {
+            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            ctx.Log(sql);
+            return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
         }
 
         public static int DeleteRange<TEntity>(this DbContext ctx, Expression<Func<TEntity, bool>> predicate=null, bool ignoreQueryFilters = false)
             where TEntity : class
         {
-            string sql = GenerateDeleteSQL(ctx, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            DbSet<TEntity> dbSet = ctx.Set<TEntity>();
+            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             ctx.Log(sql);
+            return ExecuteSQL(ctx, sql, parameters);
+        }
+
+        public static int DeleteRange<TEntity>(this DbSet<TEntity> dbSet, DbContext ctx, Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
+            where TEntity : class
+        {
+            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            ctx.Log(sql);
+            return ExecuteSQL(ctx, sql, parameters);
+        }
+
+        private static int ExecuteSQL(DbContext ctx, string sql, IReadOnlyDictionary<string, object> parameters)
+        {
             var conn = ctx.Database.GetDbConnection();
             if (conn.State != ConnectionState.Open)
             {
@@ -115,7 +145,14 @@ namespace System.Linq
 
         public static BatchUpdateBuilder<TEntity> BatchUpdate<TEntity>(this DbContext ctx) where TEntity:class
         {
-            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx);
+            DbSet<TEntity> dbSet = ctx.Set<TEntity>();
+            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx, dbSet);
+            return builder;
+        }
+
+        public static BatchUpdateBuilder<TEntity> BatchUpdate<TEntity>(this DbSet<TEntity> dbSet, DbContext ctx) where TEntity : class
+        {
+            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx, dbSet);
             return builder;
         }
 

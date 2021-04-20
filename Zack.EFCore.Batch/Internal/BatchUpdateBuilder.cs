@@ -18,9 +18,12 @@ namespace Zack.EFCore.Batch.Internal
 
         private DbContext dbContext;
 
-        public BatchUpdateBuilder(DbContext dbContext)
+        private DbSet<TEntity> dbSet;
+
+        public BatchUpdateBuilder(DbContext dbContext,DbSet<TEntity> dbSet)
         {
             this.dbContext = dbContext;
+            this.dbSet = dbSet;
         }
 
         /// <summary>
@@ -65,8 +68,9 @@ namespace Zack.EFCore.Batch.Internal
                     typeof(object), initializers);
             var selectExpression = Expression.Lambda<Func<TEntity, object>>(newArrayExp, parameter);
 
-            IQueryable <TEntity> queryable = this.dbContext.Set<TEntity>();
-            if(predicate!=null)
+            //IQueryable <TEntity> queryable = this.dbContext.Set<TEntity>();
+            IQueryable<TEntity> queryable = this.dbSet;
+            if (predicate!=null)
             {
                 queryable = queryable.Where(predicate);
             }
@@ -174,8 +178,6 @@ namespace Zack.EFCore.Batch.Internal
 
     class Setter<TEntity>
     {
-        //public Expression<Func<TEntity, object>> Name { get; set; }
-        //public Expression<Func<TEntity, object>> Value { get; set; }
         public LambdaExpression Name { get; set; }
         public LambdaExpression Value { get; set; }
         public Type PropertyType { get; set; }

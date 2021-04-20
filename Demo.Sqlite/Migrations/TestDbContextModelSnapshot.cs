@@ -50,7 +50,7 @@ namespace Demo.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("T_Books");
+                    b.ToTable("Book");
                 });
 #pragma warning restore 612, 618
         }
