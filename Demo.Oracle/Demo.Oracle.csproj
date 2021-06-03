@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Demo.Base\Demo.Base.csproj" />
     <ProjectReference Include="..\Zack.EFCore.Batch.Oracle\Zack.EFCore.Batch.Oracle.csproj" />
   </ItemGroup>
 

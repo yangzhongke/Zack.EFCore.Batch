@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Demo.Base\Demo.Base.csproj" />
     <ProjectReference Include="..\Zack.EFCore.Batch.MSSQL\Zack.EFCore.Batch.MSSQL.csproj" />
   </ItemGroup>
 

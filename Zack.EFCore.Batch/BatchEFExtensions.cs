@@ -203,13 +203,14 @@ namespace System.Linq
                 throw new InvalidOperationException("please add dbContext.UseBatchEF() to OnConfiguring first!");
             }
             querySqlGenerator.IsForBatchEF = true;
-            querySqlGenerator.GetCommand(selectExpression);
+            var cmd = querySqlGenerator.GetCommand(selectExpression);
             parsingResult.Parameters = queryContext.ParameterValues;
             parsingResult.PredicateSQL = querySqlGenerator.PredicateSQL;
             parsingResult.ProjectionSQL = querySqlGenerator.ProjectionSQL;
             TableExpression tableExpression = selectExpression.Tables[0] as TableExpression;
             parsingResult.TableName = tableExpression.Table.Name;
             parsingResult.Schema = tableExpression.Schema;
+            parsingResult.FullSQL = cmd.CommandText;
             return parsingResult;
         }
     }

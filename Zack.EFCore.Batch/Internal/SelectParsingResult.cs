@@ -40,5 +40,11 @@ namespace Zack.EFCore.Batch.Internal
             get;
             internal set;
         }
+
+        public string FullSQL
+        {
+            get;
+            internal set;
+        }
     }
 }
