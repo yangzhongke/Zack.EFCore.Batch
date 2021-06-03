@@ -46,5 +46,7 @@ namespace Zack.EFCore.Batch.Internal
             get;
             internal set;
         }
+
+        public IZackQuerySqlGenerator QuerySqlGenerator { get; set; }
     }
 }

@@ -39,6 +39,7 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
+                        .HasColumnName("PKId")
                         .UseIdentityColumn();
 
                     b.Property<string>("Content")
@@ -62,6 +63,7 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
+                        .HasColumnName("PKId")
                         .UseIdentityColumn();
 
                     b.Property<long>("ArticleId")

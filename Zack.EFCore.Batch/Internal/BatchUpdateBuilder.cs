@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -123,10 +125,19 @@ namespace Zack.EFCore.Batch.Internal
                 }
             }
             sbSQL.AppendLine();
-            if (!string.IsNullOrWhiteSpace(parsingResult.PredicateSQL))
+            if (parsingResult.FullSQL.Contains("join", StringComparison.OrdinalIgnoreCase))
             {
-                sbSQL.Append("WHERE ").Append(parsingResult.PredicateSQL);
+                string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
+                sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable,dbSet, aliasSeparator));
             }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(parsingResult.PredicateSQL))
+                {
+                    sbSQL.Append("WHERE ").Append(parsingResult.PredicateSQL);
+                }
+            }
+            
             parameters = parsingResult.Parameters;
             return sbSQL.ToString();
         }

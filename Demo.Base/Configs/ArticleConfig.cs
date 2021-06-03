@@ -10,6 +10,7 @@ namespace Demo.Base.Configs
 			builder.ToTable("T_Articles");
 			builder.Property(a => a.Content).IsRequired().IsUnicode();
 			builder.Property(a => a.Title).IsRequired().IsUnicode().HasMaxLength(255);
+			builder.Property(a => a.Id).HasColumnName("PKId");
 		}
 	}
 

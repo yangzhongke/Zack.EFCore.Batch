@@ -10,9 +10,7 @@ namespace Demo
         {
             optionsBuilder.LogTo(Console.WriteLine);
             string connStr = "server=localhost;user=root;password=root;database=ef";
-            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)),
-                        mySqlOptions => mySqlOptions
-                            .CharSetBehavior(CharSetBehavior.NeverAppend));
+            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)));
 
             optionsBuilder.UseBatchEF_MySQLPomelo();            
         }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.MSSQLServer.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20210603025640_Init")]
+    [Migration("20210603042905_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,7 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
+                        .HasColumnName("PKId")
                         .UseIdentityColumn();
 
                     b.Property<string>("Content")
@@ -64,6 +65,7 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
+                        .HasColumnName("PKId")
                         .UseIdentityColumn();
 
                     b.Property<long>("ArticleId")

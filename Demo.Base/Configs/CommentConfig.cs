@@ -10,6 +10,7 @@ namespace Demo.Base.Configs
 			builder.ToTable("T_Comments");
 			builder.HasOne<Article>(c => c.Article).WithMany(a => a.Comments).IsRequired();
 			builder.Property(c => c.Message).IsRequired().IsUnicode();
+			builder.Property(c => c.Id).HasColumnName("PKId");
 		}
 	}
 

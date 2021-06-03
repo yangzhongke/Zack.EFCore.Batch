@@ -14,14 +14,14 @@ namespace Demo.MSSQLServer.Migrations
                 name: "T_Articles",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    PKId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_T_Articles", x => x.Id);
+                    table.PrimaryKey("PK_T_Articles", x => x.PKId);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,19 +58,19 @@ namespace Demo.MSSQLServer.Migrations
                 name: "T_Comments",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    PKId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ArticleId = table.Column<long>(type: "bigint", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_T_Comments", x => x.Id);
+                    table.PrimaryKey("PK_T_Comments", x => x.PKId);
                     table.ForeignKey(
                         name: "FK_T_Comments_T_Articles_ArticleId",
                         column: x => x.ArticleId,
                         principalTable: "T_Articles",
-                        principalColumn: "Id",
+                        principalColumn: "PKId",
                         onDelete: ReferentialAction.Cascade);
                 });
 

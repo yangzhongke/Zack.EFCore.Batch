@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
@@ -36,7 +37,15 @@ namespace System.Linq
             sbSQL.Append("Delete FROM ").Append(tableName);
             if(!string.IsNullOrWhiteSpace(parsingResult.PredicateSQL))
             {
-                sbSQL.Append(" WHERE ").Append(parsingResult.PredicateSQL);
+                if(!parsingResult.FullSQL.Contains("join",StringComparison.OrdinalIgnoreCase))
+                {
+                    sbSQL.Append(" WHERE ").Append(parsingResult.PredicateSQL);
+                }
+                else//like DeleteRangeAsync<Comment>(c => c.Article.Id == id);
+                {
+                    string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;                   
+                    sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable,dbSet,aliasSeparator));
+                }
             }
             parameters = parsingResult.Parameters;
             return sbSQL.ToString();
@@ -189,13 +198,14 @@ namespace System.Linq
             ShapedQueryExpression shapedQueryExpression1 = queryableMethodTranslatingExpressionVisitor.Visit(methodCallExpr2) as ShapedQueryExpression;
             QueryTranslationPostprocessor queryTranslationPostprocessor= _queryTranslationPostprocessorFactory.Create(queryCompilationContext);
             ShapedQueryExpression shapedQueryExpression2 = queryTranslationPostprocessor.Process(shapedQueryExpression1) as ShapedQueryExpression;
-        
+
             IRelationalParameterBasedSqlProcessorFactory _relationalParameterBasedSqlProcessorFactory = 
                 ctx.GetService<IRelationalParameterBasedSqlProcessorFactory>();
             RelationalParameterBasedSqlProcessor _relationalParameterBasedSqlProcessor = _relationalParameterBasedSqlProcessorFactory.Create(true);
 
             SelectExpression selectExpression = (SelectExpression)shapedQueryExpression2.QueryExpression;
             selectExpression = _relationalParameterBasedSqlProcessor.Optimize(selectExpression, queryContext.ParameterValues, out bool canCache);
+
             IQuerySqlGeneratorFactory querySqlGeneratorFactory = ctx.GetService<IQuerySqlGeneratorFactory>();
             IZackQuerySqlGenerator querySqlGenerator = querySqlGeneratorFactory.Create() as IZackQuerySqlGenerator;
             if (querySqlGenerator==null)
@@ -205,6 +215,7 @@ namespace System.Linq
             querySqlGenerator.IsForBatchEF = true;
             var cmd = querySqlGenerator.GetCommand(selectExpression);
             parsingResult.Parameters = queryContext.ParameterValues;
+            parsingResult.QuerySqlGenerator = querySqlGenerator;
             parsingResult.PredicateSQL = querySqlGenerator.PredicateSQL;
             parsingResult.ProjectionSQL = querySqlGenerator.ProjectionSQL;
             TableExpression tableExpression = selectExpression.Tables[0] as TableExpression;

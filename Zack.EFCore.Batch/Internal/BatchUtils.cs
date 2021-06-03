@@ -1,13 +1,51 @@
-﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Zack.EFCore.Batch.Internal
 {
     public class BatchUtils
     {
+		public static string GetPKColName<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
+		{
+			var pkProps = dbSet.EntityType.FindPrimaryKey().Properties;
+			if(pkProps.Count!=1)
+            {
+				throw new ArgumentException("Only entity types with one single primary key are supported.");
+            }
+			string pkColName = pkProps[0].GetColumnName(StoreObjectIdentifier.SqlQuery(dbSet.EntityType));
+			return pkColName;
+        }
+
+		public static string UniqueAlias()
+        {
+			return "V"+Guid.NewGuid().ToString("N");
+        }
+
+		public static string BuildWhereSubQuery<TEntity>(IQueryable queryable, DbSet<TEntity> dbSet, string aliasSeparator) where TEntity : class
+		{
+			SingleQueryingEnumerable<TEntity> queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as SingleQueryingEnumerable<TEntity>;
+			string subQuerySQL;
+			using (var cmd = queryingEnumerable.CreateDbCommand())
+			{
+				subQuerySQL = cmd.CommandText;
+			}
+
+			string tableAlias = BatchUtils.UniqueAlias();
+			string pkName = BatchUtils.GetPKColName<TEntity>(dbSet);
+			StringBuilder sbSQL = new StringBuilder();
+			sbSQL.Append(pkName).Append(" IN(SELECT ").Append(pkName).Append(" FROM (")
+				.Append(subQuerySQL).AppendLine($") {aliasSeparator} {tableAlias} )");
+			return sbSQL.ToString();
+		}
+
 		/// <summary>
 		/// exclude the oldSQL from newSQL
 		/// Diff("abc","abc12")=="12"
