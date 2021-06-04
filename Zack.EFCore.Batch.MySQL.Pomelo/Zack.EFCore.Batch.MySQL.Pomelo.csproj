@@ -11,6 +11,6 @@ Using this library, Entity Framework Core users can delete or update multiple re
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
-		<PackageReference Include="Zack.EFCore.Batch" Version="1.3.0" />
+		<PackageReference Include="Zack.EFCore.Batch" Version="1.4.0" />
 	</ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ Using this library, Entity Framework Core users can delete or update multiple re
 
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0" />
-    <PackageReference Include="Zack.EFCore.Batch" Version="1.3.0" />
+    <PackageReference Include="Zack.EFCore.Batch" Version="1.4.0" />
   
   </ItemGroup>
 
