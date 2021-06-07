@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -21,6 +19,9 @@ namespace Zack.EFCore.Batch.Internal
         private DbContext dbContext;
 
         private DbSet<TEntity> dbSet;
+
+        private int? skip;
+        private int? take;
 
         public BatchUpdateBuilder(DbContext dbContext,DbSet<TEntity> dbSet)
         {
@@ -76,6 +77,14 @@ namespace Zack.EFCore.Batch.Internal
             {
                 queryable = queryable.Where(predicate);
             }
+            if(this.skip!=null)
+            {
+                queryable = queryable.Skip((int)this.skip);
+            }
+            if (this.take != null)
+            {
+                queryable = queryable.Take((int)this.take);
+            }
             IQueryable<object> selectQueryable = queryable.Select(selectExpression);
             var parsingResult = selectQueryable.Parse(this.dbContext, ignoreQueryFilters);
             string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName,parsingResult.Schema);
@@ -128,7 +137,7 @@ namespace Zack.EFCore.Batch.Internal
             if (parsingResult.FullSQL.Contains("join", StringComparison.OrdinalIgnoreCase))
             {
                 string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
-                sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable,dbSet, aliasSeparator));
+                sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable,dbContext, aliasSeparator));
             }
             else
             {
@@ -147,6 +156,18 @@ namespace Zack.EFCore.Batch.Internal
         public BatchUpdateBuilder<TEntity> Where(Expression<Func<TEntity, bool>> predicate = null)
         {
             this.predicate = predicate;
+            return this;
+        }
+
+        public BatchUpdateBuilder<TEntity> Skip(int skipCount)
+        {
+            this.skip = skipCount;
+            return this;
+        }
+
+        public BatchUpdateBuilder<TEntity> Take(int takeCount)
+        {
+            this.take = takeCount;
             return this;
         }
 

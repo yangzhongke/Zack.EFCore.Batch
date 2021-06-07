@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
@@ -29,7 +30,7 @@ namespace Zack.EFCore.Batch.Internal
 			return "V"+Guid.NewGuid().ToString("N");
         }
 
-		public static string BuildWhereSubQuery<TEntity>(IQueryable queryable, DbSet<TEntity> dbSet, string aliasSeparator) where TEntity : class
+		public static string BuildWhereSubQuery<TEntity>(IQueryable<TEntity> queryable, DbContext dbCtx, string aliasSeparator) where TEntity : class
 		{
 			SingleQueryingEnumerable<TEntity> queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as SingleQueryingEnumerable<TEntity>;
 			string subQuerySQL;
@@ -39,9 +40,12 @@ namespace Zack.EFCore.Batch.Internal
 			}
 
 			string tableAlias = BatchUtils.UniqueAlias();
+			var dbSet = dbCtx.Set<TEntity>();
 			string pkName = BatchUtils.GetPKColName<TEntity>(dbSet);
+			ISqlGenerationHelper sqlGenHelpr = dbCtx.GetService<ISqlGenerationHelper>();
+			string quotedPkName = sqlGenHelpr.DelimitIdentifier(pkName);//pkId-->"pdId" on NPgsql
 			StringBuilder sbSQL = new StringBuilder();
-			sbSQL.Append(pkName).Append(" IN(SELECT ").Append(pkName).Append(" FROM (")
+			sbSQL.Append(quotedPkName).Append(" IN(SELECT ").Append(quotedPkName).Append(" FROM (")
 				.Append(subQuerySQL).AppendLine($") {aliasSeparator} {tableAlias} )");
 			return sbSQL.ToString();
 		}

@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
@@ -18,10 +17,9 @@ namespace System.Linq
 {
     public static class BatchEFExtensions
     {
-        private static string GenerateDeleteSQL<TEntity>(DbContext ctx,DbSet<TEntity> dbSet, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
+        private static string GenerateDeleteSQL<TEntity>(DbContext ctx, IQueryable<TEntity> queryable, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
             out IReadOnlyDictionary<string, object> parameters) where TEntity:class
         {
-            IQueryable<TEntity> queryable = dbSet;
             if(predicate!=null)
             {
                 queryable = queryable.Where(predicate);
@@ -44,7 +42,7 @@ namespace System.Linq
                 else//like DeleteRangeAsync<Comment>(c => c.Article.Id == id);
                 {
                     string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;                   
-                    sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable,dbSet,aliasSeparator));
+                    sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable, ctx, aliasSeparator));
                 }
             }
             parameters = parsingResult.Parameters;
@@ -77,11 +75,11 @@ namespace System.Linq
             }
         }
 
-        public static async Task<int> DeleteRangeAsync<TEntity>(this DbSet<TEntity> dbSet, DbContext ctx,
+        public static async Task<int> DeleteRangeAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx,
             Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
             where TEntity:class
         {
-            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             ctx.Log(sql);
             return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
         }
@@ -95,10 +93,10 @@ namespace System.Linq
             return ExecuteSQL(ctx, sql, parameters);
         }
 
-        public static int DeleteRange<TEntity>(this DbSet<TEntity> dbSet, DbContext ctx, Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
+        public static int DeleteRange<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx, Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
             where TEntity : class
         {
-            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             ctx.Log(sql);
             return ExecuteSQL(ctx, sql, parameters);
         }

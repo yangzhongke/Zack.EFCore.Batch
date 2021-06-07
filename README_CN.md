@@ -2,8 +2,8 @@
 使用这个开发包, Entity Framework Core 用户可以使用LINQ语句删除或者更新多条数据库记录，操作只执行一条SQL语句并且不需要首先把实体对象加载到内存中。 
 这个开发包支持 Entity Framework Core 5.0以及更高版。  
 
-操作说明:  
-第一步，安装NuGet包:
+## 操作说明:  
+ ##### 第一步，安装NuGet包:
 Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用Install-Package Zack.EFCore.Batch.Npgsql
 
 MS SQLServer用户，请使用Install-Package Zack.EFCore.Batch.MSSQL
@@ -14,7 +14,7 @@ Sqlite用户，请使用Install-Package Zack.EFCore.Batch.Sqlite
 
 Oracle用户，请使用Install-Package Zack.EFCore.Batch.Oracle
 
-第二步:
+ ##### 第二步:
 根据不同的数据库，请分别把如下代码添加到你的DbContext类的OnConfiguring方法中：
 ```csharp
 optionsBuilder.UseBatchEF_MSSQL();// MSSQL Server 用户用这个
@@ -24,7 +24,7 @@ optionsBuilder.UseBatchEF_Sqlite();//Sqlite 用户用这个
 optionsBuilder.UseBatchEF_Oracle();//Oracle 用户用这个
 ```
 
-第三步:
+ ##### 第三步:
 使用DbContext的扩展方法DeleteRangeAsync()来删除一批数据.
 DeleteRangeAsync()的参数就是过滤条件的lambda表达式。
 例子代码:
@@ -61,6 +61,47 @@ await ctx.BatchUpdate<Book>()
 Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] = COALESCE(SUBSTRING([Title], 3 + 1, 2), N'') + COALESCE(UPPER([AuthorName]), N''), [PubTime] = GETDATE()
 WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
 ```
+
+
+## Take(), Skip()
+Take() and Skip() 可以用来限制DeleteRangeAsync 和 BatchUpdate影响的行数：
+```CSharp
+await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).DeleteRangeAsync<Comment>(ctx);
+await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).Take(10).DeleteRangeAsync<Comment>(ctx);
+await ctx.Comments.Where(c => c.Article.Id == id).Take(10).DeleteRangeAsync<Comment>(ctx);
+
+await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+	.Where(c => c.Article.Id == id)
+	.Skip(3)
+	.ExecuteAsync();
+
+await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+	.Where(c => c.Article.Id == id)
+	.Skip(3)
+	.Take(10)
+	.ExecuteAsync();
+await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+   .Where(c => c.Article.Id == id)
+   .Take(10)
+   .ExecuteAsync();
+```
+
+## BulkInsert批量插入
+
+目前，批量插入只支持MSSQLServer, MySQL 和 Oracle。
+```
+List<Book> books = new List<Book>();
+for (int i = 0; i < 100; i++)
+{
+	books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
+}
+using (TestDbContext ctx = new TestDbContext())
+{
+	ctx.BulkInsert(books);
+}
+```
+
+## 其他说明
 
 这个开发包使用EF Core实现的lambda表达式到SQL语句的翻译，所以几乎所有EF Core支持的lambda表达式写法都被支持。
 

@@ -12,9 +12,7 @@ namespace Demo
         {
             using (TestDbContext ctx = new TestDbContext())
             {
-                //await TestCase1.RunAsync(ctx);
-                List<Book> books = TestBulkInsert1.BuildBooks();
-                ctx.BulkInsert(books);
+                await TestCaseLimit.RunAsync(ctx);
             }
         }
     }

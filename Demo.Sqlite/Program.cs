@@ -10,7 +10,7 @@ namespace Demo
         {
             using (TestDbContext ctx = new TestDbContext())
             {
-                await TestCase1.RunAsync(ctx);
+                await TestCaseLimit.RunAsync(ctx);
             }
         }
     }

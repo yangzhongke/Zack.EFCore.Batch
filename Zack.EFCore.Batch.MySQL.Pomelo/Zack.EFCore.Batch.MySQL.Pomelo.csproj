@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>1.3.0</Version>
+    <Version>1.4.3</Version>
     <Description>A MySQL(Pomelo)-specific version of Zack.EFCore.Batch.
 Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0 and above.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -11,6 +11,6 @@ Using this library, Entity Framework Core users can delete or update multiple re
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
-		<PackageReference Include="Zack.EFCore.Batch" Version="1.4.0" />
+		<PackageReference Include="Zack.EFCore.Batch" Version="1.4.3" />
 	</ItemGroup>
 </Project>

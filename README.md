@@ -4,8 +4,10 @@
  Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities.
  This libary supports Entity Framework Core 5.0 and above.  
 
- Instructions:  
- Step 1, Install NuGet Package:
+ ## Instructions:  
+ 
+ ##### Step 1 
+ Install NuGet Package:
 
 As for Postgresql (with Npgsql.EntityFrameworkCore.PostgreSQL) users, please use: Install-Package Zack.EFCore.Batch.Npgsql
 
@@ -18,7 +20,7 @@ As for Sqlite users, please use: Install-Package Zack.EFCore.Batch.Sqlite
 As for Oracle users, please use: Install-Package Zack.EFCore.Batch.Oracle
 
 
- Step 2:
+ ##### Step 2:
  Depending on the database, add the following code into OnConfiguring() method of your DbContext respectively.
 ```csharp
 optionsBuilder.UseBatchEF_MSSQL();// as for MSSQL Server
@@ -29,7 +31,7 @@ optionsBuilder.UseBatchEF_Oracle();//as for Oracle
 
 ```
 
-Step 3:
+##### Step 3:
 Use the extension method DeleteRangeAsync() of DbContext to delete a set of records.
 The parameter of DeleteRangeAsync() is the lambda expression of the filter
 Example code:
@@ -66,6 +68,46 @@ Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] =
 WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
 ```
 
+## Take(), Skip()
+Take() and Skip() can be used to limit the affected rows of DeleteRangeAsync and BatchUpdate:
+```CSharp
+await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).DeleteRangeAsync<Comment>(ctx);
+await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).Take(10).DeleteRangeAsync<Comment>(ctx);
+await ctx.Comments.Where(c => c.Article.Id == id).Take(10).DeleteRangeAsync<Comment>(ctx);
+
+await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+	.Where(c => c.Article.Id == id)
+	.Skip(3)
+	.ExecuteAsync();
+
+await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+	.Where(c => c.Article.Id == id)
+	.Skip(3)
+	.Take(10)
+	.ExecuteAsync();
+await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+   .Where(c => c.Article.Id == id)
+   .Take(10)
+   .ExecuteAsync();
+```
+
+## BulkInsert
+
+At this point, BulkInsert can be supported on MSSQLServer, MySQL and Oracle only.
+```
+List<Book> books = new List<Book>();
+for (int i = 0; i < 100; i++)
+{
+	books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
+}
+using (TestDbContext ctx = new TestDbContext())
+{
+	ctx.BulkInsert(books);
+}
+```
+
+
+## Misc
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
 
 The following databases have been tested that they can work well with Zack.EFCore.Batch: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL), Oracle(Oracle.EntityFrameworkCore). 

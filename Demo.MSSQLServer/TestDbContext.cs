@@ -7,7 +7,12 @@ namespace Demo
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.LogTo(msg=> { 
+                if(msg.Contains("QueryExecutionPlanned"))
+                {
+                    Console.WriteLine(msg);
+                }
+            });
             string connStr = "Server=.;Database=demoBatch;Trusted_Connection=True;MultipleActiveResultSets=true";
             optionsBuilder.UseSqlServer(connStr);
             optionsBuilder.UseBatchEF_MSSQL();            

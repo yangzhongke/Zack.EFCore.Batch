@@ -7,6 +7,7 @@ namespace Zack.EFCore.Batch.Npgsql
 {
     public static class NpgSqlBulkInsertExtensions
     {
+        /*
         public static void BulkInsert<TEntity>(this DbContext dbCtx,
             IEnumerable<TEntity> items) where TEntity : class
         {
@@ -16,6 +17,6 @@ namespace Zack.EFCore.Batch.Npgsql
             
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn, dbCtx, transaction);
             bulkCopy.WriteToServer(dataTable);
-        }
+        }*/
     }
 }
