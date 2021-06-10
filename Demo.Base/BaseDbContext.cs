@@ -12,6 +12,16 @@ namespace Demo
         public DbSet<Article> Articles { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
+        public BaseDbContext(DbContextOptions options):base(options)
+        {
+
+        }
+
+        public BaseDbContext()
+        {
+
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

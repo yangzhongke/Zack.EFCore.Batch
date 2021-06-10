@@ -14,7 +14,7 @@ namespace Demo
                 builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             });
 
-            optionsBuilder.UseBatchEF_MySQLPomelo();            
+            optionsBuilder.UseBatchEF_MySQLPomelo();
         }
     }
 }
