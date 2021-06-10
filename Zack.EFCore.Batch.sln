@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Oracle", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Oracle", "Demo.Oracle\Demo.Oracle.csproj", "{825F0F76-BD61-43E6-8627-B5130FA5F74A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Base", "Demo.Base\Demo.Base.csproj", "{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Base", "Demo.Base\Demo.Base.csproj", "{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
