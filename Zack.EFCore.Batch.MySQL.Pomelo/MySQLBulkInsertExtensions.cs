@@ -35,7 +35,7 @@ namespace System.Linq
             IEnumerable<TEntity> items, MySqlTransaction? transaction = null,CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
-            await conn.OpenAsync(cancellationToken);
+            await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn,dbCtx, transaction);
             await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
@@ -45,7 +45,7 @@ namespace System.Linq
             IEnumerable<TEntity> items, MySqlTransaction? transaction = null, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
-            conn.Open();
+            conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn, dbCtx, transaction);
             bulkCopy.WriteToServer(dataTable);

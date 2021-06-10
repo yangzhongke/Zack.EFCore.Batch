@@ -62,10 +62,7 @@ namespace System.Linq
         private static async Task<int> ExecuteSQLAsync(DbContext ctx, string sql, IReadOnlyDictionary<string, object> parameters, CancellationToken cancellationToken)
         {
             var conn = ctx.Database.GetDbConnection();
-            if (conn.State != ConnectionState.Open)
-            {
-                await conn.OpenAsync();
-            }
+            await conn.OpenIfNeededAsync(cancellationToken);
             using (var cmd = conn.CreateCommand())
             {
                 cmd.ApplyCurrentTransaction(ctx);
@@ -104,10 +101,7 @@ namespace System.Linq
         private static int ExecuteSQL(DbContext ctx, string sql, IReadOnlyDictionary<string, object> parameters)
         {
             var conn = ctx.Database.GetDbConnection();
-            if (conn.State != ConnectionState.Open)
-            {
-                conn.Open();
-            }
+            conn.OpenIfNeeded();
             using (var cmd = conn.CreateCommand())
             {
                 cmd.ApplyCurrentTransaction(ctx);

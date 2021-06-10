@@ -14,7 +14,7 @@ namespace System.Linq
             IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
-            await conn.OpenAsync(cancellationToken);
+            await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
             using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx))
             {                
@@ -41,7 +41,7 @@ namespace System.Linq
             IEnumerable<TEntity> items) where TEntity : class
         {            
             var conn = dbCtx.Database.GetDbConnection();
-            conn.Open();
+            conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
             using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx))
             {

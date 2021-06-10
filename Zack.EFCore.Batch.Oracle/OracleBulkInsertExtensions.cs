@@ -31,7 +31,7 @@ namespace Zack.EFCore.Batch.Oracle
             IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
-            await conn.OpenAsync(cancellationToken);
+            await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
             using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx))
             {
@@ -43,7 +43,7 @@ namespace Zack.EFCore.Batch.Oracle
             IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
-            conn.Open();
+            conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
             using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx))
             {

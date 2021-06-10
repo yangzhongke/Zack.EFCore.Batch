@@ -7,12 +7,16 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Zack.EFCore.Batch.Internal
 {
-    public class BatchUtils
+    public static class BatchUtils
     {
 		public static string GetPKColName<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
 		{
@@ -107,6 +111,26 @@ namespace Zack.EFCore.Batch.Internal
 				}
 			}
 			return false;
+		}
+
+		public static void OpenIfNeeded(this IDbConnection conn )
+        {
+			if (conn.State != ConnectionState.Open)
+			{
+				conn.Open();
+			}
+		}
+
+		public static Task OpenIfNeededAsync(this DbConnection conn,CancellationToken cancellationToken=default)
+		{
+			if (conn.State != ConnectionState.Open)
+			{
+				return conn.OpenAsync(cancellationToken);
+			}
+            else
+            {
+				return Task.CompletedTask;
+            }
 		}
 	}
 }

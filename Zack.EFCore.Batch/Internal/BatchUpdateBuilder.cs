@@ -175,10 +175,7 @@ namespace Zack.EFCore.Batch.Internal
         {
             string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
-            if (conn.State != ConnectionState.Open)
-            {
-                await conn.OpenAsync();
-            }
+            await conn.OpenIfNeededAsync(cancellationToken);
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
             using (var cmd = conn.CreateCommand())
             {
@@ -193,10 +190,7 @@ namespace Zack.EFCore.Batch.Internal
         {
             string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
-            if (conn.State != ConnectionState.Open)
-            {
-                conn.Open();
-            }
+            conn.OpenIfNeeded();
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
             using (var cmd = conn.CreateCommand())
             {

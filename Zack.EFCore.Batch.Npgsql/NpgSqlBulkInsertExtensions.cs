@@ -13,7 +13,7 @@ namespace Zack.EFCore.Batch.Npgsql
             IEnumerable<TEntity> items) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
-            conn.Open();
+            conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
 
             //https://www.wowprices.info/About/bulk-inserting-data-into-postgres-with-net-core
