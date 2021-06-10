@@ -24,7 +24,9 @@ namespace Demo
             }*/
             using (TestDbContext ctx = new TestDbContext())
             {
-                await TestCaseLimit.RunAsync(ctx);
+                //await TestCaseLimit.RunAsync(ctx);
+                List<Book> books = TestBulkInsert1.BuildBooks();
+                ctx.BulkInsert(books);
             }                
         }
     }
