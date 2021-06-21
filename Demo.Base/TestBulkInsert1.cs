@@ -15,6 +15,7 @@ namespace Demo.Base
             {
                 books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
             }
+            books[0].Pages = 3;
             return books;
         }
     }

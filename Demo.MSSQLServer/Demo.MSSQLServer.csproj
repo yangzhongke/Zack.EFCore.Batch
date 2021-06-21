@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Demo.Base\Demo.Base.csproj" />
     <ProjectReference Include="..\Zack.EFCore.Batch.MSSQL\Zack.EFCore.Batch.MSSQL.csproj" />
   </ItemGroup>

@@ -14,5 +14,6 @@ namespace Demo
         public string RO1 { get { return "xxxx"; } }
         [NotMapped]
         public string NotMappF { get; set; }
+        public int? Pages { get; set; }
     }
 }
