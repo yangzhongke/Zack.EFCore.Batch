@@ -1,7 +1,8 @@
 ﻿using Demo.Base;
 using Demo.PostgreSQL.Npgsql.heggi;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Demo
 {
@@ -11,7 +12,9 @@ namespace Demo
         {
             using (TestDbContext ctx = new TestDbContext())
             {
-                await TestCaseLimit.RunAsync(ctx);
+                //await TestCaseLimit.RunAsync(ctx);
+                List<Book> books = TestBulkInsert1.BuildBooks();
+                await ctx.BulkInsertAsync(books);
             }
             using (var ctx = new AppDbContext())
             {
