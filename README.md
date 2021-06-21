@@ -93,7 +93,7 @@ await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
 
 ## BulkInsert
 
-At this point, BulkInsert can be supported on MSSQLServer, MySQL and Oracle only.
+At this point, BulkInsert cannot be supported on SqlLite.
 ```
 List<Book> books = new List<Book>();
 for (int i = 0; i < 100; i++)

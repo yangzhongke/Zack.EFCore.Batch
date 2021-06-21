@@ -88,7 +88,7 @@ await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
 
 ## BulkInsert批量插入
 
-目前，批量插入只支持MSSQLServer, MySQL 和 Oracle。
+目前，批量插入暂不支持SQLite。
 ```
 List<Book> books = new List<Book>();
 for (int i = 0; i < 100; i++)
