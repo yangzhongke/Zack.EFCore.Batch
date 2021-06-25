@@ -14,5 +14,13 @@ namespace Demo.MySQL.Pomelo
         {
             
          }
+
+        public DateTime Now(int prec) => throw new NotSupportedException();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.HasDbFunction(typeof(PooledTestDbContext).GetMethod(nameof(PooledTestDbContext.Now), new[] { typeof(int) })).IsBuiltIn();
+        }
     }
 }

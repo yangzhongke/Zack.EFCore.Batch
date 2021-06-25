@@ -28,6 +28,13 @@ namespace Demo
             using (var ctx = sp.GetService<PooledTestDbContext>())
             {
                 await TestCaseLimit.RunAsync(ctx);
+                await TestCase1.RunAsync(ctx);
+                ctx.Books.Where(b=>b.PubTime==ctx.Now(6)).ToArray();
+
+                await ctx.BatchUpdate<Book>()
+                .Set(b => b.PubTime, b => ctx.Now(6))
+                //.Where(b => b.Id >3)
+                .ExecuteAsync();
             }
             /*
             using (TestDbContext ctx = new TestDbContext())

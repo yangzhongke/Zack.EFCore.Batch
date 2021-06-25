@@ -6,6 +6,8 @@ namespace Demo
 {
     class TestDbContext : BaseDbContext
     {
+        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.LogTo(Console.WriteLine);
