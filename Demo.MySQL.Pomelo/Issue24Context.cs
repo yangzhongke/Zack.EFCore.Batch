@@ -2,16 +2,16 @@
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 
-namespace Demo
+namespace Demo.MySQL.Pomelo
 {
-    class TestDbContext : BaseDbContext
-    {        
-
+    public class Issue24Context: DbContext
+    {
+        public DbSet<Demo.Base.Issue24.Book> Books { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.LogTo(Console.WriteLine);
-            string connStr = "server=localhost;user=root;password=root;database=ef;AllowLoadLocalInfile=true";
-            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)),builder=> {
+            string connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
+            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)), builder => {
                 builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             });
 
