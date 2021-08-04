@@ -4,15 +4,30 @@
 
 ## 操作说明:  
  ##### 第一步，安装NuGet包:
-Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用Install-Package Zack.EFCore.Batch.Npgsql
+Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用
+```
+Install-Package Zack.EFCore.Batch.Npgsql
+```
 
-MS SQLServer用户，请使用Install-Package Zack.EFCore.Batch.MSSQL
+MS SQLServer用户，请使用
+```
+Install-Package Zack.EFCore.Batch.MSSQL
+```
 
-MySQL（使用Pomelo.EntityFrameworkCore.MySql）用户，请使用Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+MySQL（使用Pomelo.EntityFrameworkCore.MySql）用户，请使用
+```
+Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+```
 
-Sqlite用户，请使用Install-Package Zack.EFCore.Batch.Sqlite
+Sqlite用户，请使用
+```
+Install-Package Zack.EFCore.Batch.Sqlite
+```
 
-Oracle用户，请使用Install-Package Zack.EFCore.Batch.Oracle
+Oracle用户，请使用
+```
+Install-Package Zack.EFCore.Batch.Oracle
+```
 
  ##### 第二步:
 根据不同的数据库，请分别把如下代码添加到你的DbContext类的OnConfiguring方法中：

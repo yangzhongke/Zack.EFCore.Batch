@@ -9,15 +9,30 @@
  ##### Step 1 
  Install NuGet Package:
 
-As for Postgresql (with Npgsql.EntityFrameworkCore.PostgreSQL) users, please use: Install-Package Zack.EFCore.Batch.Npgsql
+As for Postgresql (with Npgsql.EntityFrameworkCore.PostgreSQL) users, please use: 
+```
+Install-Package Zack.EFCore.Batch.Npgsql
+```
 
-As for MS SQLServer users, please use: Install-Package Zack.EFCore.Batch.MSSQL
+As for MS SQLServer users, please use: 
+```
+Install-Package Zack.EFCore.Batch.MSSQL
+```
 
-As for MySQL(with Pomelo.EntityFrameworkCore.MySql) users, please use: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+As for MySQL(with Pomelo.EntityFrameworkCore.MySql) users, please use: 
+```
+Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+```
 
-As for Sqlite users, please use: Install-Package Zack.EFCore.Batch.Sqlite
+As for Sqlite users, please use: 
+```
+Install-Package Zack.EFCore.Batch.Sqlite
+```
 
-As for Oracle users, please use: Install-Package Zack.EFCore.Batch.Oracle
+As for Oracle users, please use: 
+```
+Install-Package Zack.EFCore.Batch.Oracle
+```
 
 
  ##### Step 2:
