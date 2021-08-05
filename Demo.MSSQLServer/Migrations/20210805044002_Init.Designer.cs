@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.MSSQLServer.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    [Migration("20210621010308_AddNullableProp")]
-    partial class AddNullableProp
+    [Migration("20210805044002_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

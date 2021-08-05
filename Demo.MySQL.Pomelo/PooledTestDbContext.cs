@@ -13,7 +13,7 @@ namespace Demo.MySQL.Pomelo
             base(options)
         {
             
-         }
+        }
 
         public DateTime Now(int prec) => throw new NotSupportedException();
 

@@ -47,7 +47,8 @@ namespace Demo.MSSQLServer.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PubTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
-                    AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Pages = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

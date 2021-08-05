@@ -139,7 +139,15 @@ namespace System.Linq
                 }                
                 var dbParam = cmd.CreateParameter();
                 dbParam.ParameterName = p.Key;
-                dbParam.Value = p.Value;
+                //fix issue on SQLServer: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/26 
+                if (p.Value==null)
+                {
+                    dbParam.Value = DBNull.Value;
+                }
+                else
+                {
+                    dbParam.Value = p.Value;
+                }               
                 cmd.Parameters.Add(dbParam);
             }
         }

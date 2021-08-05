@@ -14,10 +14,15 @@ namespace Demo
             
             using (TestDbContext ctx = new TestDbContext())
             {
+                string title = null;
+                await ctx.BatchUpdate<Book>()
+                    .Set(b => b.Title, b => title)
+                    .Where(b=>b.Id<=2)
+                    .ExecuteAsync();
                 //await TestCase1.RunAsync(ctx);
                 // await TestCase2.RunAsync(ctx);
-                List<Book> books = TestBulkInsert1.BuildBooks();
-                ctx.BulkInsert(books);
+                //List<Book> books = TestBulkInsert1.BuildBooks();
+                //ctx.BulkInsert(books);
                // await ctx.BulkInsertAsync(books);
                 // await ctx.BulkInsertAsync(new List<Comment>());
                // await ctx.BulkInsertAsync(new List<Article>());
