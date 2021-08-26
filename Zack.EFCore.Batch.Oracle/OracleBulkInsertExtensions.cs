@@ -10,13 +10,13 @@ namespace Zack.EFCore.Batch.Oracle
 {
     public static class OracleBulkInsertExtensions
     {
-        private static OracleBulkCopy BuildSqlBulkCopy<TEntity>(OracleConnection conn, DbContext dbCtx) where TEntity : class
+        private static OracleBulkCopy BuildSqlBulkCopy<TEntity>(OracleConnection conn, DbContext dbCtx, OracleBulkCopyOptions copyOptions) where TEntity : class
         {
             var dbSet = dbCtx.Set<TEntity>();
             var entityType = dbSet.EntityType;
             var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(entityType);
 
-            OracleBulkCopy bulkCopy = new OracleBulkCopy((OracleConnection)conn);
+            OracleBulkCopy bulkCopy = new OracleBulkCopy(conn, copyOptions);
 
             bulkCopy.DestinationTableName = entityType.GetTableName();//Schema is not supported by MySQL
             foreach (var dbProp in dbProps)
@@ -28,24 +28,24 @@ namespace Zack.EFCore.Batch.Oracle
         }
 
         public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items, OracleBulkCopyOptions copyOptions= OracleBulkCopyOptions.Default, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
-            using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx))
+            using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx, copyOptions))
             {
                 bulkCopy.WriteToServer(dataTable);
             }            
         }
 
         public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items,  OracleBulkCopyOptions copyOptions = OracleBulkCopyOptions.Default, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
-            using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx))
+            using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx,copyOptions))
             {
                 bulkCopy.WriteToServer(dataTable);
             }

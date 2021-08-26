@@ -11,20 +11,20 @@ namespace System.Linq
     public static class MSSQLBulkInsertExtensions
     {
         public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items, SqlTransaction externalTransaction = null, SqlBulkCopyOptions copyOptions = SqlBulkCopyOptions.Default, CancellationToken cancellationToken = default) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
-            using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx))
+            using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx,externalTransaction,copyOptions))
             {                
                 await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
             }
         }
 
-        private static SqlBulkCopy BuildSqlBulkCopy<TEntity>(SqlConnection conn,DbContext dbCtx) where TEntity : class
+        private static SqlBulkCopy BuildSqlBulkCopy<TEntity>(SqlConnection conn,DbContext dbCtx,SqlTransaction externalTransaction, SqlBulkCopyOptions copyOptions) where TEntity : class
         {
-            SqlBulkCopy bulkCopy = new SqlBulkCopy((SqlConnection)conn);
+            SqlBulkCopy bulkCopy = new SqlBulkCopy(conn,copyOptions,externalTransaction);
             var dbSet = dbCtx.Set<TEntity>();
             var entityType = dbSet.EntityType;
             var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(entityType);
@@ -38,12 +38,12 @@ namespace System.Linq
         }
 
         public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items) where TEntity : class
+            IEnumerable<TEntity> items, SqlTransaction externalTransaction = null, SqlBulkCopyOptions copyOptions = SqlBulkCopyOptions.Default) where TEntity : class
         {            
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
-            using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx))
+            using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx,externalTransaction,copyOptions))
             {
                 bulkCopy.WriteToServer(dataTable);
             }

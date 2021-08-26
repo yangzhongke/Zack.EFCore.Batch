@@ -18,7 +18,7 @@ namespace System.Linq
             var entityType = dbSet.EntityType;
             var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(entityType);
             
-            MySqlBulkCopy bulkCopy = new MySqlBulkCopy((MySqlConnection)conn, transaction);
+            MySqlBulkCopy bulkCopy = new MySqlBulkCopy(conn, transaction);
 
             bulkCopy.DestinationTableName = entityType.GetTableName();//Schema is not supported by MySQL
             int sourceOrdinal = 0;

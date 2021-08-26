@@ -1,14 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 using System.Collections.Generic;
 using System.Data;
-using Zack.EFCore.Batch.Internal;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Data.Common;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Zack.EFCore.Batch.Internal;
 
 namespace System.Linq
 {
@@ -57,24 +55,11 @@ namespace System.Linq
         {
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
-            DbTransaction tx = conn.BeginTransaction();
-            using (tx)
+            using (var writer = BuildImporter<TEntity>(dbCtx, (NpgsqlConnection)conn, items))
             {
-                try
-                {
-                    using (var writer = BuildImporter<TEntity>(dbCtx, (NpgsqlConnection)conn, items))
-                    {
-                        writer.Complete();
-                        writer.Close();
-                    }
-                    tx.Commit();
-                }
-                catch
-                {
-                    tx.Rollback();
-                    throw;
-                }
-            }                
+                writer.Complete();
+                writer.Close();
+            }
         }
 
         public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
@@ -82,23 +67,10 @@ namespace System.Linq
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync();
-            DbTransaction tx = await conn.BeginTransactionAsync();
-            using (tx)
+            using (var writer = BuildImporter<TEntity>(dbCtx, (NpgsqlConnection)conn, items))
             {
-                try
-                {
-                    using (var writer = BuildImporter<TEntity>(dbCtx, (NpgsqlConnection)conn, items))
-                    {
-                        await writer.CompleteAsync();
-                        await writer.CloseAsync();
-                    }
-                    await tx.CommitAsync();
-                }
-                catch
-                {
-                    await tx.RollbackAsync();
-                    throw;
-                }
+                await writer.CompleteAsync();
+                await writer.CloseAsync();
             }
         }
     }
