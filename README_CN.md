@@ -3,7 +3,7 @@
 这个开发包支持 Entity Framework Core 5.0以及更高版。  
 
 ## 操作说明:  
- ##### 第一步，安装NuGet包:
+ ##### 第一步，安装NuGet包（.NET 5）:
 Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用
 ```
 Install-Package Zack.EFCore.Batch.Npgsql
@@ -27,6 +27,14 @@ Install-Package Zack.EFCore.Batch.Sqlite
 Oracle用户，请使用
 ```
 Install-Package Zack.EFCore.Batch.Oracle
+```
+
+目前已有支持.NET 6的alpha版:
+```
+Install-Package Zack.EFCore.Batch.MSSQL_NET6
+Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
+Install-Package Zack.EFCore.Batch.Npgsql_NET6
+Install-Package Zack.EFCore.Batch.Sqlite_NET6
 ```
 
  ##### 第二步:

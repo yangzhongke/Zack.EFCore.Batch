@@ -7,7 +7,7 @@
  ## Instructions:  
  
  ##### Step 1 
- Install NuGet Package:
+ Install NuGet Package(.NET 5):
 
 As for Postgresql (with Npgsql.EntityFrameworkCore.PostgreSQL) users, please use: 
 ```
@@ -34,6 +34,13 @@ As for Oracle users, please use:
 Install-Package Zack.EFCore.Batch.Oracle
 ```
 
+There are alpha version packages for .NET 6:
+```
+Install-Package Zack.EFCore.Batch.MSSQL_NET6
+Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
+Install-Package Zack.EFCore.Batch.Npgsql_NET6
+Install-Package Zack.EFCore.Batch.Sqlite_NET6
+```
 
  ##### Step 2:
  Depending on the database, add the following code into OnConfiguring() method of your DbContext respectively.
