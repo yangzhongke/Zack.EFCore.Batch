@@ -1,0 +1,3 @@
+*.csproj support multiple targets(.net 5.0/.net 6.0) in a single file, https://markheath.net/post/csproj-conditional-references
+
+However, it cannot support multiple version under PropertyGroup, so I cannot specify different versions for different targets, and the *.csproj is difficult to use, so I use different *.csproj for different target instead.

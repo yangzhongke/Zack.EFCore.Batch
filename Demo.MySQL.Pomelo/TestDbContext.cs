@@ -1,17 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using System;
 
 namespace Demo
 {
-    class TestDbContext : BaseDbContext
-    {        
+    public class TestDbContext : BaseDbContext
+    {
+        public TestDbContext()
+        {
+
+        }
+
+        public TestDbContext(DbContextOptions<TestDbContext> options) :
+            base(options)
+        {
+
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.LogTo(Console.WriteLine);
-            string connStr = "server=localhost;user=root;password=root;database=ef;AllowLoadLocalInfile=true";
-            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)),builder=> {
+            
+            string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=ef;AllowLoadLocalInfile=true";
+            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(8, 0, 20)),builder=> {
                 builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             });
 
