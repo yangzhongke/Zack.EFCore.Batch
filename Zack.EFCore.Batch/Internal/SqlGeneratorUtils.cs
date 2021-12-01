@@ -36,7 +36,8 @@ namespace Zack.EFCore.Batch.Internal
 				{
 					var oldSQL = Sql.Build().CommandText;//zack's code
 					sqlGenerator.Visit(e);
-					string column = BatchUtils.Diff(oldSQL, Sql.Build().CommandText); //zack's code
+					var newSQL = Sql.Build().CommandText;
+					string column = BatchUtils.Diff(oldSQL, newSQL); //zack's code
 					sqlGenerator.ProjectionSQL.Add(column); //zack's code
 				});
 			}

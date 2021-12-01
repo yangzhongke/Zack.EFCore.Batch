@@ -55,7 +55,10 @@ namespace Zack.EFCore.Batch.Internal
 
             //every pair of name=value are converted into two columns of Select,
             //for example, Set(b=>b.Age,b=>b.Age+3).Set(b=>b.Name,b=>"tom") is converted into
-            //Select(b=>new{b.Age,F1=b.Age+3,b.Name,F2="tom"})     
+            //Select(b=>new{b.Age,F1=b.Age+3,b.Name,F2="tom"})
+            //combine every two adjacent columns into an assignment expression,
+            //for example, select Age,Age+3,Name,"tom" is converted into
+            //Age=Age+3,Name="tom"
             var parameter = Expression.Parameter(typeof(TEntity), "e");
             Expression[] initializers = new Expression[setters.Count*2];
             for(var i=0;i<setters.Count;i++)
@@ -66,12 +69,16 @@ namespace Zack.EFCore.Batch.Internal
                 initializers[i * 2+1] = Expression.Convert(Expression.Invoke(setter.Value, parameter), propertyType);
             }
 
+            //fix the bug: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/22
+            //merge the identical Expressions into one, only tranlsate the unique ones.
+            var distinctiveInitializers = initializers
+                .Distinct(new ExpressionEqualityComparer()).ToArray();
+
             // from https://stackoverflow.com/questions/47513122/entity-framework-core-dynamically-build-select-list-with-navigational-propertie
             NewArrayExpression newArrayExp = Expression.NewArrayInit(
-                    typeof(object), initializers);
+                    typeof(object), distinctiveInitializers);
             var selectExpression = Expression.Lambda<Func<TEntity, object>>(newArrayExp, parameter);
 
-            //IQueryable <TEntity> queryable = this.dbContext.Set<TEntity>();
             IQueryable<TEntity> queryable = this.dbSet;
             if (predicate!=null)
             {
@@ -87,24 +94,30 @@ namespace Zack.EFCore.Batch.Internal
             }
             IQueryable<object> selectQueryable = queryable.Select(selectExpression);
             var parsingResult = selectQueryable.Parse(this.dbContext, ignoreQueryFilters);
+
+            if (distinctiveInitializers.Count()!=parsingResult.ProjectionSQL.Count())
+            {
+                throw new InvalidOperationException("The count of columns initializersSet and ProjectionSQL should equal.");
+            }
+            //key is b => b.Title, value is the related SQL,like "b".Title
+            Dictionary<Expression,string> initializerSQLDict = new(new ExpressionEqualityComparer());
+            for(int i=0;i<distinctiveInitializers.Length;i++)
+            {
+                Expression expression = distinctiveInitializers.ElementAt(i);
+                initializerSQLDict[expression] = parsingResult.ProjectionSQL.ElementAt(i);
+            }
             string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName,parsingResult.Schema);
             StringBuilder sbSQL = new StringBuilder();
             sbSQL.Append("Update ").Append(tableName).Append(" ")
                 .Append("SET ");
-            var columns = parsingResult.ProjectionSQL.ToArray();
-            if (columns.Length % 2 != 0)
-            {
-                throw new InvalidOperationException("The count of columns should be even.");
-            }
-            //combine every two adjacent columns into an assignment expression,
-            //for example, select Age,Age+3,Name,"tom" is converted into
-            //Age=Age+3,Name="tom"
+
             var entityType = dbContext.Model.FindEntityType(typeof(TEntity));
             IRelationalTypeMappingSource typeMappingSrc = dbContext.GetService<IRelationalTypeMappingSource>();
-            for (int i = 0; i < columns.Length; i = i + 2)
+            for(int i=0;i<initializers.Length;i=i+2)
             {
-                string columnName = columns[i];
-                string columnValue = columns[i + 1];
+                //query SQL of two columns from initializerSQLDict
+                string columnName = initializerSQLDict[initializers[i]];
+                string columnValue = initializerSQLDict[initializers[i+1]];
                 var setter = setters[i / 2];
                 var property = entityType.GetProperty(setter.PropertyName);
                 var valueConverter = property.GetValueConverter();
@@ -128,7 +141,7 @@ namespace Zack.EFCore.Batch.Internal
                 //fix bug end
 
                 sbSQL.Append(columnName).Append(" = ").Append(columnValue);
-                if (i < columns.Length - 2)
+                if (i < initializers.Length - 2)
                 {
                     sbSQL.Append(", ");
                 }

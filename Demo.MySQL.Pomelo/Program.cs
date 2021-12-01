@@ -29,9 +29,11 @@ namespace Demo
             {
                 using (TestDbContext ctx = sp.GetRequiredService<TestDbContext>())
                 {
-                    string title = null;
+                    string title = "666";
                     await ctx.BatchUpdate<Book>()
-                        .Set(b => b.Title, b => title)
+                        .Set(b => b.Title, b => title+b.AuthorName)
+                        .Set(b=>b.AuthorName,b=>title + b.AuthorName)
+                        .Set(b=>b.Price,b=>b.Price+1)
                         .Where(b => b.Id <= 2)
                         .ExecuteAsync();
                 }
