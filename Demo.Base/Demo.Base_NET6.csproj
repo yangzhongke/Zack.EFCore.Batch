@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="4.4.0" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="4.4.4" />
   </ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch_NET6.csproj" />

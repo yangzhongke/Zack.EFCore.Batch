@@ -1,41 +1,29 @@
 # Zack.EFCore.Batch
 使用这个开发包, Entity Framework Core 用户可以使用LINQ语句删除或者更新多条数据库记录，操作只执行一条SQL语句并且不需要首先把实体对象加载到内存中。 
-这个开发包支持 Entity Framework Core 5.0以及更高版。  
+这个开发包支持 Entity Framework Core 5/6。  
 
 ## 操作说明:  
- ##### 第一步，安装NuGet包（.NET 5）:
-Postgresql（使用Npgsql.EntityFrameworkCore.PostgreSQL）用户，请使用
-```
-Install-Package Zack.EFCore.Batch.Npgsql
-```
+ ##### 第一步
 
-MS SQLServer用户，请使用
+对于.NET 5用户：
 ```
-Install-Package Zack.EFCore.Batch.MSSQL
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
+SQLServer: Install-Package Zack.EFCore.Batch.MSSQL
+MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
+Oracle：Install-Package Zack.EFCore.Batch.Oracle
+``` 
+对于.NET 6用户:
 ```
+Postgresql: Install-Package Zack.EFCore.Batch.MSSQL_NET6
+SQLServer：Install-Package Zack.EFCore.Batch.MSSQL_NET6
+MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
+Sqlite: Install-Package Zack.EFCore.Batch.Sqlite_NET6
+Oracle：因为Oracle暂时没有官方EF Core 6 Provider，所以暂未支持
+```
+MySQL支持Pomelo.EntityFrameworkCore.MySql这个EF Core Provider，不支持MySQL官方EF Core Provider。
 
-MySQL（使用Pomelo.EntityFrameworkCore.MySql）用户，请使用
-```
-Install-Package Zack.EFCore.Batch.MySQL.Pomelo
-```
-
-Sqlite用户，请使用
-```
-Install-Package Zack.EFCore.Batch.Sqlite
-```
-
-Oracle用户，请使用
-```
-Install-Package Zack.EFCore.Batch.Oracle
-```
-
-目前已有支持.NET 6的alpha版:
-```
-Install-Package Zack.EFCore.Batch.MSSQL_NET6
-Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
-Install-Package Zack.EFCore.Batch.Npgsql_NET6
-Install-Package Zack.EFCore.Batch.Sqlite_NET6
-```
 
  ##### 第二步:
 根据不同的数据库，请分别把如下代码添加到你的DbContext类的OnConfiguring方法中：
@@ -130,7 +118,7 @@ using (TestDbContext ctx = new TestDbContext())
 
 以下数据库已经过测试，可以被Zack.EFCore.Batch支持: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL), Oracle(Oracle.EntityFrameworkCore)。
 
-理论上来说，只要一个数据库有对应的EF Core 5的Provider，那么Zack.EFCore.Batch就可以支持这个数据库。如果您使用的数据库目前不在被支持的范围内，请提交Issue，我一般可以在一个工作日内开发完成。
+理论上来说，只要一个数据库有对应的EF Core 5/6的Provider，那么Zack.EFCore.Batch就可以支持这个数据库。如果您使用的数据库目前不在被支持的范围内，请提交Issue，我一般可以在一个工作日内开发完成。
 
 
 [关于这个库的开发报告（B站）](https://www.bilibili.com/read/cv8545714)  

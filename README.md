@@ -2,45 +2,29 @@
 [中文文档 Chinese version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_CN.md)  
 
  Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities.
- This libary supports Entity Framework Core 5.0 and above.  
+ This libary supports Entity Framework Core 5.0 and Entity Framework Core 6.0.  
 
  ## Instructions:  
  
  ##### Step 1 
- Install NuGet Package(.NET 5):
-
-As for Postgresql (with Npgsql.EntityFrameworkCore.PostgreSQL) users, please use: 
+As for.NET 5 users:
 ```
-Install-Package Zack.EFCore.Batch.Npgsql
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
+SQLServer: Install-Package Zack.EFCore.Batch.MSSQL
+MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
+Oracle:Install-Package Zack.EFCore.Batch.Oracle
+``` 
+As For.NET 6 users:
 ```
-
-As for MS SQLServer users, please use: 
+Postgresql: Install-Package Zack.EFCore.Batch.MSSQL_NET6
+SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET6
+MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
+Sqlite: Install-Package Zack.EFCore.Batch.Sqlite_NET6
+Oracle: Not supported at this time, because there is no offical Oracle EF Core 6 Provider.
 ```
-Install-Package Zack.EFCore.Batch.MSSQL
-```
-
-As for MySQL(with Pomelo.EntityFrameworkCore.MySql) users, please use: 
-```
-Install-Package Zack.EFCore.Batch.MySQL.Pomelo
-```
-
-As for Sqlite users, please use: 
-```
-Install-Package Zack.EFCore.Batch.Sqlite
-```
-
-As for Oracle users, please use: 
-```
-Install-Package Zack.EFCore.Batch.Oracle
-```
-
-There are alpha version packages for .NET 6:
-```
-Install-Package Zack.EFCore.Batch.MSSQL_NET6
-Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
-Install-Package Zack.EFCore.Batch.Npgsql_NET6
-Install-Package Zack.EFCore.Batch.Sqlite_NET6
-```
+Support of MySQL is based on Pomelo.EntityFrameworkCore.MySql.
 
  ##### Step 2:
  Depending on the database, add the following code into OnConfiguring() method of your DbContext respectively.
@@ -133,6 +117,6 @@ using (TestDbContext ctx = new TestDbContext())
 This library utilizes the EF Core to translate the lambda expression to SQL statement, so it supports nearly all the lambda expressions which EF Core supports.
 
 The following databases have been tested that they can work well with Zack.EFCore.Batch: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL), Oracle(Oracle.EntityFrameworkCore). 
-In theory, as long as a database has its EF Core 5 Provider , the database can be supported by this library. If you are using a database that is not currently supported, please submit an issue. I can usually complete the development within one working day.
+In theory, as long as a database has its EF Core 5/6 Provider , the database can be supported by this library. If you are using a database that is not currently supported, please submit an issue. I can usually complete the development within one working day.
 
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  
