@@ -14,18 +14,23 @@ namespace Demo
             
             using (TestDbContext ctx = new TestDbContext())
             {
+                /*
                 string title = null;
                 await ctx.BatchUpdate<Book>()
                     .Set(b => b.Title, b => title)
                     .Where(b=>b.Id<=2)
-                    .ExecuteAsync();
+                    .ExecuteAsync();*/
+                await ctx.BatchUpdate<Book>()
+                .Set(a => a.Title, a => "测试")
+                .Where(a => ctx.Articles.Where(b => b.Id == a.Id && b.Content == "B").Any())
+                .ExecuteAsync();
                 //await TestCase1.RunAsync(ctx);
                 // await TestCase2.RunAsync(ctx);
                 //List<Book> books = TestBulkInsert1.BuildBooks();
                 //ctx.BulkInsert(books);
-               // await ctx.BulkInsertAsync(books);
+                // await ctx.BulkInsertAsync(books);
                 // await ctx.BulkInsertAsync(new List<Comment>());
-               // await ctx.BulkInsertAsync(new List<Article>());
+                // await ctx.BulkInsertAsync(new List<Article>());
             }
             /*
             using (TestDbContext ctx = new TestDbContext())

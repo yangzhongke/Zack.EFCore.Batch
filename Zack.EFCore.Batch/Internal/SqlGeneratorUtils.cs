@@ -43,9 +43,23 @@ namespace Zack.EFCore.Batch.Internal
 			}
 			else
 			{
+				/*
+				 *await ctx.BatchUpdate<Book>()
+                .Set(a => a.Title, a => "测试")
+                .Where(a => ctx.Articles.Where(b => b.Id == a.Id && b.Content == "B").Any())
+                .ExecuteAsync();
+				 */
+				//if there is no columns specified,
+				//don't add any sql segment to sqlGenerator.ProjectionSQL
+				//fix: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/40
+				Sql.Append("1");
+			}
+			/*
+			else
+			{
 				Sql.Append("1");
 				sqlGenerator.ProjectionSQL.Add("1");//zack's code
-			}
+			}*/
 			if (selectExpression.Tables.Any())
 			{
 				Sql.AppendLine().Append("FROM ");
