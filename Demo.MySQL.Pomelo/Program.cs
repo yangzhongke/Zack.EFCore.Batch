@@ -1,23 +1,45 @@
-﻿using Demo.Base;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using Demo.MySQL.Pomelo;
-using System;
+﻿using Demo.MySQL.Pomelo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Demo.Base.SyncApi;
-using Demo.Base.Issue24;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Demo
 {
     class Program
     {
-
         static async Task Main(string[] args)
         {
-            string connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
+            string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=zackbatch;AllowLoadLocalInfile=true";
+            ServiceCollection services = new ServiceCollection();
+            /*
+            services.AddDbContext<TestDbContext>(optionsBuilder =>
+            {
+                optionsBuilder.LogTo(Console.WriteLine);
+                optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)), builder =>
+                {
+                    builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+                });
+                optionsBuilder.UseBatchEF_MySQLPomelo();
+            });*/
+            services.AddDbContext<TestDbContext>();
+            using (var sp = services.BuildServiceProvider())
+            {
+                using (TestDbContext ctx = sp.GetRequiredService<TestDbContext>())
+                {
+                    string title = null;
+                    await ctx.BatchUpdate<Book>()
+                        .Set(b => b.Title, b => title)
+                        .Where(b => b.Id <= 2)
+                        .ExecuteAsync();
+                }
+            }
+        }
+        static async Task Main2(string[] args)
+        {
+            string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=zackbatch;AllowLoadLocalInfile=true";
             ServiceCollection services = new ServiceCollection();
             services.AddDbContextPool<PooledTestDbContext>(optionsBuilder =>
             {

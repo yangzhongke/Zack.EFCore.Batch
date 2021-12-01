@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="4.4.0" />
+  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch_NET6.csproj" />
+	</ItemGroup>
+</Project>

@@ -5,9 +5,10 @@ namespace Microsoft.EntityFrameworkCore
 {
     public static class DbContextOptionsBuilderExtension_MSSQL
     {
-        public static void UseBatchEF_MSSQL(this DbContextOptionsBuilder optBuilder)
+        public static DbContextOptionsBuilder UseBatchEF_MSSQL(this DbContextOptionsBuilder optBuilder)
         {
             optBuilder.ReplaceService<IQuerySqlGeneratorFactory, ZackQuerySqlGeneratorFactory_MSSQL>();
+            return optBuilder;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.10</Version>
+	  <Version>2.0.0-ForNet6.0-alpha.1</Version>
     <Description>A Oracle-specific version of Zack.EFCore.Batch.
 Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0 and above.</Description>
     <Authors>zack yang</Authors>
@@ -12,9 +12,9 @@ Using this library, Entity Framework Core users can delete or update multiple re
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oracle.EntityFrameworkCore" Version="5.21.1" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="5.21.3" />
   </ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
+		<ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch_NET6.csproj" />
 	</ItemGroup>
 </Project>

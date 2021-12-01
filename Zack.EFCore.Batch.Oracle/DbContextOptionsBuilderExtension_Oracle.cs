@@ -6,9 +6,10 @@ namespace Zack.EFCore.Batch.Oracle
 {
     public static class DbContextOptionsBuilderExtension_Oracle
     {
-        public static void UseBatchEF_Oracle(this DbContextOptionsBuilder optBuilder)
+        public static DbContextOptionsBuilder UseBatchEF_Oracle(this DbContextOptionsBuilder optBuilder)
         {
             optBuilder.ReplaceService<IQuerySqlGeneratorFactory, ZackQuerySqlGeneratorFactory_Oracle>();
+            return optBuilder;
         }
     }
 }
