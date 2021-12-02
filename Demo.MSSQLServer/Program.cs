@@ -14,7 +14,7 @@ namespace Demo
             
             using (TestDbContext ctx = new TestDbContext())
             {
-                
+                /*
                 string title = null;
                 await ctx.BatchUpdate<Book>()
                     .Set(b => b.Title, b => title)
@@ -25,9 +25,11 @@ namespace Demo
                 .Where(a => ctx.Articles.Where(b => b.Id == a.Id && b.Content == "B").Any())
                 .ExecuteAsync();
                 await TestCase1.RunAsync(ctx);
-                await TestCase2.RunAsync(ctx);
-                //List<Book> books = TestBulkInsert1.BuildBooks();
-                //ctx.BulkInsert(books);
+                await TestCase2.RunAsync(ctx);*/
+                List<Book> books = TestBulkInsert1.BuildBooks();
+                ctx.BulkInsert(books);
+                List<Author> authors = TestBulkInsert1.BuildAuthors();
+                ctx.BulkInsert(authors);
                 // await ctx.BulkInsertAsync(books);
                 // await ctx.BulkInsertAsync(new List<Comment>());
                 // await ctx.BulkInsertAsync(new List<Article>());

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
 using Pomelo.EntityFrameworkCore.MySql.Query.ExpressionVisitors.Internal;
+using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
@@ -40,8 +41,19 @@ namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
 		}
 
 		private ISqlGenerationHelper _sqlGenerationHelper;
-		public ZackQuerySqlGenerator_MySQLPomelo(QuerySqlGeneratorDependencies dependencies, ISqlGenerationHelper sqlGenerationHelper, IMySqlOptions options)
+		public ZackQuerySqlGenerator_MySQLPomelo(QuerySqlGeneratorDependencies dependencies,
+			ISqlGenerationHelper sqlGenerationHelper,
+#if NET5_0
+			MySqlSqlExpressionFactory sqlExpressionFactory,
+#endif
+			IMySqlOptions options)
+#if NET5_0
+			: base(dependencies, sqlExpressionFactory, options)
+#else
 			: base(dependencies, options)
+#endif
+
+
 		{
 			this._sqlGenerationHelper = sqlGenerationHelper;
 			this.IsForBatchEF = false;

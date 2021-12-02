@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo
 {
@@ -7,5 +8,6 @@ namespace Demo
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public ICollection<string> Tags { get; set; }
     }
 }

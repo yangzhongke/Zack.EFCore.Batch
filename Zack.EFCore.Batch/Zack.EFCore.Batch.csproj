@@ -1,20 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+	  <LangVersion>10</LangVersion>
+	  <Nullable>enable</Nullable>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <RepositoryUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</RepositoryUrl>
     <PackageProjectUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<LangVersion>10</LangVersion>
-    <Version>1.5.0</Version>
-    <Description>Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0 and above.
+    <Version>1.5.1</Version>
+    <Description>Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0. As for EF Core 6 users, please use Zack.EFCore.Batch_NET6 
 This package is a basic support package, so it can not be used directly. 
 Please use the database-specific packages, like  Zack.EFCore.Batch.Npgsql, Zack.EFCore.Batch.MySQL.Pomelo, Zack.EFCore.Batch.Npgsql, etc.</Description>
     <Authors>Zack Yang(杨中科)</Authors>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="[5.0.5,6.0.0)" />
   </ItemGroup>
 
 </Project>

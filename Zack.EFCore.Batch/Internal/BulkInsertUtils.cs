@@ -78,27 +78,30 @@ namespace Zack.EFCore.Batch.Internal
             {
                 string columnName = dbProp.ColumnName;
                 Type propType = dbProp.PropertyType;
-                Type columnType;
+                var col = dataTable.Columns.Add(columnName);
                 //fix: https://stackoverflow.com/questions/40953738/define-a-column-as-nullable-in-system-data-datatable
                 if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                {
-                    columnType = propType.GetGenericArguments()[0];
-                    var col = dataTable.Columns.Add(columnName, columnType);
+                {                   
                     col.AllowDBNull = true;
-                }
-                else
-                {
-                    columnType = dbProp.PropertyType;
-                    dataTable.Columns.Add(columnName, columnType);
-                }                
+                }               
             }
             foreach (var item in items)
             {
                 DataRow row = dataTable.NewRow();
                 foreach (var dbProp in dbProps)
                 {
-                    object value = dbProp.Property.GetValue(item);
-                    if(value==null)
+                    object? value = dbProp.Property.GetValue(item);
+
+                    //fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/41
+                    // and https://github.com/yangzhongke/Zack.EFCore.Batch/issues/23
+                    //ValueConverter begin
+                    var valueConverter = dbProp.EFMeta.GetValueConverter();
+                    if(valueConverter != null)
+                    {
+                        value = valueConverter.ConvertToProvider(value);
+                    }
+                    //ValueConverter end
+                    if (value==null)
                     {
                         value = DBNull.Value;
                     }
