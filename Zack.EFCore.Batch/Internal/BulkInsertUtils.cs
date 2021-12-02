@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 
 namespace Zack.EFCore.Batch.Internal
@@ -78,12 +75,39 @@ namespace Zack.EFCore.Batch.Internal
             {
                 string columnName = dbProp.ColumnName;
                 Type propType = dbProp.PropertyType;
-                var col = dataTable.Columns.Add(columnName);
-                //fix: https://stackoverflow.com/questions/40953738/define-a-column-as-nullable-in-system-data-datatable
-                if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                {                   
-                    col.AllowDBNull = true;
-                }               
+                DataColumn col;
+                bool isNullable;
+                var valueConverter = dbProp.EFMeta.GetValueConverter();
+                if (valueConverter != null)
+                {
+                    var providerType = valueConverter.ProviderClrType;
+                    isNullable = BatchUtils.IsNullableType(providerType);
+                    if(isNullable)
+                    {
+                        col = dataTable.Columns.Add(columnName, 
+                            providerType.GenericTypeArguments[0]);
+                        //fix: https://stackoverflow.com/questions/40953738/define-a-column-as-nullable-in-system-data-datatable
+                        col.AllowDBNull = true;
+                    }
+                    else
+                    {
+                        col = dataTable.Columns.Add(columnName, providerType);
+                    }                    
+                }
+                else
+                {
+                    isNullable = BatchUtils.IsNullableType(propType);
+                    if(isNullable)
+                    {
+                        col = dataTable.Columns.Add(columnName,
+                            propType.GenericTypeArguments[0]);
+                        col.AllowDBNull = true;
+                    }
+                    else
+                    {
+                        col = dataTable.Columns.Add(columnName, propType);
+                    }                    
+                }             
             }
             foreach (var item in items)
             {

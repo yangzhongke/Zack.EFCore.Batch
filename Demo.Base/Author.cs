@@ -8,6 +8,6 @@ namespace Demo
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public ICollection<string> Tags { get; set; }
+        public ICollection<string>? Tags { get; set; }
     }
 }

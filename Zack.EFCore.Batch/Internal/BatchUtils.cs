@@ -18,6 +18,12 @@ namespace Zack.EFCore.Batch.Internal
 {
     public static class BatchUtils
     {
+		public static bool IsNullableType(Type type)
+        {
+			return type.IsGenericType
+					&& type.GetGenericTypeDefinition() == typeof(Nullable<>);
+		}
+
 		public static string GetPKColName<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
 		{
 			var pkProps = dbSet.EntityType.FindPrimaryKey().Properties;

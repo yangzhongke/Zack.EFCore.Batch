@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Demo.Base
+﻿namespace Demo.Base
 {
     public class TestBulkInsert1
     {
@@ -13,7 +7,10 @@ namespace Demo.Base
             List<Book> books = new List<Book>();
             for (int i = 0; i < 100; i++)
             {
-                Book b = new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() };
+                Book b = new Book { AuthorName = "abc" + i, 
+                    Price = new Random().NextDouble(), 
+                    PubTime = DateTime.Now, 
+                    Title = Guid.NewGuid().ToString() };
                 books.Add(b);
             }
             books[0].Pages = 3;

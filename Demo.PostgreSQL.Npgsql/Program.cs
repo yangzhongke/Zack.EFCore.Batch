@@ -10,11 +10,49 @@ namespace Demo
     {
         static async Task Main(string[] args)
         {
+            //fix: ef core Cannot apply binary operation on types 'timestamp with time zone' and 'timestamp without time zone', convert one of the operands first.”
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             using (TestDbContext ctx = new TestDbContext())
             {
-                //await TestCaseLimit.RunAsync(ctx);
+                string title = "666";
+                await ctx.BatchUpdate<Book>()
+                    .Set(b => b.Title, b => title + b.AuthorName)
+                    .Set(b => b.AuthorName, b => title + b.AuthorName)
+                    .Set(b => b.Price, b => b.Price + 1)
+                    .Where(b => b.Id <= 2)
+                    .ExecuteAsync();
+
+                await TestCaseLimit.RunAsync(ctx);
+                await TestCase1.RunAsync(ctx);
+                ctx.Books.Where(b => b.PubTime == DateTime.Now).ToArray();
+
+                await ctx.BatchUpdate<Book>()
+                .Set(b => b.PubTime, b => DateTime.Now)
+                .Set(b => b.Title, b => null)
+                .Where(b => b.Id > 3)
+                .ExecuteAsync();
+
+                title = "zack";
+                await ctx.BatchUpdate<Book>()
+                    .Set(b => b.Title, b => title)
+                    .Where(b => b.Id <= 2)
+                    .ExecuteAsync();
+                await ctx.BatchUpdate<Book>()
+                .Set(a => a.Title, a => "测试")
+                .Set(a => a.AuthorName, a => a.AuthorName)
+                .Where(a => ctx.Articles.Where(b => b.Id == a.Id && b.Content == "B").Any())
+                .ExecuteAsync();
+                await TestCase1.RunAsync(ctx);
+                await TestCase2.RunAsync(ctx);
+                await TestCaseLimit.RunAsync(ctx);
+                await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
+                    .DeleteRangeAsync(ctx);
+                
                 List<Book> books = TestBulkInsert1.BuildBooks();
-                await ctx.BulkInsertAsync(books);
+                ctx.BulkInsert(books);
+                
+                List<Author> authors = TestBulkInsert1.BuildAuthors();
+                ctx.BulkInsert(authors);
             }
             using (var ctx = new AppDbContext())
             {

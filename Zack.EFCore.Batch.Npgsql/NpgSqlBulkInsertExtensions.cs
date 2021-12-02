@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 using Zack.EFCore.Batch.Internal;
 
 namespace System.Linq
@@ -44,7 +42,8 @@ namespace System.Linq
                 writer.StartRow();
                 foreach (var colName in colNames)
                 {
-                    writer.Write(dataRow[colName]);
+                    object value = dataRow[colName];
+                    writer.Write(value);
                 }
             };
             return writer;

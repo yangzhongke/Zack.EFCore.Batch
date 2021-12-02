@@ -10,7 +10,7 @@ namespace Demo
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.LogTo(Console.WriteLine);
-            string connStr = "Host=127.0.0.1;Database=test;Username=postgres;Password=123456;Keepalive=30";
+            string connStr = "Host=192.168.56.101;Database=test;Username=postgres;Password=dLLikhQWy5TBz1uM;Keepalive=30";
             optionsBuilder.UseNpgsql(connStr);
             optionsBuilder.UseBatchEF_Npgsql();
         }

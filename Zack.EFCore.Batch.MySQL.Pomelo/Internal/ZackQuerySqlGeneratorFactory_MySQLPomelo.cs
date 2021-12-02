@@ -19,14 +19,14 @@ namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
         public ZackQuerySqlGeneratorFactory_MySQLPomelo(QuerySqlGeneratorDependencies dependencies,
             ISqlGenerationHelper sqlGenerationHelper,
 #if NET5_0
-            MySqlSqlExpressionFactory sqlExpressionFactory, 
+            SqlExpressionFactoryDependencies exprFactoryDep,
 #endif
             IMySqlOptions options)
         {
             this._dependencies = dependencies;
             this._sqlGenerationHelper = sqlGenerationHelper;
 #if NET5_0
-            this.sqlExpressionFactory = sqlExpressionFactory;
+            this.sqlExpressionFactory = new MySqlSqlExpressionFactory(exprFactoryDep);
 #endif
             this._options = options;
         }

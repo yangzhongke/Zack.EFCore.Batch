@@ -10,6 +10,7 @@ namespace Demo.Base_NET6.Configs
         public void Configure(EntityTypeBuilder<Author> builder)
         {
             builder.Property(a=>a.Tags)
+                .IsRequired(false)
                 .HasConversion(
         v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
         v => JsonSerializer.Deserialize<ICollection<string>>(v, (JsonSerializerOptions)null),
