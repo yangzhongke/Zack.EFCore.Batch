@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
+#if NET5_0
 using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
+#endif
 
 namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
 {
@@ -9,16 +11,23 @@ namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
     {
         private readonly ISqlGenerationHelper _sqlGenerationHelper;
         private readonly QuerySqlGeneratorDependencies _dependencies;
+#if NET5_0
         private readonly MySqlSqlExpressionFactory sqlExpressionFactory;
-
+#endif
         private readonly IMySqlOptions _options;
 
         public ZackQuerySqlGeneratorFactory_MySQLPomelo(QuerySqlGeneratorDependencies dependencies,
-            ISqlGenerationHelper sqlGenerationHelper, MySqlSqlExpressionFactory sqlExpressionFactory, IMySqlOptions options)
+            ISqlGenerationHelper sqlGenerationHelper,
+#if NET5_0
+            MySqlSqlExpressionFactory sqlExpressionFactory, 
+#endif
+            IMySqlOptions options)
         {
             this._dependencies = dependencies;
             this._sqlGenerationHelper = sqlGenerationHelper;
+#if NET5_0
             this.sqlExpressionFactory = sqlExpressionFactory;
+#endif
             this._options = options;
         }
         public QuerySqlGenerator Create()

@@ -111,6 +111,7 @@ using (TestDbContext ctx = new TestDbContext())
 	ctx.BulkInsert(books);
 }
 ```
+在 mysql中, 如果使用BulkInsert，请在服务器端和客户端都启用local_infile：在mysql server服务器端启用"local_infile=ON"，然后在连接字符串中添加 "AllowLoadLocalInfile=true"。
 
 ## 其他说明
 

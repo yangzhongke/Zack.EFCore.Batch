@@ -111,6 +111,7 @@ using (TestDbContext ctx = new TestDbContext())
 	ctx.BulkInsert(books);
 }
 ```
+On mysql, to use BulkInsert, please enable local_infile on server side and client side: enable "local_infile=ON" on mysql server, and add "AllowLoadLocalInfile=true" to connection string on client side.
 
 
 ## Misc

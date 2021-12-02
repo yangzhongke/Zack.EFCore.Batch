@@ -1,10 +1,10 @@
-﻿using Demo.MySQL.Pomelo;
+﻿using Demo.Base;
+using Demo.Base.Issue24;
+using Demo.Base.SyncApi;
+using Demo.MySQL.Pomelo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Demo
 {
@@ -14,16 +14,6 @@ namespace Demo
         {
             string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=zackbatch;AllowLoadLocalInfile=true";
             ServiceCollection services = new ServiceCollection();
-            /*
-            services.AddDbContext<TestDbContext>(optionsBuilder =>
-            {
-                optionsBuilder.LogTo(Console.WriteLine);
-                optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)), builder =>
-                {
-                    builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-                });
-                optionsBuilder.UseBatchEF_MySQLPomelo();
-            });*/
             services.AddDbContext<TestDbContext>();
             using (var sp = services.BuildServiceProvider())
             {
@@ -36,6 +26,36 @@ namespace Demo
                         .Set(b=>b.Price,b=>b.Price+1)
                         .Where(b => b.Id <= 2)
                         .ExecuteAsync();
+
+                    await TestCaseLimit.RunAsync(ctx);
+                    await TestCase1.RunAsync(ctx);
+                    ctx.Books.Where(b => b.PubTime == DateTime.Now).ToArray();
+
+                    await ctx.BatchUpdate<Book>()
+                    .Set(b => b.PubTime, b => DateTime.Now)
+                    .Set(b => b.Title, b => null)
+                    .Where(b => b.Id >3)
+                    .ExecuteAsync();
+
+                    title = "zack";
+                    await ctx.BatchUpdate<Book>()
+                        .Set(b => b.Title, b => title)
+                        .Where(b => b.Id <= 2)
+                        .ExecuteAsync();
+                    await ctx.BatchUpdate<Book>()
+                    .Set(a => a.Title, a => "测试")
+                    .Set(a => a.AuthorName, a => a.AuthorName)
+                    .Where(a => ctx.Articles.Where(b => b.Id == a.Id && b.Content == "B").Any())
+                    .ExecuteAsync();
+                    await TestCase1.RunAsync(ctx);
+                    await TestCase2.RunAsync(ctx);
+                    List<Book> books = TestBulkInsert1.BuildBooks();
+                    ctx.BulkInsert(books);
+                    List<Author> authors = TestBulkInsert1.BuildAuthors();
+                    ctx.BulkInsert(authors);
+                    await TestCaseLimit.RunAsync(ctx);
+                    await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
+                        .DeleteRangeAsync(ctx);
                 }
             }
         }
@@ -65,18 +85,7 @@ namespace Demo
             using (var sp = services.BuildServiceProvider())
             using (var ctx = sp.GetService<PooledTestDbContext>())
             using (var orderCtx = sp.GetService<MySQL_OrderSyncApiDbContext>())
-            using (var issue24Ctx = sp.GetService<Issue24Context>())
-            {
-                string eva = null;
-                issue24Ctx.BatchUpdate<Demo.Base.Issue24.Book>()
-                    .Set(b=>b.AuthorName, b=>null)
-                    .Execute();
-                issue24Ctx.BatchUpdate<Demo.Base.Issue24.Book>()
-                    .Set(b => b.AuthorName, b => eva)
-                    .Execute();
-                /*
-                issue24Ctx.BulkInsert(TestCaseIssue24.BuildData());
-                
+            {              
                 await TestCaseLimit.RunAsync(ctx);
                 await TestCase1.RunAsync(ctx);
                 ctx.Books.Where(b => b.PubTime == ctx.Now(6)).ToArray();
@@ -100,14 +109,7 @@ namespace Demo
                     //.Set(x => x.State, x => (sbyte)10)//OK
                     .Set<sbyte>(x => x.State, x => 10)//OK
                     .ExecuteAsync();
-
-                *、
-            }
-            /*
-            using (TestDbContext ctx = new TestDbContext())
-            {
-                await TestCaseLimit.RunAsync(ctx);
-            }*/
+            
             }
         }
     }
