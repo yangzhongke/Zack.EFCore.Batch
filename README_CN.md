@@ -7,7 +7,6 @@
 
 对于.NET 5用户：
 ```
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
 SQLServer: Install-Package Zack.EFCore.Batch.MSSQL
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
@@ -15,7 +14,6 @@ Oracle：Install-Package Zack.EFCore.Batch.Oracle
 ``` 
 对于.NET 6用户:
 ```
-Postgresql: Install-Package Zack.EFCore.Batch.MSSQL_NET6
 SQLServer：Install-Package Zack.EFCore.Batch.MSSQL_NET6
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
