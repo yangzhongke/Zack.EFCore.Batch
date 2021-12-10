@@ -14,6 +14,13 @@ namespace Demo
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             using (TestDbContext ctx = new TestDbContext())
             {
+                await ctx.BatchUpdate<Book>()
+                    .Set("Title", "Haha")
+                    .Set("Price", 3.14)
+                    .Set(b => b.PubTime, b => b.PubTime.AddDays(5))
+                    .Where(b => b.Price > 888)
+                    .ExecuteAsync();
+
                 string title = "666";
                 await ctx.BatchUpdate<Book>()
                     .Set(b => b.Title, b => title + b.AuthorName)

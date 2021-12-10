@@ -18,7 +18,7 @@ namespace Zack.EFCore.Batch.Oracle
 
             OracleBulkCopy bulkCopy = new OracleBulkCopy(conn, copyOptions);
 
-            bulkCopy.DestinationTableName = entityType.GetTableName();//Schema is not supported by MySQL
+            bulkCopy.DestinationTableName = entityType.GetTableName();
             foreach (var dbProp in dbProps)
             {
                 string columnName = dbProp.ColumnName;

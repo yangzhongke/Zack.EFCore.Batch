@@ -1,14 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Zack.EFCore.Batch.Internal
 {
@@ -29,6 +24,14 @@ namespace Zack.EFCore.Batch.Internal
             this.dbSet = dbSet;
         }
 
+        private BatchUpdateBuilder<TEntity> Set(LambdaExpression nameExpr,
+            LambdaExpression valueExpr, Type propertType)
+        {
+            MemberExpression propExpression = nameExpr.Body as MemberExpression;
+            string propertyName = propExpression.Member.Name;
+            setters.Add(new Setter<TEntity> { Name = nameExpr, Value = valueExpr, PropertyType = propertType, PropertyName = propertyName });
+            return this;
+        }
         /// <summary>
         /// name is the expression of property's name, and value is the expression of the value
         /// </summary>
@@ -38,10 +41,28 @@ namespace Zack.EFCore.Batch.Internal
         public BatchUpdateBuilder<TEntity> Set<TP>(Expression<Func<TEntity, TP>> name, 
             Expression<Func<TEntity, TP>> value)
         {
-            MemberExpression propExpression = name.Body as MemberExpression;
-            string propertyName = propExpression.Member.Name;
-            setters.Add(new Setter<TEntity> { Name=name,Value=value,PropertyType=typeof(TP),PropertyName= propertyName });
-            return this;
+            var propertyType = typeof(TP);
+            return Set(name, value, propertyType);
+        }
+
+        //feature: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/38
+        public BatchUpdateBuilder<TEntity> Set(string name,
+            object value)
+        {
+            var propInfo = typeof(TEntity).GetProperty(name);
+            Type propType = propInfo.PropertyType;//typeof of property
+
+            var pExpr = Expression.Parameter(typeof(TEntity));
+            Type tDelegate = typeof(Func<,>).MakeGenericType(typeof(TEntity),propType);
+
+            var nameExpr = Expression.Lambda(tDelegate,Expression.MakeMemberAccess(pExpr, propInfo), pExpr);
+            Expression valueExpr = Expression.Constant(value);
+            if (value!=null&&value.GetType()!= propType)
+            {
+                valueExpr = Expression.Convert(valueExpr, propType);
+            }
+            var valueLambdaExpr = Expression.Lambda(tDelegate, valueExpr, pExpr);
+            return Set(nameExpr, valueLambdaExpr, propType);
         }
 
         private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters)

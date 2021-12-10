@@ -11,6 +11,7 @@ As for.NET 5 users:
 ```
 SQLServer: Install-Package Zack.EFCore.Batch.MSSQL
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
 Oracle:Install-Package Zack.EFCore.Batch.Oracle
 ``` 
@@ -20,7 +21,7 @@ SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET6
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite_NET6
-Oracle: Not supported at this time, because there is no offical Oracle EF Core 6 Provider.
+Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET6
 ```
 Support of MySQL is based on Pomelo.EntityFrameworkCore.MySql.
 

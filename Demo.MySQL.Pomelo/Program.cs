@@ -56,6 +56,16 @@ namespace Demo
                     await TestCaseLimit.RunAsync(ctx);
                     await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
                         .DeleteRangeAsync(ctx);
+                    await ctx.BatchUpdate<Book>()
+                    .Set("Title", "Haha")
+                    .Set("Price", 3.14)
+                    .Where(b => b.Price > 888)
+                    .ExecuteAsync();
+                    await ctx.BatchUpdate<Book>()
+                    .Set("Title", "Haha")
+                    .Set("Price", 3)
+                    .Where(b => b.Price > 888)
+                    .ExecuteAsync();
                 }
             }
         }
