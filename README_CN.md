@@ -85,6 +85,16 @@ await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
 	.Skip(3)
 	.ExecuteAsync();
 
+await ctx.BatchUpdate<Comment>()
+	.Set(c => c.Message, c => "abc")
+	.Where(c => c.Article.Id == id)
+	.ExecuteAsync();
+	
+await ctx.BatchUpdate<Comment>()
+	.Set("Message","abc")
+	.Where(c => c.Article.Id == id)
+	.ExecuteAsync();
+
 await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
 	.Where(c => c.Article.Id == id)
 	.Skip(3)
