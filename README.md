@@ -63,7 +63,7 @@ await ctx.BatchUpdate<Book>()
     .Set(b => b.Price, b => b.Price + 3)
     .Set(b => b.Title, b => s)
     .Set(b => b.AuthorName,b=>b.Title.Substring(3,2)+b.AuthorName.ToUpper())
-    .Set(b => b.PubTime, b => DateTime.Now)
+    .Set(b => b.PubTime, DateTime.Now)
     .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack"))
     .ExecuteAsync();
 ```

@@ -45,6 +45,24 @@ namespace Zack.EFCore.Batch.Internal
             return Set(name, value, propertyType);
         }
 
+
+        /// <summary>
+        /// Set(c=>c.Name,"hello")
+        /// </summary>
+        /// <typeparam name="TP"></typeparam>
+        /// <param name="nameExpr"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public BatchUpdateBuilder<TEntity> Set<TP>(Expression<Func<TEntity, TP>> nameExpr,
+            TP value)
+        {
+            var propertyType = typeof(TP);
+            Expression valueExpr = Expression.Constant(value);
+            var pExpr = Expression.Parameter(typeof(TEntity));
+            var valueLambdaExpr = Expression.Lambda<Func<TEntity,TP>>(valueExpr, pExpr);
+            return Set(nameExpr, valueLambdaExpr, propertyType);
+        }
+
         //feature: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/38
         public BatchUpdateBuilder<TEntity> Set(string name,
             object value)

@@ -59,6 +59,7 @@ namespace Demo
                     await ctx.BatchUpdate<Book>()
                     .Set("Title", "Haha")
                     .Set("Price", 3.14)
+                    .Set(b=>b.PubTime,DateTime.Now)
                     .Where(b => b.Price > 888)
                     .ExecuteAsync();
                     await ctx.BatchUpdate<Book>()
