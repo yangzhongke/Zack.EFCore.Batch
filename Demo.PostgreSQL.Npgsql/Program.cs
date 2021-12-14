@@ -17,7 +17,7 @@ namespace Demo
                 await ctx.BatchUpdate<Book>()
                     .Set("Title", "Haha")
                     .Set("Price", 3.14)
-                    .Set(b => b.PubTime, b => b.PubTime.AddDays(5))
+                    .Set(b => b.PubTime, b => b.PubTime.Value.AddDays(5))
                     .Where(b => b.Price > 888)
                     .ExecuteAsync();
 

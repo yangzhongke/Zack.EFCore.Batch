@@ -8,7 +8,7 @@ namespace Demo
     {
         public long Id { get; set; }
         public string Title { get; set; }
-        public DateTime PubTime { get; set; }
+        public DateTime? PubTime { get; set; }
         public double Price { get; set; }
         public string AuthorName { get; set; }
         public string RO1 { get { return "xxxx"; } }
