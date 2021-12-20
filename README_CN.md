@@ -76,7 +76,8 @@ WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack
 ## Take(), Skip()
 Take() and Skip() 可以用来限制DeleteRangeAsync 和 BatchUpdate影响的行数：
 ```CSharp
-await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).DeleteRangeAsync<Comment>(ctx);
+await ctx.Comments.Where(c => c.Article.Id == id).OrderBy(c => c.Message)
+	.Skip(3).DeleteRangeAsync<Comment>(ctx);
 await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).Take(10).DeleteRangeAsync<Comment>(ctx);
 await ctx.Comments.Where(c => c.Article.Id == id).Take(10).DeleteRangeAsync<Comment>(ctx);
 

@@ -187,6 +187,7 @@ namespace Zack.EFCore.Batch.Internal
                 }
             }
             sbSQL.AppendLine();
+            /*
             if (parsingResult.FullSQL.Contains("join", StringComparison.OrdinalIgnoreCase))
             {
                 string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
@@ -199,7 +200,9 @@ namespace Zack.EFCore.Batch.Internal
                     sbSQL.Append("WHERE ").Append(parsingResult.PredicateSQL);
                 }
             }
-            
+            */
+            string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
+            sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable, dbContext, aliasSeparator));
             parameters = parsingResult.Parameters;
             return sbSQL.ToString();
         }

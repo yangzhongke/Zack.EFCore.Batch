@@ -7,6 +7,18 @@ namespace Demo
         static async Task Main(string[] args)
         {
             using TestDbContext ctx = new TestDbContext();
+            await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+            .Where(c => c.Id == 3)
+            .Skip(3)
+            .ExecuteAsync();
+            await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
+                .Where(c => c.Article.Id == 3)
+                .Skip(3)
+                .ExecuteAsync();
+            await ctx.Comments.Where(c => c.Id > 3).Skip(5).Take(10)
+                .DeleteRangeAsync(ctx);
+            await ctx.Comments.Where(c => c.Article.Id==3).OrderBy(c=>c.Message).Skip(5).Take(10)
+                .DeleteRangeAsync(ctx);
             string title = null;
             await ctx.BatchUpdate<Book>()
                 .Set(b => b.Title, b => title)
