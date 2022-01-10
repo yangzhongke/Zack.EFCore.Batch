@@ -34,12 +34,6 @@ namespace Zack.EFCore.Batch.Internal
 			string pkColName = pkProps[0].GetColumnName(StoreObjectIdentifier.SqlQuery(dbSet.EntityType));
 			return pkColName;
         }
-
-		public static string UniqueAlias()
-        {
-			return "V"+Guid.NewGuid().ToString("N");
-        }
-
 		public static string BuildWhereSubQuery<TEntity>(IQueryable<TEntity> queryable, DbContext dbCtx, string aliasSeparator) where TEntity : class
 		{
 			SingleQueryingEnumerable<TEntity> queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as SingleQueryingEnumerable<TEntity>;
@@ -48,8 +42,10 @@ namespace Zack.EFCore.Batch.Internal
 			{
 				subQuerySQL = cmd.CommandText;
 			}
+			//https://github.com/yangzhongke/Zack.EFCore.Batch/issues/53
 
-			string tableAlias = BatchUtils.UniqueAlias();
+			//string tableAlias = BatchUtils.UniqueAlias();
+			string tableAlias = "temp1";
 			var dbSet = dbCtx.Set<TEntity>();
 			string pkName = BatchUtils.GetPKColName<TEntity>(dbSet);
 			ISqlGenerationHelper sqlGenHelpr = dbCtx.GetService<ISqlGenerationHelper>();
