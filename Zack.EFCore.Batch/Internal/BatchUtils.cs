@@ -36,7 +36,12 @@ namespace Zack.EFCore.Batch.Internal
         }
 		public static string BuildWhereSubQuery<TEntity>(IQueryable<TEntity> queryable, DbContext dbCtx, string aliasSeparator) where TEntity : class
 		{
-			SingleQueryingEnumerable<TEntity> queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as SingleQueryingEnumerable<TEntity>;
+			//fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/57 and https://github.com/yangzhongke/Zack.EFCore.Batch/issues/54
+			IRelationalQueryingEnumerable? queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as IRelationalQueryingEnumerable;
+			if(queryingEnumerable==null)
+            {
+				throw new ApplicationException("Can't get IRelationalQueryingEnumerable from Expression");
+			}
 			string subQuerySQL;
 			using (var cmd = queryingEnumerable.CreateDbCommand())
 			{

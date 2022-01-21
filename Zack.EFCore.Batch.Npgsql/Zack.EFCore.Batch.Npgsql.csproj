@@ -8,7 +8,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <RepositoryUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</PackageProjectUrl>
-    <Version>1.5.9</Version>
+    <Version>1.5.10</Version>
     <Authors>Zack Yang(杨中科)</Authors>
     <Description>
 		A Postgresql-specific version of Zack.EFCore.Batch.

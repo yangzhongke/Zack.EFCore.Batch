@@ -10,6 +10,16 @@ namespace Demo
     {
         static async Task Main(string[] args)
         {
+            using(TestDbContext ctx =new TestDbContext())
+            {
+                //await ctx.Comments.Where(c => c.Article.Id == 3)
+                   // .DeleteRangeAsync(ctx);
+                await ctx
+                    .DeleteRangeAsync<Comment>(c => c.Article.Id == 3);
+            }
+        }
+        static async Task Main1(string[] args)
+        {
             //fix: ef core Cannot apply binary operation on types 'timestamp with time zone' and 'timestamp without time zone', convert one of the operands first.”
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             using (TestDbContext ctx = new TestDbContext())
