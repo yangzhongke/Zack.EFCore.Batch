@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -138,6 +139,40 @@ namespace Zack.EFCore.Batch.Internal
             {
 				return Task.CompletedTask;
             }
+		}
+
+		public static IDictionary<string,object> ConvertParameterValues(this DbContext ctx, IReadOnlyDictionary<string, object> modelValues)
+        {
+			var typeMapping = ctx.GetService<IRelationalTypeMappingSource>();
+			Dictionary<string, object> providerValues = new ();
+			foreach (var kvp in modelValues)
+			{
+				string key = kvp.Key;
+				object value = modelValues[key];
+				providerValues[key] = ConvertToProvider(typeMapping,value);
+			}
+			return providerValues;
+		}
+
+		//fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/57#issuecomment-1018219521
+		private static object ConvertToProvider(IRelationalTypeMappingSource typeMappingSource,object modelObject)
+        {
+			if(modelObject==null)
+            {
+				return DBNull.Value;
+            }
+			var mp = typeMappingSource.FindMapping(modelObject.GetType());
+			if (mp == null || mp.Converter == null || mp.Converter.ConvertToProvider == null)
+			{
+				return modelObject;
+
+			}
+			object providerValue = mp.Converter.ConvertToProvider(modelObject);
+			if (providerValue == null)
+			{
+				return DBNull.Value;
+			}
+			return providerValue;
 		}
 	}
 }

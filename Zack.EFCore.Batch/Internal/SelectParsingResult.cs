@@ -7,7 +7,7 @@ namespace Zack.EFCore.Batch.Internal
         /// <summary>
         /// parameters of query
         /// </summary>
-        public IReadOnlyDictionary<string, object> Parameters { get; internal set; }
+        public IDictionary<string, object> Parameters { get; internal set; }
        
 
         public string Schema

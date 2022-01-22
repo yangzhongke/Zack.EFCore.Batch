@@ -1,4 +1,5 @@
 ﻿using Demo.Base;
+using NodaTime;
 
 namespace Demo
 {
@@ -7,6 +8,10 @@ namespace Demo
         static async Task Main(string[] args)
         {
             using TestDbContext ctx = new TestDbContext();
+            Instant now = SystemClock.Instance.GetCurrentInstant();
+            /*            
+            await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);
+            await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= SystemClock.Instance.GetCurrentInstant(), true);*/
             await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
             .Where(c => c.Id == 3)
             .Skip(3)

@@ -14,7 +14,7 @@ namespace Demo
                 }
             });
             string connStr = "Server=.;Database=demoBatch;Trusted_Connection=True;MultipleActiveResultSets=true";
-            optionsBuilder.UseSqlServer(connStr);
+            optionsBuilder.UseSqlServer(connStr, x => x.UseNodaTime());
             optionsBuilder.UseBatchEF_MSSQL();            
         }
     }

@@ -18,7 +18,7 @@ namespace System.Linq
     public static class BatchEFExtensions
     {
         private static string GenerateDeleteSQL<TEntity>(DbContext ctx, IQueryable<TEntity> queryable, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
-            out IReadOnlyDictionary<string, object> parameters) where TEntity:class
+            out IDictionary<string, object> parameters) where TEntity:class
         {
             if(predicate!=null)
             {
@@ -58,12 +58,12 @@ namespace System.Linq
             where TEntity : class
         {
             DbSet<TEntity> dbSet = ctx.Set<TEntity>();
-            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             ctx.Log(sql);
             return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
         }
 
-        private static async Task<int> ExecuteSQLAsync(DbContext ctx, string sql, IReadOnlyDictionary<string, object> parameters, CancellationToken cancellationToken)
+        private static async Task<int> ExecuteSQLAsync(DbContext ctx, string sql, IDictionary<string, object> parameters, CancellationToken cancellationToken)
         {
             var conn = ctx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
@@ -80,7 +80,7 @@ namespace System.Linq
             Expression<Func<TEntity,bool>> predicate=null, bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
             where TEntity:class
         {
-            string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             ctx.Log(sql);
             return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
         }
@@ -89,7 +89,7 @@ namespace System.Linq
             where TEntity : class
         {
             DbSet<TEntity> dbSet = ctx.Set<TEntity>();
-            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             ctx.Log(sql);
             return ExecuteSQL(ctx, sql, parameters);
         }
@@ -97,12 +97,12 @@ namespace System.Linq
         public static int DeleteRange<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx, Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
             where TEntity : class
         {
-            string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             ctx.Log(sql);
             return ExecuteSQL(ctx, sql, parameters);
         }
 
-        private static int ExecuteSQL(DbContext ctx, string sql, IReadOnlyDictionary<string, object> parameters)
+        private static int ExecuteSQL(DbContext ctx, string sql, IDictionary<string, object> parameters)
         {
             var conn = ctx.Database.GetDbConnection();
             conn.OpenIfNeeded();
@@ -124,7 +124,7 @@ namespace System.Linq
             }
         }
 
-        internal static void AddParameters(this IDbCommand cmd, DbContext ctx, IReadOnlyDictionary<string, object> parameters)
+        internal static void AddParameters(this IDbCommand cmd, DbContext ctx, IDictionary<string, object> parameters)
         {
             var typeMapping = ctx.GetService<IRelationalTypeMappingSource>();
             foreach (var p in parameters)
@@ -218,7 +218,9 @@ namespace System.Linq
             }
             querySqlGenerator.IsForBatchEF = true;
             var cmd = querySqlGenerator.GetCommand(selectExpression);
-            parsingResult.Parameters = queryContext.ParameterValues;
+            parsingResult.Parameters = new Dictionary<string, object>();
+            //parsingResult.Parameters = queryContext.ParameterValues;
+            parsingResult.Parameters = ctx.ConvertParameterValues(queryContext.ParameterValues);
             parsingResult.QuerySqlGenerator = querySqlGenerator;
             parsingResult.PredicateSQL = querySqlGenerator.PredicateSQL;
             parsingResult.ProjectionSQL = querySqlGenerator.ProjectionSQL;

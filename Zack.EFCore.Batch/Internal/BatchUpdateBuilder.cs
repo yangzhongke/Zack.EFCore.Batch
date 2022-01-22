@@ -84,7 +84,7 @@ namespace Zack.EFCore.Batch.Internal
             return Set(nameExpr, valueLambdaExpr, propType);
         }
 
-        private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters)
+        private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out IDictionary<string, object> parameters)
         {
             if (setters.Count <= 0)
             {
@@ -229,7 +229,7 @@ namespace Zack.EFCore.Batch.Internal
 
         public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
         {
-            string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
@@ -244,7 +244,7 @@ namespace Zack.EFCore.Batch.Internal
 
         public int Execute(bool ignoreQueryFilters=false)
         {
-            string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IReadOnlyDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             conn.OpenIfNeeded();
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");

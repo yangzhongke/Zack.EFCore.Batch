@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NodaTime" Version="3.0.9" />
     <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="4.3.3" />
   </ItemGroup>
 	<ItemGroup>

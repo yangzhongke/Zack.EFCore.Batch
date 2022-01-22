@@ -12,6 +12,8 @@ namespace Demo
         public DbSet<Article> Articles { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
+        //public DbSet<NodaTimeEntity> NodaTimeEntities { get; set; }
+
         public BaseDbContext(DbContextOptions options):base(options)
         {
 
