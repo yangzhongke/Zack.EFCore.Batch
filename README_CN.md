@@ -12,6 +12,7 @@ MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
 Oracle:Install-Package Zack.EFCore.Batch.Oracle
+Dm(达梦): Install-Package ZackEFCore.Batch.Dm
 ``` 
 对于.NET 6用户:
 ```
@@ -32,6 +33,7 @@ optionsBuilder.UseBatchEF_Npgsql();//Postgresql 用户用这个
 optionsBuilder.UseBatchEF_MySQLPomelo();//MySQL 用户用这个
 optionsBuilder.UseBatchEF_Sqlite();//Sqlite 用户用这个
 optionsBuilder.UseBatchEF_Oracle();//Oracle 用户用这个
+optionsBuilder.UseBatchEF_DM();//as for DM(达梦)
 ```
 
  ##### 第三步:

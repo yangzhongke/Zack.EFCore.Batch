@@ -19,6 +19,7 @@
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="[5.21.1,6.0.0)" />
   </ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Zack.EFCore.Batch.Sqlite\Zack.EFCore.Batch.Sqlite.csproj" />
 		<ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
 	</ItemGroup>
 </Project>

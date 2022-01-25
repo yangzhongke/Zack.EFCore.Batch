@@ -14,6 +14,7 @@ MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
 Oracle:Install-Package Zack.EFCore.Batch.Oracle
+Dm(达梦): Install-Package ZackEFCore.Batch.Dm
 ``` 
 As For.NET 6 users:
 ```
@@ -33,7 +34,7 @@ optionsBuilder.UseBatchEF_Npgsql();//as for Postgresql
 optionsBuilder.UseBatchEF_MySQLPomelo();//as for MySQL
 optionsBuilder.UseBatchEF_Sqlite();//as for Sqlite
 optionsBuilder.UseBatchEF_Oracle();//as for Oracle
-
+optionsBuilder.UseBatchEF_DM();//as for DM(达梦)
 ```
 
 ##### Step 3:
