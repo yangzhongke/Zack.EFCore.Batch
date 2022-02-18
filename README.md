@@ -15,6 +15,7 @@ Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
 Oracle:Install-Package Zack.EFCore.Batch.Oracle
 Dm(达梦): Install-Package ZackEFCore.Batch.Dm
+In Memory：Install-Package Zack.EFCore.Batch.InMemory
 ``` 
 As For.NET 6 users:
 ```
@@ -23,6 +24,7 @@ MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite_NET6
 Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET6
+In Memory：Install-Package Zack.EFCore.Batch.InMemory_NET6
 ```
 Support of MySQL is based on Pomelo.EntityFrameworkCore.MySql.
 
@@ -35,6 +37,7 @@ optionsBuilder.UseBatchEF_MySQLPomelo();//as for MySQL
 optionsBuilder.UseBatchEF_Sqlite();//as for Sqlite
 optionsBuilder.UseBatchEF_Oracle();//as for Oracle
 optionsBuilder.UseBatchEF_DM();//as for DM(达梦)
+optionsBuilder.UseBatchEF_InMemory();//as for In Memory
 ```
 
 ##### Step 3:

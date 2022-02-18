@@ -13,6 +13,7 @@ Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
 Oracle:Install-Package Zack.EFCore.Batch.Oracle
 Dm(达梦): Install-Package ZackEFCore.Batch.Dm
+In Memory(内存数据库)：Install-Package Zack.EFCore.Batch.InMemory
 ``` 
 对于.NET 6用户:
 ```
@@ -21,6 +22,7 @@ MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
 Sqlite: Install-Package Zack.EFCore.Batch.Sqlite_NET6
 Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET6
+In Memory(内存数据库)：Install-Package Zack.EFCore.Batch.InMemory_NET6
 ```
 MySQL支持Pomelo.EntityFrameworkCore.MySql这个EF Core Provider，不支持MySQL官方EF Core Provider。
 
@@ -33,7 +35,8 @@ optionsBuilder.UseBatchEF_Npgsql();//Postgresql 用户用这个
 optionsBuilder.UseBatchEF_MySQLPomelo();//MySQL 用户用这个
 optionsBuilder.UseBatchEF_Sqlite();//Sqlite 用户用这个
 optionsBuilder.UseBatchEF_Oracle();//Oracle 用户用这个
-optionsBuilder.UseBatchEF_DM();//as for DM(达梦)
+optionsBuilder.UseBatchEF_DM();//DM(达梦) 用户用这个
+optionsBuilder.UseBatchEF_InMemory();//In Memory(内存数据库) 用户用这个
 ```
 
  ##### 第三步:

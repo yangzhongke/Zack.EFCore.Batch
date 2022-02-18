@@ -1,31 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch", "Zack.EFCore.Batch\Zack.EFCore.Batch_NET6.csproj", "{0B4A4CCC-59F5-4B71-8BBC-12D0F3BA3569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch_NET6", "Zack.EFCore.Batch\Zack.EFCore.Batch_NET6.csproj", "{0B4A4CCC-59F5-4B71-8BBC-12D0F3BA3569}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.MySQL.Pomelo", "Demo.MySQL.Pomelo\Demo.MySQL.Pomelo_NET6.csproj", "{116C8229-621F-4CC7-97E5-8CE250A2EE42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.MySQL.Pomelo_NET6", "Demo.MySQL.Pomelo\Demo.MySQL.Pomelo_NET6.csproj", "{116C8229-621F-4CC7-97E5-8CE250A2EE42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.PostgreSQL.Npgsql", "Demo.PostgreSQL.Npgsql\Demo.PostgreSQL.Npgsql_NET6.csproj", "{F29D3347-AF1B-4781-9682-65225DC4D7ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.PostgreSQL.Npgsql_NET6", "Demo.PostgreSQL.Npgsql\Demo.PostgreSQL.Npgsql_NET6.csproj", "{F29D3347-AF1B-4781-9682-65225DC4D7ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.MSSQLServer", "Demo.MSSQLServer\Demo.MSSQLServer_NET6.csproj", "{2CC6BEEC-7930-4D95-A542-F05FCEDF47D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.MSSQLServer_NET6", "Demo.MSSQLServer\Demo.MSSQLServer_NET6.csproj", "{2CC6BEEC-7930-4D95-A542-F05FCEDF47D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Npgsql", "Zack.EFCore.Batch.Npgsql\Zack.EFCore.Batch.Npgsql_NET6.csproj", "{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Npgsql_NET6", "Zack.EFCore.Batch.Npgsql\Zack.EFCore.Batch.Npgsql_NET6.csproj", "{80F68CBB-E112-4C24-9C7B-4785CB5A9BB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MSSQL", "Zack.EFCore.Batch.MSSQL\Zack.EFCore.Batch.MSSQL_NET6.csproj", "{556232CE-906F-4D14-A017-23D0698BACCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MSSQL_NET6", "Zack.EFCore.Batch.MSSQL\Zack.EFCore.Batch.MSSQL_NET6.csproj", "{556232CE-906F-4D14-A017-23D0698BACCC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MySQL.Pomelo", "Zack.EFCore.Batch.MySQL.Pomelo\Zack.EFCore.Batch.MySQL.Pomelo_NET6.csproj", "{BC6BD6C1-42F1-4DB0-9E20-36CDC3C27B75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MySQL.Pomelo_NET6", "Zack.EFCore.Batch.MySQL.Pomelo\Zack.EFCore.Batch.MySQL.Pomelo_NET6.csproj", "{BC6BD6C1-42F1-4DB0-9E20-36CDC3C27B75}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Sqlite", "Zack.EFCore.Batch.Sqlite\Zack.EFCore.Batch.Sqlite_NET6.csproj", "{CB0B511D-3A9B-4688-AB47-F5E3C87D994B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Sqlite_NET6", "Zack.EFCore.Batch.Sqlite\Zack.EFCore.Batch.Sqlite_NET6.csproj", "{CB0B511D-3A9B-4688-AB47-F5E3C87D994B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Sqlite", "Demo.Sqlite\Demo.Sqlite_NET6.csproj", "{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Sqlite_NET6", "Demo.Sqlite\Demo.Sqlite_NET6.csproj", "{6FC012DF-3E00-4B0D-8D8C-6835D81E19B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Oracle", "Zack.EFCore.Batch.Oracle\Zack.EFCore.Batch.Oracle_NET6.csproj", "{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Oracle_NET6", "Zack.EFCore.Batch.Oracle\Zack.EFCore.Batch.Oracle_NET6.csproj", "{10171BAE-F5AA-4AD6-89E4-B224D8BD356E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Oracle", "Demo.Oracle\Demo.Oracle_NET6.csproj", "{825F0F76-BD61-43E6-8627-B5130FA5F74A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Oracle_NET6", "Demo.Oracle\Demo.Oracle_NET6.csproj", "{825F0F76-BD61-43E6-8627-B5130FA5F74A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Base", "Demo.Base\Demo.Base_NET6.csproj", "{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Base_NET6", "Demo.Base\Demo.Base_NET6.csproj", "{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.InMemory_NET6", "Demo.InMemory\Demo.InMemory_NET6.csproj", "{7E89E757-5E1C-43C1-A434-277A668ECE8F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.InMemory_NET6", "Zack.EFCore.Batch.InMemory\Zack.EFCore.Batch.InMemory_NET6.csproj", "{3B2CE1E6-B4F8-40B1-8E04-75C2C63FFCB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +85,14 @@ Global
 		{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E89E757-5E1C-43C1-A434-277A668ECE8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E89E757-5E1C-43C1-A434-277A668ECE8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E89E757-5E1C-43C1-A434-277A668ECE8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E89E757-5E1C-43C1-A434-277A668ECE8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B2CE1E6-B4F8-40B1-8E04-75C2C63FFCB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B2CE1E6-B4F8-40B1-8E04-75C2C63FFCB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B2CE1E6-B4F8-40B1-8E04-75C2C63FFCB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B2CE1E6-B4F8-40B1-8E04-75C2C63FFCB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
