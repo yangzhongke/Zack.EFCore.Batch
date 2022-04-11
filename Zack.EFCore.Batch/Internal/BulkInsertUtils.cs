@@ -21,7 +21,7 @@ namespace Zack.EFCore.Batch.Internal
         public static DbProp[] ParseDbProps<TEntity>(IEntityType entityType) where TEntity : class
         {
             //skip navigationProperties
-            var props = typeof(TEntity).GetProperties().Where(p => !IsNavigationProp(entityType, p)&&p.CanWrite&&p.CanRead);
+            var props = typeof(TEntity).GetProperties().Where(p => !IsNavigationProp(entityType, p)&&p.CanRead);
             List<DbProp> propFields = new List<DbProp>();
 
             foreach (var prop in props)
