@@ -28,6 +28,10 @@ namespace System.Linq
             {
                 queryable = queryable.Where(e => 1==1);
             }
+            if (ignoreQueryFilters)
+            {
+                queryable = queryable.IgnoreQueryFilters();
+            }
             var parsingResult = queryable.Parse(ctx, ignoreQueryFilters);
             ISqlGenerationHelper sqlGenHelpr = ctx.GetService<ISqlGenerationHelper>();
             string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName,parsingResult.Schema);
