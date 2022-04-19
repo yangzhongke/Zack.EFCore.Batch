@@ -178,10 +178,6 @@ namespace System.Linq
         /// <returns></returns>
         public static SelectParsingResult Parse<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx,bool ignoreQueryFilters) where TEntity:class
         {
-            if(ignoreQueryFilters)
-            {
-                queryable = queryable.IgnoreQueryFilters();
-            }            
             SelectParsingResult parsingResult = new SelectParsingResult();
             Expression query = queryable.Expression;
             var databaseDependencies = ctx.GetService<DatabaseDependencies>();

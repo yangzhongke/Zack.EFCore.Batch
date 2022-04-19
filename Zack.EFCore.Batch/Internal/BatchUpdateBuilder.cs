@@ -120,6 +120,10 @@ namespace Zack.EFCore.Batch.Internal
             var selectExpression = Expression.Lambda<Func<TEntity, object>>(newArrayExp, parameter);
 
             IQueryable<TEntity> queryable = this.dbSet;
+            if (ignoreQueryFilters)
+            {
+                queryable = queryable.IgnoreQueryFilters();
+            }
             if (predicate!=null)
             {
                 queryable = queryable.Where(predicate);
