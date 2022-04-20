@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-	  <Version>1.5.14</Version>
+	  <Version>1.5.15</Version>
 	  <Description>
 		  Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core 5.0. As for EF Core 6 users, please use Zack.EFCore.Batch.InMemory_NET6
 	  </Description>

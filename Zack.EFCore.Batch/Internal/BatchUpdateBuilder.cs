@@ -75,7 +75,7 @@ namespace Zack.EFCore.Batch.Internal
             Type tDelegate = typeof(Func<,>).MakeGenericType(typeof(TEntity),propType);
 
             var nameExpr = Expression.Lambda(tDelegate,Expression.MakeMemberAccess(pExpr, propInfo), pExpr);
-            Expression valueExpr = Expression.Constant(value);
+            Expression valueExpr = Expression.Constant(value,propType);
             if (value!=null&&value.GetType()!= propType)
             {
                 valueExpr = Expression.Convert(valueExpr, propType);

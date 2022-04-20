@@ -11,6 +11,9 @@ namespace Demo
             using (TestDbContext ctx = new TestDbContext())
             {
                 await TestCaseLimit.RunAsync(ctx);
+                await ctx.BatchUpdate<Book>()
+                .Set("Title",null)
+                .ExecuteAsync();
             }
         }
     }
