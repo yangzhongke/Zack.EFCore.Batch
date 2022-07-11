@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Reflection;
 
@@ -6,12 +7,11 @@ namespace Zack.EFCore.Batch.Internal
 {
     public class DbProp
     {
-        public IProperty EFMeta { get; set; }
+        public ValueConverter? ValueConverter { get; set; }
         public string ColumnName { get; set; }
-        public string ColumnType { get; set; }
 
-        public PropertyInfo Property { get; set; }
-        public string PropertyName { get; set; }
+        public Func<object, object?> GetValueFunc;
+        //public PropertyInfo Property { get; set; }
         public Type PropertyType { get; set; }
     }
 }

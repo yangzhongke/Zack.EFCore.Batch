@@ -1,4 +1,6 @@
 ﻿using Demo.Base;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using NodaTime;
 
 namespace Demo
@@ -8,10 +10,10 @@ namespace Demo
         static async Task Main(string[] args)
         {
             using TestDbContext ctx = new TestDbContext();
-            Instant now = SystemClock.Instance.GetCurrentInstant();
-            /*            
-            await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);
-            await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= SystemClock.Instance.GetCurrentInstant(), true);*/
+            //Instant now = SystemClock.Instance.GetCurrentInstant();                       
+            //await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);
+            //await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= SystemClock.Instance.GetCurrentInstant(), true);
+            /*
             await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
             .Where(c => c.Id == 3)
             .Skip(3)
@@ -57,7 +59,12 @@ namespace Demo
             .Set("Title", "Haha")
             .Set("Price", 3)
             .Where(b => b.Price > 888)
-            .ExecuteAsync();
+            .ExecuteAsync();*/
+            //ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
+            IEntityType etArticle = ctx.Model.FindEntityType(typeof(Article).FullName);
+            IProperty propTitle = etArticle.FindProperty("Title");
+            string colName1 = propTitle.GetColumnName(StoreObjectIdentifier.SqlQuery(etArticle));
+            Console.WriteLine(colName1);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Demo
         {
             optionsBuilder.LogTo(Console.WriteLine);
             
-            string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=ef;AllowLoadLocalInfile=true";
+            string connStr = "server=localhost;user=root;password=root;database=ef;AllowLoadLocalInfile=true";
             optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(8, 0, 20)),builder=> {
                 builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             });

@@ -11,6 +11,7 @@ namespace Demo.Base.Configs
 			builder.Property(a => a.Content).IsRequired().IsUnicode();
 			builder.Property(a => a.Title).IsRequired().IsUnicode().HasMaxLength(255);
 			builder.Property(a => a.Id).HasColumnName("PKId");
+			builder.OwnsOne(a => a.Remarks);
 		}
 	}
 

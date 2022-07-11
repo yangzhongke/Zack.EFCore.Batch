@@ -8,6 +8,7 @@ namespace Demo.Base
 		public string Title { get; set; }
 		public string Content { get; set; }
 		public List<Comment> Comments { get; set; } = new List<Comment>();
+		public MultiString Remarks { get; set; }
 	}
 
 }

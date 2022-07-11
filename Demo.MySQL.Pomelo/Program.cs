@@ -12,7 +12,7 @@ namespace Demo
     {
         static async Task Main(string[] args)
         {
-            string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=zackbatch;AllowLoadLocalInfile=true";
+            string connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
             ServiceCollection services = new ServiceCollection();
             services.AddDbContext<TestDbContext>();
             using (var sp = services.BuildServiceProvider())
@@ -81,7 +81,7 @@ namespace Demo
         }
         static async Task Main2(string[] args)
         {
-            string connStr = "server=localhost;user=root;password=adfa3_ioz09_08nljo;database=zackbatch;AllowLoadLocalInfile=true";
+            string connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
             ServiceCollection services = new ServiceCollection();
             services.AddDbContextPool<PooledTestDbContext>(optionsBuilder =>
             {
