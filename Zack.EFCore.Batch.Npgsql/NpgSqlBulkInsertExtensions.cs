@@ -32,7 +32,7 @@ namespace System.Linq
             var entityType = dbSet.EntityType;
             ISqlGenerationHelper sqlGenHelpr = dbCtx.GetService<ISqlGenerationHelper>();
             string destinationTableName = BuildDestTableName(entityType, sqlGenHelpr);
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             string[] colNames = dataTable.Columns.OfType<DataColumn>()
                 .Select(c => c.ColumnName).ToArray();
             var delimitedCols = string.Join(",", colNames.Select(n => sqlGenHelpr.DelimitIdentifier(n)));

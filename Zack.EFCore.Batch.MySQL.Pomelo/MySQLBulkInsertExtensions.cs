@@ -16,7 +16,7 @@ namespace System.Linq
         {
             var dbSet = dbCtx.Set<TEntity>();
             var entityType = dbSet.EntityType;
-            var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(entityType);
+            var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(dbCtx,entityType);
             
             MySqlBulkCopy bulkCopy = new MySqlBulkCopy(conn, transaction);
 
@@ -36,7 +36,7 @@ namespace System.Linq
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn,dbCtx, transaction);
             await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
         }
@@ -46,7 +46,7 @@ namespace System.Linq
         {
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn, dbCtx, transaction);
             bulkCopy.WriteToServer(dataTable);
         }

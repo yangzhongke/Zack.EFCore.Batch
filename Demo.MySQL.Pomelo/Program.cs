@@ -62,6 +62,8 @@ namespace Demo
                     ctx.BulkInsert(books);
                     List<Author> authors = TestBulkInsert1.BuildAuthors();
                     ctx.BulkInsert(authors);
+                    var articles = TestOwnedType.BuildArticlesForInsert();
+                    ctx.BulkInsert(articles);
                     await TestCaseLimit.RunAsync(ctx);
                     await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
                         .DeleteRangeAsync(ctx);
@@ -76,6 +78,7 @@ namespace Demo
                     .Set("Price", 3)
                     .Where(b => b.Price > 888)
                     .ExecuteAsync();
+                    
                 }
             }
         }

@@ -15,7 +15,7 @@ namespace System.Linq
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             using (DmBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((DmConnection)conn, dbCtx,externalTransaction,copyOptions))
             {
                 await Task.Run(() => {
@@ -48,7 +48,7 @@ namespace System.Linq
             DmBulkCopy bulkCopy = new DmBulkCopy(conn,copyOptions,externalTransaction);
             var dbSet = dbCtx.Set<TEntity>();
             var entityType = dbSet.EntityType;
-            var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(entityType);
+            var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(dbCtx, entityType);
             bulkCopy.DestinationTableName = entityType.GetSchemaQualifiedTableName();//Schema may be used
             foreach (var dbProp in dbProps)
             {
@@ -63,7 +63,7 @@ namespace System.Linq
         {            
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx.Set<TEntity>(), items);
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             using (DmBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((DmConnection)conn, dbCtx,externalTransaction,copyOptions))
             {
                 WriteToServer(bulkCopy, dataTable);

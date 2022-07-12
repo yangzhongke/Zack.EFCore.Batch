@@ -35,7 +35,6 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Tags")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -110,7 +109,7 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
-                    b.Property<DateTime>("PubTime")
+                    b.Property<DateTime?>("PubTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Title")
@@ -120,6 +119,31 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("T_Books", "MySchema1");
+                });
+
+            modelBuilder.Entity("Demo.Base.Article", b =>
+                {
+                    b.OwnsOne("Demo.Base.MultiString", "Remarks", b1 =>
+                        {
+                            b1.Property<long>("ArticleId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<string>("Chinese")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("English")
+                                .HasColumnType("text");
+
+                            b1.HasKey("ArticleId");
+
+                            b1.ToTable("T_Articles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ArticleId");
+                        });
+
+                    b.Navigation("Remarks")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Demo.Base.Comment", b =>
