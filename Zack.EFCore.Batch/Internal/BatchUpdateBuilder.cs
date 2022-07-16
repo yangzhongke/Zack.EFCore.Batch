@@ -66,22 +66,23 @@ namespace Zack.EFCore.Batch.Internal
 
         //feature: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/38
         public BatchUpdateBuilder<TEntity> Set(string name,
-            object value)
+            object? value)
         {
             var propInfo = typeof(TEntity).GetProperty(name);
             Type propType = propInfo.PropertyType;//typeof of property
 
             var pExpr = Expression.Parameter(typeof(TEntity));
             Type tDelegate = typeof(Func<,>).MakeGenericType(typeof(TEntity),propType);
-
             var nameExpr = Expression.Lambda(tDelegate,Expression.MakeMemberAccess(pExpr, propInfo), pExpr);
-            /*
-            Expression valueExpr = Expression.Constant(value,propType);
-            if (value!=null&&value.GetType()!= propType)
+            Expression valueExpr;
+            if(propType.IsNullableType())
             {
-                valueExpr = Expression.Convert(valueExpr, propType);
-            }*/
-            Expression valueExpr = Expression.Constant(Convert.ChangeType(value, propType));
+                valueExpr = Expression.Constant(null,propType);
+            }
+            else
+            {
+                valueExpr = Expression.Constant(Convert.ChangeType(value, propType));
+            }
             var valueLambdaExpr = Expression.Lambda(tDelegate, valueExpr, pExpr);
             return Set(nameExpr, valueLambdaExpr, propType);
         }

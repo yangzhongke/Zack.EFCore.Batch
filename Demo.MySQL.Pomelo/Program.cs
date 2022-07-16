@@ -46,6 +46,13 @@ namespace Demo
                     .Where(b => b.Id >3)
                     .ExecuteAsync();
 
+                    await ctx.BatchUpdate<Book>()
+                    .Set(b => b.PubTime, b => DateTime.Now)
+                    .Set("Price", null)
+                    //.Set(b=>b.Price,b=> null)
+                    .Where(b => b.Id > 3)
+                    .ExecuteAsync();
+
                     title = "zack";
                     await ctx.BatchUpdate<Book>()
                         .Set(b => b.Title, b => title)
