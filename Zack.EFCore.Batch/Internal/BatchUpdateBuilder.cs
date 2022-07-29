@@ -69,20 +69,33 @@ namespace Zack.EFCore.Batch.Internal
             object? value)
         {
             var propInfo = typeof(TEntity).GetProperty(name);
+            if (propInfo == null) throw new InvalidOperationException($"Cannot find property {name} from {typeof(TEntity)}");
             Type propType = propInfo.PropertyType;//typeof of property
 
-            var pExpr = Expression.Parameter(typeof(TEntity));
-            Type tDelegate = typeof(Func<,>).MakeGenericType(typeof(TEntity),propType);
-            var nameExpr = Expression.Lambda(tDelegate,Expression.MakeMemberAccess(pExpr, propInfo), pExpr);
-            Expression valueExpr;
+            
+            Type? valueType;
             if(propType.IsNullableType())
             {
-                valueExpr = Expression.Constant(null,propType);
+                valueType = Nullable.GetUnderlyingType(propType);//get int from int?
             }
             else
             {
-                valueExpr = Expression.Constant(Convert.ChangeType(value, propType));
+                if(value==null) throw new InvalidOperationException($"{typeof(TEntity)}.{name} cannot be null");
+                valueType = propType;
             }
+            if (valueType == null) throw new InvalidOperationException("valueType is null");
+            Expression valueExpr;
+            if (value==null)
+            {
+                valueExpr = Expression.Constant(null, propType);
+            }
+            else
+            {
+                valueExpr = Expression.Constant(Convert.ChangeType(value, valueType), propType);
+            }
+            var pExpr = Expression.Parameter(typeof(TEntity));
+            Type tDelegate = typeof(Func<,>).MakeGenericType(typeof(TEntity), propType);
+            var nameExpr = Expression.Lambda(tDelegate, Expression.MakeMemberAccess(pExpr, propInfo), pExpr);
             var valueLambdaExpr = Expression.Lambda(tDelegate, valueExpr, pExpr);
             return Set(nameExpr, valueLambdaExpr, propType);
         }

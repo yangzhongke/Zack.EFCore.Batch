@@ -8,7 +8,7 @@
             {
                 Article a1 = new Article();
                 a1.Content = "Content"+i;
-                a1.Remarks = new MultiString { Chinese = "我是中国人" + i, English = "I am Chinese" + i };
+                a1.Remarks = new MultiString { Chinese = "我是中国人" + i, English = "I am Chinese" + i,Second= new SubMultiString() { Name=i.ToString()} };
                 a1.Title = "Title" + i;
                 yield return a1;
             }

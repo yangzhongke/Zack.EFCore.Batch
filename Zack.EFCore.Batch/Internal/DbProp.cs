@@ -10,8 +10,10 @@ namespace Zack.EFCore.Batch.Internal
         public ValueConverter? ValueConverter { get; set; }
         public string ColumnName { get; set; }
 
-        public Func<object, object?> GetValueFunc;
+        //public Func<object, object?> GetValueFunc;
         //public PropertyInfo Property { get; set; }
-        public Type PropertyType { get; set; }
+
+        public List<PropertyInfo> Properties { get; set; }
+        //public Type PropertyType { get; set; }
     }
 }

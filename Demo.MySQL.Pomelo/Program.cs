@@ -12,13 +12,27 @@ namespace Demo
     {
         static async Task Main(string[] args)
         {
-            string connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
+            string connStr = "server=localhost;user=root;password=123456;database=ef1;AllowLoadLocalInfile=true";
             ServiceCollection services = new ServiceCollection();
             services.AddDbContext<TestDbContext>();
             using (var sp = services.BuildServiceProvider())
             {
                 using (TestDbContext ctx = sp.GetRequiredService<TestDbContext>())
                 {
+
+                    var articles1 = TestOwnedType.BuildArticlesForInsert();
+                    ctx.BulkInsert(articles1);
+
+                    return;
+                    await ctx.BatchUpdate<Book>()
+                    //.Set(b => b.PubTime, b => DateTime.Now)
+                    //.Set("Price", null)
+                    .Set("Price", null)
+                    //.Set(b=>b.Price,b=> null)
+                    .Where(b => b.Id > 3)
+                    .ExecuteAsync();
+
+                    return;
                     await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
                         .Where(c => c.Id == 3)
                         .Skip(3)
