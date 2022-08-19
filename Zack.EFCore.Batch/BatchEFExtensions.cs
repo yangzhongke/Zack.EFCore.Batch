@@ -57,7 +57,6 @@ namespace System.Linq
         {
             DbSet<TEntity> dbSet = ctx.Set<TEntity>();
             string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, true, out IDictionary<string, object> parameters);
-            ctx.Log(sql);
             return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
         }
 
@@ -69,6 +68,7 @@ namespace System.Linq
             cmd.ApplyCurrentTransaction(ctx);
             cmd.CommandText = sql;
             cmd.AddParameters(ctx, parameters);
+            ctx.Log(sql);
             return await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
 
@@ -77,7 +77,6 @@ namespace System.Linq
             where TEntity : class
         {
             string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, false, out IDictionary<string, object> parameters);
-            ctx.Log(sql);
             return await ExecuteSQLAsync(ctx, sql, parameters, cancellationToken);
         }
 
@@ -86,7 +85,6 @@ namespace System.Linq
         {
             DbSet<TEntity> dbSet = ctx.Set<TEntity>();
             string sql = GenerateDeleteSQL(ctx, dbSet, predicate, ignoreQueryFilters, true, out IDictionary<string, object> parameters);
-            ctx.Log(sql);
             return ExecuteSQL(ctx, sql, parameters);
         }
 
@@ -94,7 +92,6 @@ namespace System.Linq
             where TEntity : class
         {
             string sql = GenerateDeleteSQL(ctx, queryable, predicate, ignoreQueryFilters, false, out IDictionary<string, object> parameters);
-            ctx.Log(sql);
             return ExecuteSQL(ctx, sql, parameters);
         }
 
@@ -106,6 +103,7 @@ namespace System.Linq
             cmd.ApplyCurrentTransaction(ctx);
             cmd.CommandText = sql;
             cmd.AddParameters(ctx, parameters);
+            ctx.Log(sql);
             return cmd.ExecuteNonQuery();
         }
 
@@ -153,13 +151,13 @@ namespace System.Linq
         public static BatchUpdateBuilder<TEntity> BatchUpdate<TEntity>(this DbContext ctx) where TEntity : class
         {
             DbSet<TEntity> dbSet = ctx.Set<TEntity>();
-            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx, dbSet);
+            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx, dbSet, true);
             return builder;
         }
 
         public static BatchUpdateBuilder<TEntity> BatchUpdate<TEntity>(this DbSet<TEntity> dbSet, DbContext ctx) where TEntity : class
         {
-            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx, dbSet);
+            BatchUpdateBuilder<TEntity> builder = new BatchUpdateBuilder<TEntity>(ctx, dbSet, false);
             return builder;
         }
 

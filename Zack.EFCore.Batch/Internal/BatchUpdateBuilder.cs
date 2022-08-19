@@ -7,21 +7,22 @@ using System.Text;
 
 namespace Zack.EFCore.Batch.Internal
 {
-    public class BatchUpdateBuilder<TEntity> where TEntity:class
+    public class BatchUpdateBuilder<TEntity> where TEntity : class
     {
         private IList<Setter<TEntity>> setters = new List<Setter<TEntity>>();
 
-        private DbContext dbContext;
-
-        private DbSet<TEntity> dbSet;
+        private readonly DbContext dbContext;
+        private readonly DbSet<TEntity> dbSet;
+        private readonly bool simleProcess;
 
         private int? skip;
         private int? take;
 
-        public BatchUpdateBuilder(DbContext dbContext,DbSet<TEntity> dbSet)
+        public BatchUpdateBuilder(DbContext dbContext, DbSet<TEntity> dbSet, bool simleProcess)
         {
             this.dbContext = dbContext;
             this.dbSet = dbSet;
+            this.simleProcess = simleProcess;
         }
 
         private BatchUpdateBuilder<TEntity> Set(LambdaExpression nameExpr,
@@ -38,7 +39,7 @@ namespace Zack.EFCore.Batch.Internal
         /// <param name="name">something like: b=>b.Age</param>
         /// <param name="value">something like: b=>b.Age+1</param>
         /// <returns></returns>
-        public BatchUpdateBuilder<TEntity> Set<TP>(Expression<Func<TEntity, TP>> name, 
+        public BatchUpdateBuilder<TEntity> Set<TP>(Expression<Func<TEntity, TP>> name,
             Expression<Func<TEntity, TP>> value)
         {
             var propertyType = typeof(TP);
@@ -60,7 +61,7 @@ namespace Zack.EFCore.Batch.Internal
             //fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/47
             Expression valueExpr = Expression.Constant(value, propertyType);
             var pExpr = Expression.Parameter(typeof(TEntity));
-            var valueLambdaExpr = Expression.Lambda<Func<TEntity,TP>>(valueExpr, pExpr);
+            var valueLambdaExpr = Expression.Lambda<Func<TEntity, TP>>(valueExpr, pExpr);
             return Set(nameExpr, valueLambdaExpr, propertyType);
         }
 
@@ -72,20 +73,20 @@ namespace Zack.EFCore.Batch.Internal
             if (propInfo == null) throw new InvalidOperationException($"Cannot find property {name} from {typeof(TEntity)}");
             Type propType = propInfo.PropertyType;//typeof of property
 
-            
+
             Type? valueType;
-            if(propType.IsNullableType())
+            if (propType.IsNullableType())
             {
                 valueType = Nullable.GetUnderlyingType(propType);//get int from int?
             }
             else
             {
-                if(value==null) throw new InvalidOperationException($"{typeof(TEntity)}.{name} cannot be null");
+                if (value == null) throw new InvalidOperationException($"{typeof(TEntity)}.{name} cannot be null");
                 valueType = propType;
             }
             if (valueType == null) throw new InvalidOperationException("valueType is null");
             Expression valueExpr;
-            if (value==null)
+            if (value == null)
             {
                 valueExpr = Expression.Constant(null, propType);
             }
@@ -105,7 +106,7 @@ namespace Zack.EFCore.Batch.Internal
             if (setters.Count <= 0)
             {
                 throw new InvalidOperationException("At least a Set() should be used.");
-            }       
+            }
 
             ISqlGenerationHelper sqlGenHelpr = this.dbContext.GetService<ISqlGenerationHelper>();
 
@@ -116,13 +117,13 @@ namespace Zack.EFCore.Batch.Internal
             //for example, select Age,Age+3,Name,"tom" is converted into
             //Age=Age+3,Name="tom"
             var parameter = Expression.Parameter(typeof(TEntity), "e");
-            Expression[] initializers = new Expression[setters.Count*2];
-            for(var i=0;i<setters.Count;i++)
+            Expression[] initializers = new Expression[setters.Count * 2];
+            for (var i = 0; i < setters.Count; i++)
             {
                 var setter = setters[i];
                 var propertyType = typeof(object);
                 initializers[i * 2] = Expression.Convert(Expression.Invoke(setter.Name, parameter), propertyType);
-                initializers[i * 2+1] = Expression.Convert(Expression.Invoke(setter.Value, parameter), propertyType);
+                initializers[i * 2 + 1] = Expression.Convert(Expression.Invoke(setter.Value, parameter), propertyType);
             }
 
             //fix the bug: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/22
@@ -140,11 +141,11 @@ namespace Zack.EFCore.Batch.Internal
             {
                 queryable = queryable.IgnoreQueryFilters();
             }
-            if (predicate!=null)
+            if (predicate != null)
             {
                 queryable = queryable.Where(predicate);
             }
-            if(this.skip!=null)
+            if (this.skip != null)
             {
                 queryable = queryable.Skip((int)this.skip);
             }
@@ -155,37 +156,37 @@ namespace Zack.EFCore.Batch.Internal
             IQueryable<object> selectQueryable = queryable.Select(selectExpression);
             var parsingResult = selectQueryable.Parse(this.dbContext, ignoreQueryFilters);
 
-            if (distinctiveInitializers.Count()!=parsingResult.ProjectionSQL.Count())
+            if (distinctiveInitializers.Count() != parsingResult.ProjectionSQL.Count())
             {
                 throw new InvalidOperationException("The count of columns initializersSet and ProjectionSQL should equal.");
             }
             //key is b => b.Title, value is the related SQL,like "b".Title
-            Dictionary<Expression,string> initializerSQLDict = new(new ExpressionEqualityComparer());
-            for(int i=0;i<distinctiveInitializers.Length;i++)
+            Dictionary<Expression, string> initializerSQLDict = new(new ExpressionEqualityComparer());
+            for (int i = 0; i < distinctiveInitializers.Length; i++)
             {
                 Expression expression = distinctiveInitializers.ElementAt(i);
                 initializerSQLDict[expression] = parsingResult.ProjectionSQL.ElementAt(i);
             }
-            string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName,parsingResult.Schema);
+            string tableName = sqlGenHelpr.DelimitIdentifier(parsingResult.TableName, parsingResult.Schema);
             StringBuilder sbSQL = new StringBuilder();
-            sbSQL.Append("Update ").Append(tableName).Append(" ")
+            sbSQL.Append("UPDATE ").Append(tableName).Append(" ")
                 .Append("SET ");
 
             var entityType = dbContext.Model.FindEntityType(typeof(TEntity));
             IRelationalTypeMappingSource typeMappingSrc = dbContext.GetService<IRelationalTypeMappingSource>();
-            for(int i=0;i<initializers.Length;i=i+2)
+            for (int i = 0; i < initializers.Length; i = i + 2)
             {
                 //query SQL of two columns from initializerSQLDict
                 string columnName = initializerSQLDict[initializers[i]];
-                string columnValue = initializerSQLDict[initializers[i+1]];
+                string columnValue = initializerSQLDict[initializers[i + 1]];
                 var setter = setters[i / 2];
                 var property = entityType.GetProperty(setter.PropertyName);
                 var valueConverter = property.GetValueConverter();
-                
+
                 //fix bug start: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/4
-                if (valueConverter!=null&&setter.PropertyType.IsEnum)
+                if (valueConverter != null && setter.PropertyType.IsEnum)
                 {
-                    if(!(setter.Value.Body is ConstantExpression))
+                    if (!(setter.Value.Body is ConstantExpression))
                     {
                         throw new NotSupportedException("Only assignment of constant values to enumerated types is supported currently.");
                     }
@@ -207,22 +208,21 @@ namespace Zack.EFCore.Batch.Internal
                 }
             }
             sbSQL.AppendLine();
-            /*
-            if (parsingResult.FullSQL.Contains("join", StringComparison.OrdinalIgnoreCase))
+
+            if (simleProcess)
             {
-                string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
-                sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable,dbContext, aliasSeparator));
-            }
-            else
-            {
+
                 if (!string.IsNullOrWhiteSpace(parsingResult.PredicateSQL))
                 {
                     sbSQL.Append("WHERE ").Append(parsingResult.PredicateSQL);
                 }
             }
-            */
-            string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
-            sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable, dbContext, aliasSeparator));
+            else
+            {
+                string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
+                sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable, dbContext, aliasSeparator));
+            }
+
             parameters = parsingResult.Parameters;
             return sbSQL.ToString();
         }
@@ -249,32 +249,30 @@ namespace Zack.EFCore.Batch.Internal
 
         public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
         {
-            string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
-            this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.ApplyCurrentTransaction(this.dbContext);
-                cmd.CommandText = sql;
-                cmd.AddParameters(dbContext, parameters);
-                return await cmd.ExecuteNonQueryAsync(cancellationToken);
-            }
+            // this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
+            using var cmd = conn.CreateCommand();
+            cmd.ApplyCurrentTransaction(this.dbContext);
+            cmd.CommandText = sql;
+            cmd.AddParameters(dbContext, parameters);
+            dbContext.Log(sql);
+            return await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        public int Execute(bool ignoreQueryFilters=false)
+        public int Execute(bool ignoreQueryFilters = false)
         {
             string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
             var conn = dbContext.Database.GetDbConnection();
             conn.OpenIfNeeded();
-            this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.ApplyCurrentTransaction(this.dbContext);
-                cmd.CommandText = sql;
-                cmd.AddParameters(dbContext,parameters);
-                return cmd.ExecuteNonQuery();
-            }
+            // this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
+            using var cmd = conn.CreateCommand();
+            cmd.ApplyCurrentTransaction(this.dbContext);
+            cmd.CommandText = sql;
+            cmd.AddParameters(dbContext, parameters);
+            dbContext.Log(sql);
+            return cmd.ExecuteNonQuery();
         }
     }
 
