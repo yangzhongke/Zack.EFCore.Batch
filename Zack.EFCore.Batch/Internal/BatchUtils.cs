@@ -11,6 +11,7 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,21 +26,46 @@ namespace Zack.EFCore.Batch.Internal
 					&& type.GetGenericTypeDefinition() == typeof(Nullable<>);
 		}
 
-		public static string GetPKColName<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
+		private static IProperty GetPKProperty<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
 		{
-			var pkProps = dbSet.EntityType.FindPrimaryKey().Properties;
-			if(pkProps.Count!=1)
+            var pkProps = dbSet.EntityType.FindPrimaryKey().Properties;
+            if (pkProps.Count != 1)
             {
-				throw new ArgumentException("Only entity types with one single primary key are supported.");
+                throw new ArgumentException("Only entity types with one single primary key are supported.");
             }
-			string pkColName = pkProps[0].GetColumnName(StoreObjectIdentifier.SqlQuery(dbSet.EntityType));
+			return pkProps[0];
+
+        }
+
+
+        public static string GetPKColName<TEntity>(DbSet<TEntity> dbSet) where TEntity : class
+		{
+			var pkProp = GetPKProperty<TEntity>(dbSet);
+			string pkColName = pkProp.GetColumnName(StoreObjectIdentifier.SqlQuery(dbSet.EntityType));
 			return pkColName;
         }
+
+		private static Expression<Func<TEntity,object>> GetSelectPkExpression<TEntity>(DbContext dbCtx) where TEntity : class
+        {
+
+            var parameter = Expression.Parameter(typeof(TEntity), "e");
+			var pkProp = GetPKProperty<TEntity>(dbCtx.Set<TEntity>());
+			string pkPropName = pkProp.Name;
+            
+            var body = Expression.Convert(Expression.MakeMemberAccess(parameter, typeof(TEntity).GetProperty(pkPropName)),typeof(object));
+			return (Expression<Func<TEntity, object>>)Expression.Lambda(body, parameter);
+        }
+
 		public static string BuildWhereSubQuery<TEntity>(IQueryable<TEntity> queryable, DbContext dbCtx, string aliasSeparator) where TEntity : class
 		{
+            IQueryProvider queryProvider = queryable.Provider;
+            //just select primary key to solve: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/87
+            IQueryable whereQuerable = queryable.Select(GetSelectPkExpression<TEntity>(dbCtx));
+
 			//fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/57 and https://github.com/yangzhongke/Zack.EFCore.Batch/issues/54
-			IRelationalQueryingEnumerable? queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as IRelationalQueryingEnumerable;
-			if(queryingEnumerable==null)
+			/*IRelationalQueryingEnumerable? queryingEnumerable = queryable.Provider.Execute<IEnumerable>(queryable.Expression) as IRelationalQueryingEnumerable;*/
+            IRelationalQueryingEnumerable? queryingEnumerable = queryProvider.Execute<IEnumerable>(whereQuerable.Expression) as IRelationalQueryingEnumerable;
+            if (queryingEnumerable==null)
             {
 				throw new ApplicationException("Can't get IRelationalQueryingEnumerable from Expression");
 			}
@@ -48,18 +74,27 @@ namespace Zack.EFCore.Batch.Internal
 			{
 				subQuerySQL = cmd.CommandText;
 			}
-			//https://github.com/yangzhongke/Zack.EFCore.Batch/issues/53
+            //https://github.com/yangzhongke/Zack.EFCore.Batch/issues/53
 
-			//string tableAlias = BatchUtils.UniqueAlias();
-			string tableAlias = "temp1";
-			var dbSet = dbCtx.Set<TEntity>();
+            //string tableAlias = BatchUtils.UniqueAlias();
+            string tableAlias = "temp1";
+            var dbSet = dbCtx.Set<TEntity>();
 			string pkName = BatchUtils.GetPKColName<TEntity>(dbSet);
 			ISqlGenerationHelper sqlGenHelpr = dbCtx.GetService<ISqlGenerationHelper>();
 			string quotedPkName = sqlGenHelpr.DelimitIdentifier(pkName);//pkId-->"pdId" on NPgsql
 			StringBuilder sbSQL = new StringBuilder();
-			sbSQL.Append(quotedPkName).Append(" IN(SELECT ").Append(quotedPkName).Append(" FROM (")
-				.Append(subQuerySQL).AppendLine($") {aliasSeparator} {tableAlias} )");
-			return sbSQL.ToString();
+            //sbSQL.Append(quotedPkName).Append(" IN(").Append(subQuerySQL).AppendLine(")");
+            //if not put a duplicate subquery, an error will be throw no Mysql: You can't specify target table 'T_Comments' for update in FROM clause
+			if(dbCtx.Database.ProviderName.Contains("mysql",StringComparison.OrdinalIgnoreCase))
+			{
+                sbSQL.Append(quotedPkName).Append(" IN(SELECT ").Append(quotedPkName).Append(" FROM (")
+					.Append(subQuerySQL).AppendLine($") {aliasSeparator} {tableAlias} )");
+            }
+			else
+			{
+                sbSQL.Append(quotedPkName).Append(" IN(").Append(subQuerySQL).AppendLine(")");
+            }
+            return sbSQL.ToString();
 		}
 
 		/// <summary>

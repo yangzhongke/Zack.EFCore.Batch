@@ -13,7 +13,7 @@ namespace Demo
         public DbSet<Comment> Comments { get; set; }
 
         //public DbSet<NodaTimeEntity> NodaTimeEntities { get; set; }
-
+        //private DateTime testDateTime = DateTime.Now;
         public BaseDbContext(DbContextOptions options):base(options)
         {
 
@@ -29,7 +29,9 @@ namespace Demo
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BaseDbContext).Assembly);
-            modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime>DateTime.Now);
+            //modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime>DateTime.Now);
+           // modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime > DateTime.Now
+                //&&b.PubTime> testDateTime);//https://github.com/yangzhongke/Zack.EFCore.Batch/issues/84
         }
     }
 }

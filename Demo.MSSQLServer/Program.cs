@@ -13,7 +13,6 @@ namespace Demo
             //Instant now = SystemClock.Instance.GetCurrentInstant();                       
             //await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);
             //await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= SystemClock.Instance.GetCurrentInstant(), true);
-            /*
             await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
             .Where(c => c.Id == 3)
             .Skip(3)
@@ -39,7 +38,7 @@ namespace Demo
             await TestCase1.RunAsync(ctx);
             await TestCase2.RunAsync(ctx);
             List<Book> books = TestBulkInsert1.BuildBooks();
-            ctx.BulkInsert(books);
+            //ctx.BulkInsert(books);
             List<Author> authors = TestBulkInsert1.BuildAuthors();
             ctx.BulkInsert(authors);
             await TestCaseLimit.RunAsync(ctx);
@@ -59,12 +58,8 @@ namespace Demo
             .Set("Title", "Haha")
             .Set("Price", 3)
             .Where(b => b.Price > 888)
-            .ExecuteAsync();*/
+            .ExecuteAsync();
             //ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
-            IEntityType etArticle = ctx.Model.FindEntityType(typeof(Article).FullName);
-            IProperty propTitle = etArticle.FindProperty("Title");
-            string colName1 = propTitle.GetColumnName(StoreObjectIdentifier.SqlQuery(etArticle));
-            Console.WriteLine(colName1);
         }
     }
 }

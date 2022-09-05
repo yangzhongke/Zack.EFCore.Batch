@@ -18,7 +18,8 @@ namespace Demo
                     .Set("Title", "Haha")
                     .Set("Price", null)
                     .Set(b => b.PubTime, b => b.PubTime.Value.AddDays(5))
-                    .Where(b => b.Price > 888)
+                    //.Where(b => b.Price > 888)
+                    .Where(b=>string.IsNullOrEmpty(b.AuthorName))
                     .ExecuteAsync();
 
                 string title = "666";

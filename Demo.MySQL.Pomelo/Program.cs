@@ -24,10 +24,10 @@ namespace Demo
                     //.Set("Price", null)
                     .Set("Price", null)
                     //.Set(b=>b.Price,b=> null)
-                    .Where(b => b.Id > 3)
+                    //.Where(b => b.Id > 3)
+                    .Where(b => string.IsNullOrEmpty(b.AuthorName))
                     .ExecuteAsync();
 
-                    return;
                     await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
                         .Where(c => c.Id == 3)
                         .Skip(3)

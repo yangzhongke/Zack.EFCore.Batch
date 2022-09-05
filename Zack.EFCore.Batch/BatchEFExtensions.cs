@@ -39,16 +39,6 @@ namespace System.Linq
             sbSQL.Append("Delete FROM ").Append(tableName);
             if(!string.IsNullOrWhiteSpace(parsingResult.PredicateSQL))
             {
-                /*
-                if(!parsingResult.FullSQL.Contains("join",StringComparison.OrdinalIgnoreCase))
-                {
-                    sbSQL.Append(" WHERE ").Append(parsingResult.PredicateSQL);
-                }
-                else//like DeleteRangeAsync<Comment>(c => c.Article.Id == id);
-                {
-                    string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;                   
-                    sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable, ctx, aliasSeparator));
-                }*/
                 //fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/48
                 string aliasSeparator = parsingResult.QuerySqlGenerator.P_AliasSeparator;
                 sbSQL.Append(" WHERE ").Append(BatchUtils.BuildWhereSubQuery(queryable, ctx, aliasSeparator));
