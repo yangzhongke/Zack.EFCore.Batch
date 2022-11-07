@@ -8,7 +8,7 @@ using Zack.EFCore.Batch.Internal;
 
 namespace System.Linq
 {
-    public static class BatchEFExtensions
+    public static class InMemoryBatchEFExtensions
     {
         private static IEnumerable<TEntity> BuildItemsToBeRemoved<TEntity>(IQueryable<TEntity> queryable, Expression<Func<TEntity, bool>>? predicate, bool ignoreQueryFilters) where TEntity : class
         {            
