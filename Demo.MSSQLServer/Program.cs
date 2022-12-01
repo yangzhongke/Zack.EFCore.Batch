@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using NodaTime;
+using System.Diagnostics;
 
 namespace Demo
 {
@@ -68,7 +69,18 @@ namespace Demo
             .Set(b=>b.Pages,b=>3)
             .Where(b => b.Price > 888)
             .ExecuteAsync();*/
-            ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
+            var items = TestOwnedType.BuildArticlesForInsert(100000);
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            ctx.BulkInsert(items);
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.Elapsed);
+            stopwatch.Reset();
+            stopwatch.Start();
+            ctx.AddRange(items);
+            ctx.SaveChanges();
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.Elapsed);
         }
     }
 }

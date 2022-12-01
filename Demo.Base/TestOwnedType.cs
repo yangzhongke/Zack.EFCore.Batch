@@ -2,9 +2,9 @@
 {
     public class TestOwnedType
     {
-        public static IEnumerable<Article> BuildArticlesForInsert()
+        public static IEnumerable<Article> BuildArticlesForInsert(int count=30)
         {
-            for(int i=0;i<30;i++)
+            for(int i=0;i< count; i++)
             {
                 Article a1 = new Article();
                 a1.Content = "Content"+i;
