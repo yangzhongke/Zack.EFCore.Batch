@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Sqlite.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -115,3 +116,4 @@ namespace Zack.EFCore.Batch.Sqlite.Internal
 		}
 	}
 }
+#endif

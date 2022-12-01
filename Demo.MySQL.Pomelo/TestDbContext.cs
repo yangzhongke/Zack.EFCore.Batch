@@ -24,8 +24,9 @@ namespace Demo
             optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(8, 0, 20)),builder=> {
                 builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
             });
-
+#if (!NET7_0_OR_GREATER)
             optionsBuilder.UseBatchEF_MySQLPomelo();
+#endif
         }
     }
 }

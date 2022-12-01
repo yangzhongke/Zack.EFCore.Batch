@@ -1,3 +1,5 @@
+[.NET 7 and above users, please check this](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_NET7.md)  
+
 # Zack.EFCore.Batch
 [中文文档 Chinese version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_CN.md)  
 

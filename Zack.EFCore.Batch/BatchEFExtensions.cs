@@ -172,6 +172,9 @@ namespace System.Linq
         /// <returns></returns>
         public static SelectParsingResult Parse<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx,bool ignoreQueryFilters) where TEntity:class
         {
+#if (NET7_0_OR_GREATER)
+            return default;
+#else
             SelectParsingResult parsingResult = new SelectParsingResult();
             Expression query = queryable.Expression;
             var databaseDependencies = ctx.GetService<DatabaseDependencies>();
@@ -219,6 +222,7 @@ namespace System.Linq
             parsingResult.Schema = tableExpression.Schema;
             parsingResult.FullSQL = cmd.CommandText;
             return parsingResult;
+#endif
         }
     }
 }

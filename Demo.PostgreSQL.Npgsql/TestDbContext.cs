@@ -12,7 +12,9 @@ namespace Demo
             optionsBuilder.LogTo(Console.WriteLine);
             string connStr = "Host=127.0.0.1;Database=test;Username=postgres;Password=dLLikhQWy5TBz1uM;Keepalive=30";
             optionsBuilder.UseNpgsql(connStr);
+#if (!NET7_0_OR_GREATER)
             optionsBuilder.UseBatchEF_Npgsql();
+#endif
         }
     }
 }

@@ -10,9 +10,11 @@ namespace Demo
         static async Task Main(string[] args)
         {
             using TestDbContext ctx = new TestDbContext();
+
             //Instant now = SystemClock.Instance.GetCurrentInstant();                       
             //await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);
             //await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= SystemClock.Instance.GetCurrentInstant(), true);
+            /*
             await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
             .Where(c => c.Id == 3)
             .Skip(3)
@@ -58,8 +60,15 @@ namespace Demo
             .Set("Title", "Haha")
             .Set("Price", 3)
             .Where(b => b.Price > 888)
-            .ExecuteAsync();
+            .ExecuteAsync();*/
             //ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
+            /*
+            await ctx.BatchUpdate<Book>()
+            .Set(b=>b.Price,b=>3)
+            .Set(b=>b.Pages,b=>3)
+            .Where(b => b.Price > 888)
+            .ExecuteAsync();*/
+            ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
         }
     }
 }

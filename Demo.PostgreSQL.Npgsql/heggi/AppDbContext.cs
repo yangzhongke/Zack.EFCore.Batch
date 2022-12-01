@@ -10,7 +10,9 @@ namespace Demo.PostgreSQL.Npgsql.heggi
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.LogTo(Console.WriteLine);
             optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=test;Username=postgres;Password=123456;Keepalive=30");
+#if (!NET7_0_OR_GREATER)
             optionsBuilder.UseBatchEF_Npgsql();
+#endif
         }
 
         public DbSet<User> User { get; set; }

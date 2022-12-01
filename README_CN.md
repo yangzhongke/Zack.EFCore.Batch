@@ -1,3 +1,5 @@
+[.NET 7 及以上的用户，请看这里](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_CN_NET7.md) 
+
 # Zack.EFCore.Batch
 使用这个开发包, Entity Framework Core 用户可以使用LINQ语句删除或者更新多条数据库记录，操作只执行一条SQL语句并且不需要首先把实体对象加载到内存中。 
 这个开发包支持 Entity Framework Core 5/6。  

@@ -8,7 +8,7 @@
             for (int i = 0; i < 100; i++)
             {
                 Book b = new Book { AuthorName = "abc" + i, 
-                    Price = new Random().NextDouble(), 
+                    Price = new Random().Next(), 
                     PubTime = DateTime.Now, 
                     Title = Guid.NewGuid().ToString() };
                 books.Add(b);

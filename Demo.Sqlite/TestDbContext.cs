@@ -10,7 +10,9 @@ namespace Demo
             optionsBuilder.LogTo(Console.WriteLine);
             string connStr = "Data Source=d:\\blogging.db";
             optionsBuilder.UseSqlite(connStr);
-            optionsBuilder.UseBatchEF_Sqlite();         
+#if (!NET7_0_OR_GREATER)
+            optionsBuilder.UseBatchEF_Sqlite(); 
+#endif
         }
     }
 }

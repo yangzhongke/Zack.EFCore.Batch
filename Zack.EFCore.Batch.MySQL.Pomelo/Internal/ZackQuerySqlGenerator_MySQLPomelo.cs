@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
@@ -127,3 +128,4 @@ namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
 		}
 	}
 }
+#endif

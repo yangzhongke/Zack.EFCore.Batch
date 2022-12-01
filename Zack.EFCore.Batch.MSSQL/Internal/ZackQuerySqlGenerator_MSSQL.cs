@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -113,3 +114,4 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
         }
     }
 }
+#endif
