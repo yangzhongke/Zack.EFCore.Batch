@@ -1,4 +1,5 @@
 # Zack.EFCore.Batch
+Since EFCore 7 has built-in support of 'batch update and delete' ([please see this page](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)), this library doesn't support EFCore 7 and higher anymore), but BulkInsert is still supported.
 
  Using this library, Entity Framework Core users can insert multiple records quickly.
  This libary supports Entity Framework Core 7 and above.  

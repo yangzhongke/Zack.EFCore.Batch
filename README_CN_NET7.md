@@ -1,4 +1,6 @@
 # Zack.EFCore.Batch
+.NET 7开始，EF Core已经内置了对批量删除和批量更新的支持，因此本项目将不再.NET7中支持这两个功能（[详情点击这里](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)）。但是本项目仍然在.NET 7中支持数据的批量插入。
+
 使用这个开发包, Entity Framework Core 用户可以快速批量插入数据。
 这个开发包支持 Entity Framework Core 7及以上版本。  
 
