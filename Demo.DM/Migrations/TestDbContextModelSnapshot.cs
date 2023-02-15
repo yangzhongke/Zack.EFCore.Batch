@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Demo.DM.Migrations
+#nullable disable
+
+namespace Demo.DM_NET6.Migrations
 {
     [DbContext(typeof(TestDbContext))]
     partial class TestDbContextModelSnapshot : ModelSnapshot
@@ -16,15 +18,14 @@ namespace Demo.DM.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn)
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.7");
+                .HasAnnotation("ProductVersion", "6.0.11")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             modelBuilder.Entity("Demo.Author", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("BIGINT")
-                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -43,8 +44,7 @@ namespace Demo.DM.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIGINT")
-                        .HasColumnName("PKId")
-                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("PKId");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -59,7 +59,7 @@ namespace Demo.DM.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("T_Articles");
+                    b.ToTable("T_Articles", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Base.Comment", b =>
@@ -67,8 +67,7 @@ namespace Demo.DM.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("BIGINT")
-                        .HasColumnName("PKId")
-                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("PKId");
 
                     b.Property<long>("ArticleId")
                         .HasColumnType("BIGINT");
@@ -82,36 +81,58 @@ namespace Demo.DM.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.ToTable("T_Comments");
+                    b.ToTable("T_Comments", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Book", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("BIGINT")
-                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AuthorName")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR2(8188)");
 
-                    b.Property<int?>("Pages")
+                    b.Property<int>("Pages")
                         .HasColumnType("INT");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("FLOAT");
+                    b.Property<int>("Price")
+                        .HasColumnType("INT");
 
                     b.Property<DateTime?>("PubTime")
                         .HasColumnType("TIMESTAMP");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR2(8188)");
 
                     b.HasKey("Id");
 
                     b.ToTable("T_Books", "MySchema1");
+                });
+
+            modelBuilder.Entity("Demo.Base.Article", b =>
+                {
+                    b.OwnsOne("Demo.Base.MultiString", "Remarks", b1 =>
+                        {
+                            b1.Property<long>("ArticleId")
+                                .HasColumnType("BIGINT");
+
+                            b1.Property<string>("Chinese")
+                                .HasColumnType("NVARCHAR2(8188)");
+
+                            b1.Property<string>("English")
+                                .HasColumnType("NVARCHAR2(8188)");
+
+                            b1.HasKey("ArticleId");
+
+                            b1.ToTable("T_Articles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ArticleId");
+                        });
+
+                    b.Navigation("Remarks")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Demo.Base.Comment", b =>

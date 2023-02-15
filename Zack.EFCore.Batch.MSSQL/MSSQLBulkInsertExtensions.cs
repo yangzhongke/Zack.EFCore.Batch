@@ -1,9 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
 using Zack.EFCore.Batch.Internal;
 
 namespace System.Linq
@@ -11,13 +8,17 @@ namespace System.Linq
     public static class MSSQLBulkInsertExtensions
     {
         public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, SqlTransaction externalTransaction = null, SqlBulkCopyOptions copyOptions = SqlBulkCopyOptions.Default, CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items, SqlTransaction externalTransaction = null, SqlBulkCopyOptions copyOptions = SqlBulkCopyOptions.Default, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond=null) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx,dbCtx.Set<TEntity>(), items);
             using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx,externalTransaction,copyOptions))
             {                
+                if(bulkCopyTimeoutInSecond!=null)
+                {
+                    bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+                }
                 await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
             }
         }
@@ -38,13 +39,17 @@ namespace System.Linq
         }
 
         public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, SqlTransaction externalTransaction = null, SqlBulkCopyOptions copyOptions = SqlBulkCopyOptions.Default) where TEntity : class
+            IEnumerable<TEntity> items, SqlTransaction externalTransaction = null, SqlBulkCopyOptions copyOptions = SqlBulkCopyOptions.Default,int ? bulkCopyTimeoutInSecond = null) where TEntity : class
         {            
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             using (SqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((SqlConnection)conn, dbCtx,externalTransaction,copyOptions))
             {
+                if (bulkCopyTimeoutInSecond != null)
+                {
+                    bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+                }
                 bulkCopy.WriteToServer(dataTable);
             }
         }

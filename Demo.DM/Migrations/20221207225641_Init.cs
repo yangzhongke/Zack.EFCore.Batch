@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Demo.DM.Migrations
+#nullable disable
+
+namespace Demo.DM_NET6.Migrations
 {
     public partial class Init : Migration
     {
@@ -14,10 +16,11 @@ namespace Demo.DM.Migrations
                 name: "T_Articles",
                 columns: table => new
                 {
-                    PKId = table.Column<long>(type: "BIGINT", nullable: false)
-                        .Annotation("Dm:Identity", "1, 1"),
+                    PKId = table.Column<long>(type: "BIGINT", nullable: false),
                     Title = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
-                    Content = table.Column<string>(type: "NVARCHAR2(8188)", nullable: false)
+                    Content = table.Column<string>(type: "NVARCHAR2(8188)", nullable: false),
+                    Remarks_Chinese = table.Column<string>(type: "NVARCHAR2(8188)", nullable: true),
+                    Remarks_English = table.Column<string>(type: "NVARCHAR2(8188)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,8 +31,7 @@ namespace Demo.DM.Migrations
                 name: "T_Authors",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "BIGINT", nullable: false)
-                        .Annotation("Dm:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "BIGINT", nullable: false),
                     Name = table.Column<string>(type: "NVARCHAR2(8188)", nullable: false),
                     Tags = table.Column<string>(type: "NVARCHAR2(8188)", nullable: true)
                 },
@@ -43,13 +45,12 @@ namespace Demo.DM.Migrations
                 schema: "MySchema1",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "BIGINT", nullable: false)
-                        .Annotation("Dm:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "NVARCHAR2(8188)", nullable: false),
+                    Id = table.Column<long>(type: "BIGINT", nullable: false),
+                    Title = table.Column<string>(type: "NVARCHAR2(8188)", nullable: true),
                     PubTime = table.Column<DateTime>(type: "TIMESTAMP", nullable: true),
-                    Price = table.Column<double>(type: "FLOAT", nullable: false),
-                    AuthorName = table.Column<string>(type: "NVARCHAR2(8188)", nullable: false),
-                    Pages = table.Column<int>(type: "INT", nullable: true)
+                    Price = table.Column<int>(type: "INT", nullable: false),
+                    AuthorName = table.Column<string>(type: "NVARCHAR2(8188)", nullable: true),
+                    Pages = table.Column<int>(type: "INT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,8 +61,7 @@ namespace Demo.DM.Migrations
                 name: "T_Comments",
                 columns: table => new
                 {
-                    PKId = table.Column<long>(type: "BIGINT", nullable: false)
-                        .Annotation("Dm:Identity", "1, 1"),
+                    PKId = table.Column<long>(type: "BIGINT", nullable: false),
                     ArticleId = table.Column<long>(type: "BIGINT", nullable: false),
                     Message = table.Column<string>(type: "NVARCHAR2(8188)", nullable: false)
                 },

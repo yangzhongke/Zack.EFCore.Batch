@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Demo.DM_NET6;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Demo
@@ -13,8 +14,7 @@ namespace Demo
                     Console.WriteLine(msg);
                 }
             });
-            string connStr = "SERVER=172.29.82.96;PORT=5236;USER=SYSDBA;PASSWORD=SYSDBASYSDBA";
-            optionsBuilder.UseDm(connStr);
+            optionsBuilder.UseDm(SQLHelper.ConnStr);
             optionsBuilder.UseBatchEF_DM();            
         }
     }

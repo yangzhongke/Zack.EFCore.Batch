@@ -32,22 +32,30 @@ namespace System.Linq
         }
 
         public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, MySqlTransaction? transaction = null,CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items, MySqlTransaction? transaction = null,CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn,dbCtx, transaction);
+            if (bulkCopyTimeoutInSecond != null)
+            {
+                bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+            }
             await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
         }
 
         public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, MySqlTransaction? transaction = null, CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items, MySqlTransaction? transaction = null, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn, dbCtx, transaction);
+            if (bulkCopyTimeoutInSecond != null)
+            {
+                bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+            }
             bulkCopy.WriteToServer(dataTable);
         }
     }

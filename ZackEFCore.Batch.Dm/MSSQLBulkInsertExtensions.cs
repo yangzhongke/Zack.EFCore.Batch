@@ -11,13 +11,17 @@ namespace System.Linq
     public static class MSSQLBulkInsertExtensions
     {
         public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, DmTransaction externalTransaction = null, DmBulkCopyOptions copyOptions = DmBulkCopyOptions.Default, CancellationToken cancellationToken = default) where TEntity : class
+            IEnumerable<TEntity> items, DmTransaction externalTransaction = null, DmBulkCopyOptions copyOptions = DmBulkCopyOptions.Default, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
         {
             var conn = dbCtx.Database.GetDbConnection();
             await conn.OpenIfNeededAsync(cancellationToken);
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             using (DmBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((DmConnection)conn, dbCtx,externalTransaction,copyOptions))
             {
+                if (bulkCopyTimeoutInSecond != null)
+                {
+                    bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+                }
                 await Task.Run(() => {
                     WriteToServer(bulkCopy,dataTable);
                 },cancellationToken);
@@ -59,13 +63,17 @@ namespace System.Linq
         }
 
         public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, DmTransaction externalTransaction = null, DmBulkCopyOptions copyOptions = DmBulkCopyOptions.Default) where TEntity : class
+            IEnumerable<TEntity> items, DmTransaction externalTransaction = null, DmBulkCopyOptions copyOptions = DmBulkCopyOptions.Default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
         {            
             var conn = dbCtx.Database.GetDbConnection();
             conn.OpenIfNeeded();
             DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
             using (DmBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((DmConnection)conn, dbCtx,externalTransaction,copyOptions))
             {
+                if (bulkCopyTimeoutInSecond != null)
+                {
+                    bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+                }
                 WriteToServer(bulkCopy, dataTable);
             }
         }

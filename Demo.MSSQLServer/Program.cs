@@ -69,6 +69,8 @@ namespace Demo
             .Set(b=>b.Pages,b=>3)
             .Where(b => b.Price > 888)
             .ExecuteAsync();*/
+
+            /*
             var items = TestOwnedType.BuildArticlesForInsert(100000);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -80,7 +82,14 @@ namespace Demo
             ctx.AddRange(items);
             ctx.SaveChanges();
             stopwatch.Stop();
-            Console.WriteLine(stopwatch.Elapsed);
+            Console.WriteLine(stopwatch.Elapsed);*/
+
+            await ctx.BatchUpdate<Book>()
+            .Set("Title", "Haha")
+            .Set("Price", 3.14)
+            .Set(b => b.PubTime, DateTime.Now)
+            .Where(b => b.Price > 888)
+            .ExecuteAsync();
         }
     }
 }
