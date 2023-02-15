@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage;
 using Oracle.EntityFrameworkCore.Infrastructure.Internal;
 
@@ -24,3 +25,4 @@ namespace Zack.EFCore.Batch.Oracle.Internal
         }
     }
 }
+#endif

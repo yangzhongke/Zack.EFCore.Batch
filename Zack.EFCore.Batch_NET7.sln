@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.MySQL.Pom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Base_NET7", "Demo.Base\Demo.Base_NET7.csproj", "{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zack.EFCore.Batch.Oracle_NET7", "Zack.EFCore.Batch.Oracle\Zack.EFCore.Batch.Oracle_NET7.csproj", "{1A7C0025-EDE8-4046-AB06-8CD27AA30E88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B069F9C7-EF5A-4DF9-B2FA-8711627696B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7C0025-EDE8-4046-AB06-8CD27AA30E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7C0025-EDE8-4046-AB06-8CD27AA30E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7C0025-EDE8-4046-AB06-8CD27AA30E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7C0025-EDE8-4046-AB06-8CD27AA30E88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

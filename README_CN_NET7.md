@@ -6,7 +6,7 @@
 
 ## ÎªÊ²Ã´¿ª·¢Õâ¸ö¹¦ÄÜ£¿
 
-Entity Framework CoreÖĞ¿ÉÒÔÍ¨¹ıAddRange()·½·¨À´ÅúÁ¿²åÈëÊı¾İ£¬µ«ÊÇAddRange()Ìí¼ÓµÄÊı¾İÈÔÈ»ÊÇ±»ÖğÌõÖ´ĞĞInsertÓï¾äÀ´²åÈëµ½Êı¾İ¿âÖĞµÄ£¬Ö´ĞĞĞ§ÂÊ±È½ÏµÍ¡£ÎÒÃÇÖªµÀ£¬ÎÒÃÇ¿ÉÒÔÍ¨¹ıSqlBulkCopyÀ´¿ìËÙµØ²åÈë´óÁ¿µÄÊı¾İµ½SQLServerÊı¾İ¿â£¬ÒòÎªSqlBulkCopyÊÇ°Ñ¶àÌõÊı¾İ´ò³ÉÒ»¸öÊı¾İ°ü·¢ËÍµ½SQLServerµÄ£¬ËùÒÔ²åÈëĞ§ÂÊ·Ç³£¸ß¡£MySQL¡¢PostgreSQLµÈÒ²ÓĞÀàËÆµÄÖ§³Ö¡£
+Entity Framework CoreÖĞ¿ÉÒÔÍ¨¹ıAddRange()·½·¨À´ÅúÁ¿²åÈëÊı¾İ£¬µ«ÊÇAddRange()Ìí¼ÓµÄÊı¾İÈÔÈ»ÊÇ±»ÖğÌõÖ´ĞĞInsertÓï¾äÀ´²åÈëµ½Êı¾İ¿âÖĞµÄ£¬Ö´ĞĞĞ§ÂÊ±È½ÏµÍ¡£ÎÒÃÇÖªµÀ£¬ÎÒÃÇ¿ÉÒÔÍ¨¹ıSqlBulkCopyÀ´¿ìËÙµØ²åÈë´óÁ¿µÄÊı¾İµ½SQLServerÊı¾İ¿â£¬ÒòÎªSqlBulkCopyÊÇ°Ñ¶àÌõÊı¾İ´ò³ÉÒ»¸öÊı¾İ°ü·¢ËÍµ½SQLServerµÄ£¬ËùÒÔ²åÈëĞ§ÂÊ·Ç³£¸ß¡£MySQL¡¢PostgreSQL¡¢OracleµÈÒ²ÓĞÀàËÆµÄÖ§³Ö¡£
 
 µ±È»£¬Ö±½ÓÊ¹ÓÃSqlBulkCopyÀ´½øĞĞÊı¾İ²åÈëĞèÒª³ÌĞòÔ±°ÑÊı¾İÌî³äµ½DataTable£¬¶øÇÒĞèÒª½øĞĞÁĞµÄÓ³ÉäµÈ²Ù×÷£¬»¹ĞèÒª´¦ÀíValueConverterµÈÎÊÌâ£¬ÓÃÆğÀ´±È½ÏÂé·³¡£Òò´ËÎÒ¶ÔÕâĞ©¹¦ÄÜ·â×°£¬´Ó¶øÈÃEF CoreµÄ¿ª·¢ÕßÄÜ¹»¸ü·½±ãµÄÒÔÃæÏòÄ£ĞÍµÄ·½Ê½À´²åÈëÊı¾İ¡£
 
@@ -21,6 +21,7 @@ Entity Framework CoreÖĞ¿ÉÒÔÍ¨¹ıAddRange()·½·¨À´ÅúÁ¿²åÈëÊı¾İ£¬µ«ÊÇAddRange()Ìí¼Óµ
 SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET7
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET7
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET7
+Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET7 
 ```
 
 ### ÅúÁ¿²åÈëÊı¾İ

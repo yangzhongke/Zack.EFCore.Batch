@@ -10,7 +10,7 @@ The AddRange() method can be used to batch insert data in Entity Framework Core.
 
 Of course, using SqlBulkCopy to insert data directly requires the programmer to fill the data to the DataTable, perform column mapping, and handle ValueConverter and other issues, which is troublesome to use. Therefore, I encapsulated these capabilities to make it easier for EF Core developers to insert data in a model-oriented manner.
 
-This library currently supports MS SQLServer, MySQL, and PostgreSQL databases.
+This library currently supports MS SQLServer, MySQL, PostgreSQL, and Oracle databases.
 
 ## Comparison of performance
 
@@ -24,6 +24,7 @@ I did a test of inserting 100,000 pieces of data with SQLServer database, and th
 SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET7
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET7
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET7
+Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET7 
 ``` 
 
 ### BulkInsert
