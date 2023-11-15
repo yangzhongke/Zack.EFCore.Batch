@@ -181,4 +181,6 @@ namespace Zack.EFCore.Batch.Internal
             return dataTable;
         }
     }
+
+
 }

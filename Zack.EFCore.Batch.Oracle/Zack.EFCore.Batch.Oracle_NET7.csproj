@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.9" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.12" />
   </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch_NET7.csproj" />

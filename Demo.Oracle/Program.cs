@@ -1,27 +1,24 @@
 ﻿using Demo.Base;
 using System.Threading.Tasks;
+using Oracle.ManagedDataAccess.Client;
+using Zack.EFCore.Batch.Oracle;
+using Zack.EFCore.Batch.Oracle_NET7;
 
 namespace Demo
 {
-    class Program
-    {
+	class Program
+	{
 
-        static async Task Main(string[] args)
-        {
-            using (TestDbContext ctx = new TestDbContext())
-            {
-                await ctx.BatchUpdate<Book>()
-                    .Set("Title", "Haha")
-                    .Set("Price", 3.14)
-                    .Where(b => b.Price > 888)
-                    .ExecuteAsync();
-                await ctx.BatchUpdate<Book>()
-                .Set("Title", "Haha")
-                .Set("Price", 3)
-                .Where(b => b.Price > 888)
-                .ExecuteAsync();
-                await TestCaseLimit.RunAsync(ctx);
-            }
-        }
-    }
+		static async Task Main(string[] args)
+		{
+			using (TestDbContext ctx = new TestDbContext())
+			{
+				var list = new List<Book>();
+
+				list.Add(new Book { Title = "123" });
+
+				await ctx.BulkInsertAsync(list, OracleBulkCopyOptions.UseInternalTransaction);
+			}
+		}
+	}
 }
