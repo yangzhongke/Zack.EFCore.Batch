@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
 using Zack.EFCore.Batch.Internal;
 
-namespace Zack.EFCore.Batch.Oracle_NET7
+namespace Zack.EFCore.Batch.Oracle
 {
 	public static class OracleBulkInsertExtensions
 	{

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Oracle.ManagedDataAccess.Client;
 using Zack.EFCore.Batch.Oracle;
-using Zack.EFCore.Batch.Oracle_NET7;
 
 namespace Demo
 {
