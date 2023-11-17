@@ -29,9 +29,11 @@ namespace Demo
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BaseDbContext).Assembly);
-            //modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime>DateTime.Now);
-           // modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime > DateTime.Now
-                //&&b.PubTime> testDateTime);//https://github.com/yangzhongke/Zack.EFCore.Batch/issues/84
+			//modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime>DateTime.Now);
+			// modelBuilder.Entity<Book>().HasQueryFilter(b => b.PubTime > DateTime.Now
+			//&&b.PubTime> testDateTime);//https://github.com/yangzhongke/Zack.EFCore.Batch/issues/84
+
+			modelBuilder.Entity<Book>().Property("Price").HasDefaultValue(1);
         }
     }
 }
