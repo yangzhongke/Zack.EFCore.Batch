@@ -42,8 +42,7 @@ namespace Demo
             await TestCase2.RunAsync(ctx);
             List<Book> books = TestBulkInsert1.BuildBooks();
             //ctx.BulkInsert(books);
-            List<Author> authors = TestBulkInsert1.BuildAuthors();
-            ctx.BulkInsert(authors);
+            
             await TestCaseLimit.RunAsync(ctx);
             await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
                 .DeleteRangeAsync(ctx);
@@ -62,7 +61,9 @@ namespace Demo
             .Set("Price", 3)
             .Where(b => b.Price > 888)
             .ExecuteAsync();*/
-			//ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
+			List<Author> authors = TestBulkInsert1.BuildAuthors();
+			ctx.BulkInsert(authors);
+			ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
 			/*
             await ctx.BatchUpdate<Book>()
             .Set(b=>b.Price,b=>3)
@@ -83,13 +84,13 @@ namespace Demo
             ctx.SaveChanges();
             stopwatch.Stop();
             Console.WriteLine(stopwatch.Elapsed);*/
-
+            /*
 				await ctx.BatchUpdate<Book>()
 				.Set("Title", "Haha")
             .Set("Price", 3.14)
             .Set(b => b.PubTime, DateTime.Now)
             .Where(b => b.Price > 888)
-            .ExecuteAsync();
+            .ExecuteAsync();*/
         }
     }
 }

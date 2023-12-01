@@ -1,8 +1,8 @@
 # Zack.EFCore.Batch
-Since EFCore 7 has built-in support of 'batch update and delete' ([please see this page](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)), this library doesn't support EFCore 7 and higher anymore), but BulkInsert is still supported.
+Since EFCore 7/8 has built-in support of 'batch update and delete' ([please see this page](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)), this library doesn't support EFCore 7 and higher anymore), but BulkInsert is still supported.
 
  Using this library, Entity Framework Core users can insert multiple records quickly.
- This libary supports Entity Framework Core 7 and above.  
+ This libary supports Entity Framework Core 7/8 and above.  
 
 ## Why did I develop this feature?
 
@@ -20,12 +20,22 @@ I did a test of inserting 100,000 pieces of data with SQLServer database, and th
  
 ### Install Nuget package:
 
+.NET 7
+
 ```
 SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET7
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET7
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET7
 Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET7 
-``` 
+```
+
+.NET 8
+
+```
+SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET8
+MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET8
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET8
+```
 
 ### BulkInsert
 

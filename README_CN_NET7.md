@@ -1,8 +1,8 @@
 # Zack.EFCore.Batch
-.NET 7¿ªÊ¼£¬EF CoreÒÑ¾­ÄÚÖÃÁË¶ÔÅúÁ¿É¾³ıºÍÅúÁ¿¸üĞÂµÄÖ§³Ö£¬Òò´Ë±¾ÏîÄ¿½«²»ÔÙ.NET7ÖĞÖ§³ÖÕâÁ½¸ö¹¦ÄÜ£¨[ÏêÇéµã»÷ÕâÀï](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)£©¡£µ«ÊÇ±¾ÏîÄ¿ÈÔÈ»ÔÚ.NET 7ÖĞÖ§³ÖÊı¾İµÄÅúÁ¿²åÈë¡£
+.NET 7¿ªÊ¼£¬EF CoreÒÑ¾­ÄÚÖÃÁË¶ÔÅúÁ¿É¾³ıºÍÅúÁ¿¸üĞÂµÄÖ§³Ö£¬Òò´Ë±¾ÏîÄ¿½«²»ÔÙÔÚ.NET7¼°ÒÔºóµÄ°æ±¾ÖĞÖ§³ÖÕâÁ½¸ö¹¦ÄÜ£¨[ÏêÇéµã»÷ÕâÀï](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)£©¡£µ«ÊÇ±¾ÏîÄ¿ÈÔÈ»ÔÚ.NET 7¼°ÒÔºóµÄ°æ±¾ÖĞÖ§³ÖÊı¾İµÄÅúÁ¿²åÈë¡£
 
 Ê¹ÓÃÕâ¸ö¿ª·¢°ü, Entity Framework Core ÓÃ»§¿ÉÒÔ¿ìËÙÅúÁ¿²åÈëÊı¾İ¡£
-Õâ¸ö¿ª·¢°üÖ§³Ö Entity Framework Core 7¼°ÒÔÉÏ°æ±¾¡£ 
+Õâ¸ö¿ª·¢°üÖ§³Ö Entity Framework Core 7/8¼°ÒÔÉÏ°æ±¾¡£ 
 
 ## ÎªÊ²Ã´¿ª·¢Õâ¸ö¹¦ÄÜ£¿
 
@@ -17,11 +17,22 @@ Entity Framework CoreÖĞ¿ÉÒÔÍ¨¹ıAddRange()·½·¨À´ÅúÁ¿²åÈëÊı¾İ£¬µ«ÊÇAddRange()Ìí¼Óµ
 ## ²Ù×÷ËµÃ÷:  
 
 ### °²×°Nuget°ü£º
+
+.NET 7
+
 ```
 SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET7
 MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET7
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET7
 Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET7 
+```
+
+.NET 8
+
+```
+SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET8
+MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET8
+Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET8
 ```
 
 ### ÅúÁ¿²åÈëÊı¾İ
