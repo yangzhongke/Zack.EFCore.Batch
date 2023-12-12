@@ -15,6 +15,6 @@ namespace Demo
 #if (!NET7_0_OR_GREATER)
             optionsBuilder.UseBatchEF_Npgsql();
 #endif
-        }
+		}
     }
 }

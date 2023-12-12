@@ -28,5 +28,7 @@ namespace Demo
 
         [Column("Pages")]
 		public int Pages { get; set; }
-    }
+
+        public BookType BookType { get; set; }
+	}
 }

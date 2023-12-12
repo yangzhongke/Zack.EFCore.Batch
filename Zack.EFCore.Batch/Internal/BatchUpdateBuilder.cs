@@ -180,7 +180,7 @@ namespace Zack.EFCore.Batch.Internal
                 string columnValue = initializerSQLDict[initializers[i+1]];
                 var setter = setters[i / 2];
                 var property = entityType.GetProperty(setter.PropertyName);
-                var valueConverter = property.GetValueConverter();
+                var valueConverter = BatchUtils.GetRealValueConverter(property);
                 
                 //fix bug start: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/4
                 if (valueConverter!=null&&setter.PropertyType.IsEnum)

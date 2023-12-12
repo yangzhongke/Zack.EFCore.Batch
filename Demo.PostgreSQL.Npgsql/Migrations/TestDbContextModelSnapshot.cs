@@ -17,7 +17,7 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -95,26 +95,36 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("AuthorName")
+                        .HasColumnType("text")
+                        .HasColumnName("AuthorName");
+
+                    b.Property<string>("BookType")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("Pages")
-                        .HasColumnType("integer");
+                    b.Property<int>("Pages")
+                        .HasColumnType("integer")
+                        .HasColumnName("Pages");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision");
+                    b.Property<int>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Price");
 
                     b.Property<DateTime?>("PubTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("PubTime");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Title");
 
                     b.HasKey("Id");
 

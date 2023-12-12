@@ -11,6 +11,7 @@
                     Price = new Random().Next(), 
                     PubTime = DateTime.Now, 
                     Title = Guid.NewGuid().ToString() };
+				b.BookType = i % 2 == 0?BookType.Fictional: BookType.Scientific;
                 books.Add(b);
             }
             books[0].Pages = 3;

@@ -15,7 +15,7 @@ namespace Demo
 			//Instant now = SystemClock.Instance.GetCurrentInstant();                       
 			//await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);
 			//await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= SystemClock.Instance.GetCurrentInstant(), true);
-			/*
+#if (!NET7_0_OR_GREATER)
             await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
             .Where(c => c.Id == 3)
             .Skip(3)
@@ -41,7 +41,7 @@ namespace Demo
             await TestCase1.RunAsync(ctx);
             await TestCase2.RunAsync(ctx);
             List<Book> books = TestBulkInsert1.BuildBooks();
-            //ctx.BulkInsert(books);
+            ctx.BulkInsert(books);
             
             await TestCaseLimit.RunAsync(ctx);
             await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
@@ -60,19 +60,25 @@ namespace Demo
             .Set("Title", "Haha")
             .Set("Price", 3)
             .Where(b => b.Price > 888)
-            .ExecuteAsync();*/
-			List<Author> authors = TestBulkInsert1.BuildAuthors();
-			ctx.BulkInsert(authors);
-			ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
-			/*
-            await ctx.BatchUpdate<Book>()
+            .ExecuteAsync();
+                       await ctx.BatchUpdate<Book>()
             .Set(b=>b.Price,b=>3)
             .Set(b=>b.Pages,b=>3)
             .Where(b => b.Price > 888)
-            .ExecuteAsync();*/
+            .ExecuteAsync();
 
-			/*
-            var items = TestOwnedType.BuildArticlesForInsert(100000);
+            await ctx.BatchUpdate<Book>()
+				.Set("Title", "Haha")
+            .Set("Price", 3.14)
+            .Set(b => b.PubTime, DateTime.Now)
+            .Where(b => b.Price > 888)
+            .ExecuteAsync();
+#endif
+			List<Author> authors = TestBulkInsert1.BuildAuthors();
+			ctx.BulkInsert(authors);
+			ctx.BulkInsert(TestOwnedType.BuildArticlesForInsert());
+			
+            var items = TestOwnedType.BuildArticlesForInsert(100);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             ctx.BulkInsert(items);
@@ -83,14 +89,7 @@ namespace Demo
             ctx.AddRange(items);
             ctx.SaveChanges();
             stopwatch.Stop();
-            Console.WriteLine(stopwatch.Elapsed);*/
-            /*
-				await ctx.BatchUpdate<Book>()
-				.Set("Title", "Haha")
-            .Set("Price", 3.14)
-            .Set(b => b.PubTime, DateTime.Now)
-            .Where(b => b.Price > 888)
-            .ExecuteAsync();*/
+            Console.WriteLine(stopwatch.Elapsed);
         }
     }
 }

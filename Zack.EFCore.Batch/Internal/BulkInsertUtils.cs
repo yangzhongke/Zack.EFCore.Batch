@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Data;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Zack.EFCore.Batch.Internal
 {
@@ -46,7 +48,7 @@ namespace Zack.EFCore.Batch.Internal
 						return subPropValue;
 					},
 					PropertyType = subProp.PropertyType,
-					ValueConverter = subPropEFProp.GetValueConverter(),
+					ValueConverter = BatchUtils.GetRealValueConverter(subPropEFProp),
 				};
 				yield return dbProp;
 			}
@@ -90,7 +92,7 @@ namespace Zack.EFCore.Batch.Internal
 						continue;
 					}
 				}
-
+				ValueConverter? valueConverter = BatchUtils.GetRealValueConverter(efProp);
 				string dbColName = efProp.GetColumnName(StoreObjectIdentifier.SqlQuery(entityType));
 				DbProp dbProp = new DbProp
 				{
@@ -98,7 +100,7 @@ namespace Zack.EFCore.Batch.Internal
 					//Property = prop,
 					GetValueFunc = (obj) => prop.GetValue(obj),
 					PropertyType = prop.PropertyType,
-					ValueConverter = efProp.GetValueConverter(),
+					ValueConverter = valueConverter,
 				};
 				propFields.Add(dbProp);
 			}
@@ -161,9 +163,7 @@ namespace Zack.EFCore.Batch.Internal
 				DataRow row = dataTable.NewRow();
 				foreach (var dbProp in dbProps)
 				{
-					//object? value = dbProp.Property.GetValue(item);
 					object? value = dbProp.GetValueFunc(item);
-
 					//fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/41
 					// and https://github.com/yangzhongke/Zack.EFCore.Batch/issues/23
 					//ValueConverter begin

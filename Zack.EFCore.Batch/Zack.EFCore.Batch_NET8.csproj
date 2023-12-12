@@ -8,7 +8,7 @@
 	  <LangVersion>10</LangVersion>
 	  <Nullable>enable</Nullable>
 	  <ImplicitUsings>enable</ImplicitUsings>
-    <Version>8.1.6</Version>
+    <Version>8.1.8</Version>
     <Description>Using this library, Entity Framework Core users can insert items in batch. This libary supports Entity Framework Core 8.x.</Description>
     <Authors>Zack Yang(杨中科)</Authors>
   </PropertyGroup>

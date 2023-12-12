@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -209,5 +210,31 @@ namespace Zack.EFCore.Batch.Internal
 			}
 			return providerValue;
 		}
+
+		public static ValueConverter? GetRealValueConverter(IProperty property)
+		{
+			var valueConverter = property.GetValueConverter();
+			if (valueConverter == null)
+			{
+				/*
+				var providerClrType = property.GetTypeMapping().Converter.ProviderClrType;
+				if (providerClrType != null)
+				{
+					valueConverter = (ValueConverter)Activator.CreateInstance(typeof(ValueConverter<,>).MakeGenericType(providerClrType, property.ClrType), new object[] { null, null });
+				}*/
+				valueConverter = property.FindTypeMapping()?.Converter;
+#if (NET6_0_OR_GREATER)
+				if (valueConverter==null)
+				{
+					RuntimeProperty runtimeProperty  = property as RuntimeProperty;
+					if (runtimeProperty!=null)
+					{
+						return runtimeProperty.TypeMapping.Converter;
+					}
+				}
+#endif
+			}
+			return valueConverter;
+		}	
 	}
 }

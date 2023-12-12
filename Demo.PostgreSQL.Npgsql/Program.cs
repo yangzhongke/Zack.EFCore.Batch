@@ -14,9 +14,10 @@ namespace Demo
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             using (TestDbContext ctx = new TestDbContext())
             {
+#if (!NET7_0_OR_GREATER)
                 await ctx.BatchUpdate<Book>()
                     .Set("Title", "Haha")
-                    .Set("Price", null)
+                    .Set("Price", 8.8)
                     .Set(b => b.PubTime, b => b.PubTime.Value.AddDays(5))
                     //.Where(b => b.Price > 888)
                     .Where(b=>string.IsNullOrEmpty(b.AuthorName))
@@ -55,10 +56,9 @@ namespace Demo
                 await TestCaseLimit.RunAsync(ctx);
                 await ctx.Comments.Where(c => c.Article.Id == 3).Take(10)
                     .DeleteRangeAsync(ctx);
-                
+#endif
                 List<Book> books = TestBulkInsert1.BuildBooks();
                 ctx.BulkInsert(books);
-                
                 List<Author> authors = TestBulkInsert1.BuildAuthors();
                 ctx.BulkInsert(authors);
 
