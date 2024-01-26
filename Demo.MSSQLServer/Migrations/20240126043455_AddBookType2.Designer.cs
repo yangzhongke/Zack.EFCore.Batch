@@ -3,21 +3,26 @@ using System;
 using Demo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Demo.MySQL.Pomelo_NET6.Migrations
+namespace Demo.MSSQLServer.Migrations
 {
     [DbContext(typeof(TestDbContext))]
-    partial class TestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240126043455_AddBookType2")]
+    partial class AddBookType2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.11")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1, 1);
 
             modelBuilder.Entity("Demo.Author", b =>
                 {
@@ -25,12 +30,14 @@ namespace Demo.MySQL.Pomelo_NET6.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tags")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -44,16 +51,18 @@ namespace Demo.MySQL.Pomelo_NET6.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("PKId");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .IsUnicode(true)
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
                         .IsUnicode(true)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -67,13 +76,15 @@ namespace Demo.MySQL.Pomelo_NET6.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("PKId");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
+
                     b.Property<long>("ArticleId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Message")
                         .IsRequired()
                         .IsUnicode(true)
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -89,13 +100,15 @@ namespace Demo.MySQL.Pomelo_NET6.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("Id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
+
                     b.Property<string>("AuthorName")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("AuthorName");
 
                     b.Property<string>("BookType")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BookType2")
                         .HasColumnType("int");
@@ -111,11 +124,11 @@ namespace Demo.MySQL.Pomelo_NET6.Migrations
                         .HasColumnName("Price");
 
                     b.Property<DateTime?>("PubTime")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("datetime2")
                         .HasColumnName("PubTime");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("Title");
 
                     b.HasKey("Id");
@@ -131,10 +144,10 @@ namespace Demo.MySQL.Pomelo_NET6.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Chinese")
-                                .HasColumnType("longtext");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("English")
-                                .HasColumnType("longtext");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("ArticleId");
 

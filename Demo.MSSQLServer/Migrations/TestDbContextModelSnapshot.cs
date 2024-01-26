@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Demo.MSSQLServer.Migrations
 {
     [DbContext(typeof(TestDbContext))]
@@ -15,16 +17,18 @@ namespace Demo.MSSQLServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.7")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.11")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1, 1);
 
             modelBuilder.Entity("Demo.Author", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -43,8 +47,9 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("PKId")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("PKId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -59,7 +64,7 @@ namespace Demo.MSSQLServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("T_Articles");
+                    b.ToTable("T_Articles", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Base.Comment", b =>
@@ -67,8 +72,9 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("PKId")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("PKId");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
 
                     b.Property<long>("ArticleId")
                         .HasColumnType("bigint");
@@ -82,7 +88,7 @@ namespace Demo.MSSQLServer.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.ToTable("T_Comments");
+                    b.ToTable("T_Comments", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Book", b =>
@@ -90,8 +96,9 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("Id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1, 1);
 
                     b.Property<string>("AuthorName")
                         .HasColumnType("nvarchar(max)")
@@ -100,6 +107,9 @@ namespace Demo.MSSQLServer.Migrations
                     b.Property<string>("BookType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BookType2")
+                        .HasColumnType("int");
 
                     b.Property<int>("Pages")
                         .HasColumnType("int")
@@ -129,9 +139,7 @@ namespace Demo.MSSQLServer.Migrations
                     b.OwnsOne("Demo.Base.MultiString", "Remarks", b1 =>
                         {
                             b1.Property<long>("ArticleId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                                .HasColumnType("bigint");
 
                             b1.Property<string>("Chinese")
                                 .HasColumnType("nvarchar(max)");

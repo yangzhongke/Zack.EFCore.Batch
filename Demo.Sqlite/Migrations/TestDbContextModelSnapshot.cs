@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Demo.Sqlite.Migrations
 {
     [DbContext(typeof(TestDbContext))]
@@ -13,8 +15,7 @@ namespace Demo.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.7");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.11");
 
             modelBuilder.Entity("Demo.Author", b =>
                 {
@@ -54,7 +55,7 @@ namespace Demo.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("T_Articles");
+                    b.ToTable("T_Articles", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Base.Comment", b =>
@@ -76,35 +77,73 @@ namespace Demo.Sqlite.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.ToTable("T_Comments");
+                    b.ToTable("T_Comments", (string)null);
                 });
 
             modelBuilder.Entity("Demo.Book", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Id");
 
                     b.Property<string>("AuthorName")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("AuthorName");
+
+                    b.Property<string>("BookType")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("Pages")
+                    b.Property<int>("BookType2")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("REAL");
+                    b.Property<int>("Pages")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Pages");
+
+                    b.Property<int>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Price");
 
                     b.Property<DateTime?>("PubTime")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("PubTime");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Title");
 
                     b.HasKey("Id");
 
                     b.ToTable("T_Books", "MySchema1");
+                });
+
+            modelBuilder.Entity("Demo.Base.Article", b =>
+                {
+                    b.OwnsOne("Demo.Base.MultiString", "Remarks", b1 =>
+                        {
+                            b1.Property<long>("ArticleId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("Chinese")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("English")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("ArticleId");
+
+                            b1.ToTable("T_Articles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ArticleId");
+                        });
+
+                    b.Navigation("Remarks")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Demo.Base.Comment", b =>

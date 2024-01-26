@@ -11,6 +11,7 @@ namespace Demo
         static async Task Main(string[] args)
         {
             using TestDbContext ctx = new TestDbContext();
+            ctx.BatchUpdate<Book>().Set(b => b.BookType, BookType.Fictional).Set(b => b.BookType2, BookType2.Historical).Execute(true);
 
 			//Instant now = SystemClock.Instance.GetCurrentInstant();                       
 			//await ctx.DeleteRangeAsync<NodaTimeEntity>(p => p.Instant <= now, true);

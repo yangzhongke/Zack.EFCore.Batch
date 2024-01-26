@@ -59,7 +59,9 @@ namespace Zack.EFCore.Batch.Internal
             var propertyType = typeof(TP);
             //fix https://github.com/yangzhongke/Zack.EFCore.Batch/issues/47
             Expression valueExpr = Expression.Constant(value, propertyType);
-            var pExpr = Expression.Parameter(typeof(TEntity));
+
+            //fix bug: https://github.com/yangzhongke/Zack.EFCore.Batch/issues/125
+            var pExpr = Expression.Parameter(typeof(TEntity), value.GetType().Name);
             var valueLambdaExpr = Expression.Lambda<Func<TEntity,TP>>(valueExpr, pExpr);
             return Set(nameExpr, valueLambdaExpr, propertyType);
         }

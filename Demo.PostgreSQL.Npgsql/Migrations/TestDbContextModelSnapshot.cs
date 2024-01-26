@@ -17,7 +17,7 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "6.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -107,6 +107,9 @@ namespace Demo.PostgreSQL.Npgsql.Migrations
                     b.Property<string>("BookType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("BookType2")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Pages")
                         .HasColumnType("integer")

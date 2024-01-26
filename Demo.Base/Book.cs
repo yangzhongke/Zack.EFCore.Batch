@@ -30,5 +30,6 @@ namespace Demo
 		public int Pages { get; set; }
 
         public BookType BookType { get; set; }
-	}
+        public BookType2 BookType2 { get; set; }
+    }
 }
