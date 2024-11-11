@@ -59,15 +59,7 @@ namespace System.Linq
 
         private static async Task<int> ExecuteSQLAsync(DbContext ctx, string sql, IDictionary<string, object> parameters, CancellationToken cancellationToken)
         {
-            var conn = ctx.Database.GetDbConnection();
-            await conn.OpenIfNeededAsync(cancellationToken);
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.ApplyCurrentTransaction(ctx);
-                cmd.CommandText = sql;
-                cmd.AddParameters(ctx, parameters);
-                return await cmd.ExecuteNonQueryAsync(cancellationToken);
-            }
+           return await ctx.Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
         }
 
         public static async Task<int> DeleteRangeAsync<TEntity>(this IQueryable<TEntity> queryable, DbContext ctx,
@@ -98,15 +90,7 @@ namespace System.Linq
 
         private static int ExecuteSQL(DbContext ctx, string sql, IDictionary<string, object> parameters)
         {
-            var conn = ctx.Database.GetDbConnection();
-            conn.OpenIfNeeded();
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.ApplyCurrentTransaction(ctx);
-                cmd.CommandText = sql;
-                cmd.AddParameters(ctx, parameters);
-                return cmd.ExecuteNonQuery();
-            }
+            return ctx.Database.ExecuteSqlRawAsync(sql, parameters).Result;
         }
 
         internal static void ApplyCurrentTransaction(this IDbCommand cmd,DbContext dbContext)
