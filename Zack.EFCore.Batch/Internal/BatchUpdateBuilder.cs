@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 
 namespace Zack.EFCore.Batch.Internal
 {
@@ -238,31 +239,15 @@ namespace Zack.EFCore.Batch.Internal
         public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
         {
             string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IDictionary<string, object> parameters);
-            var conn = dbContext.Database.GetDbConnection();
-            await conn.OpenIfNeededAsync(cancellationToken);
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.ApplyCurrentTransaction(this.dbContext);
-                cmd.CommandText = sql;
-                cmd.AddParameters(dbContext, parameters);
-                return await cmd.ExecuteNonQueryAsync(cancellationToken);
-            }
+            return await dbContext.Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
         }
 
         public int Execute(bool ignoreQueryFilters=false)
         {
             string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
-            var conn = dbContext.Database.GetDbConnection();
-            conn.OpenIfNeeded();
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.ApplyCurrentTransaction(this.dbContext);
-                cmd.CommandText = sql;
-                cmd.AddParameters(dbContext,parameters);
-                return cmd.ExecuteNonQuery();
-            }
+            return dbContext.Database.ExecuteSqlRawAsync(sql, parameters).Result;
         }
     }
 
