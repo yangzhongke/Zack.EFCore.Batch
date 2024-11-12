@@ -1,4 +1,5 @@
 ﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
@@ -116,7 +117,7 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
 
         public DbParameter CreateParameter(string parameterName, object? parameterValue = null)
         {
-            throw new NotImplementedException();
+            return new SqlParameter(parameterName, parameterValue);
         }
     }
 }
