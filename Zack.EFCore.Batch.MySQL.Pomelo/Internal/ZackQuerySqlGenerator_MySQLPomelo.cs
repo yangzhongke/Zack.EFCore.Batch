@@ -1,11 +1,14 @@
 ﻿#if (!NET7_0_OR_GREATER)
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure.Internal;
 using Pomelo.EntityFrameworkCore.MySql.Query.ExpressionVisitors.Internal;
 using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 
@@ -126,6 +129,11 @@ namespace Zack.EFCore.Batch.MySQL.Pomelo.Internal
 		{
 			this.GenerateLimitOffset(selectExpression);
 		}
-	}
+
+        public DbParameter CreateParameter(string parameterName, object? parameterValue = null)
+        {
+            return new MySqlParameter(parameterName, parameterValue);
+        }
+    }
 }
 #endif

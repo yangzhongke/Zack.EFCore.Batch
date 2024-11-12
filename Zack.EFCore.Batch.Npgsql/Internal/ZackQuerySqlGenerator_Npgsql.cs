@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Internal;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 
@@ -114,6 +116,11 @@ namespace Zack.EFCore.Batch.Npgsql.Internal
 		{
 			this.GenerateLimitOffset(selectExpression);
 		}
-	}
+
+        public DbParameter CreateParameter(string parameterName, object? parameterValue = null)
+        {
+            return new NpgsqlParameter(parameterName, parameterValue);
+        }
+    }
 }
 #endif

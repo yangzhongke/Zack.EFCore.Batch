@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
@@ -103,7 +104,7 @@ namespace Zack.EFCore.Batch.Internal
             return Set(nameExpr, valueLambdaExpr, propType);
         }
 
-        private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out IDictionary<string, object> parameters)
+        private string GenerateSQL(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters, out List<DbParameter> parameters)
         {
             if (setters.Count <= 0)
             {
@@ -238,14 +239,14 @@ namespace Zack.EFCore.Batch.Internal
 
         public async Task<int> ExecuteAsync(bool ignoreQueryFilters = false, CancellationToken cancellationToken = default)
         {
-            string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out IDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters,out List<DbParameter> parameters);
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
             return await dbContext.Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
         }
 
         public int Execute(bool ignoreQueryFilters=false)
         {
-            string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out IDictionary<string, object> parameters);
+            string sql = GenerateSQL(this.predicate, ignoreQueryFilters, out List<DbParameter> parameters);
             this.dbContext.Log($"Zack.EFCore.Batch: Sql={sql}");
             return dbContext.Database.ExecuteSqlRawAsync(sql, parameters).Result;
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 
 namespace Zack.EFCore.Batch.Internal
 {
@@ -7,7 +8,7 @@ namespace Zack.EFCore.Batch.Internal
         /// <summary>
         /// parameters of query
         /// </summary>
-        public IDictionary<string, object> Parameters { get; internal set; }
+        public List<DbParameter> Parameters { get; internal set; }
        
 
         public string Schema

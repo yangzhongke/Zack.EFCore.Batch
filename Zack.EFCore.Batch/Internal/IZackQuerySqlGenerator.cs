@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq.Expressions;
 
 namespace Zack.EFCore.Batch.Internal
@@ -38,7 +39,8 @@ namespace Zack.EFCore.Batch.Internal
 		public void P_GenerateOrderings(SelectExpression selectExpression);
 
 		public void P_GenerateLimitOffset(SelectExpression selectExpression);
+		public DbParameter CreateParameter(string parameterName, object? parameterValue = null);
 
-		public string P_AliasSeparator { get; }
+        public string P_AliasSeparator { get; }
 	}
 }

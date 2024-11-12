@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 using Oracle.EntityFrameworkCore.Infrastructure.Internal;
+using System.Data.Common;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Zack.EFCore.Batch.Oracle.Internal
 {
@@ -114,6 +116,11 @@ namespace Zack.EFCore.Batch.Oracle.Internal
 		{
 			this.GenerateLimitOffset(selectExpression);
 		}
-	}
+
+        public DbParameter CreateParameter(string parameterName, object? parameterValue = null)
+        {
+            return new OracleParameter(parameterName, parameterValue);
+        }
+    }
 }
 #endif

@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Dm.Query.Internal;
+﻿using Dm;
+using Microsoft.EntityFrameworkCore.Dm.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 
@@ -108,6 +110,11 @@ namespace Zack.EFCore.Batch.DM.Internal
         public void P_GenerateLimitOffset(SelectExpression selectExpression)
         {
             this.GenerateLimitOffset(selectExpression);
+        }
+
+        public DbParameter CreateParameter(string parameterName, object parameterValue = null)
+        {
+            return new DmParameter(parameterName, parameterValue);
         }
     }
 }
