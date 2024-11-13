@@ -1,9 +1,11 @@
 ﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 
@@ -111,6 +113,11 @@ namespace Zack.EFCore.Batch.MSSQL.Internal
         public void P_GenerateLimitOffset(SelectExpression selectExpression)
         {
             this.GenerateLimitOffset(selectExpression);
+        }
+
+        public DbParameter CreateParameter(string parameterName, object? parameterValue = null)
+        {
+            return new SqlParameter(parameterName, parameterValue);
         }
     }
 }

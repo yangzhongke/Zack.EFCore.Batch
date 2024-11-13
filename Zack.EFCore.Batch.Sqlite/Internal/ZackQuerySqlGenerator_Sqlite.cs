@@ -1,10 +1,12 @@
 ﻿#if (!NET7_0_OR_GREATER)
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Sqlite.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq.Expressions;
 using Zack.EFCore.Batch.Internal;
 
@@ -114,6 +116,11 @@ namespace Zack.EFCore.Batch.Sqlite.Internal
 		{
 			this.GenerateLimitOffset(selectExpression);
 		}
-	}
+
+        public DbParameter CreateParameter(string parameterName, object? parameterValue = null)
+        {
+            return new SqliteParameter(parameterName, parameterValue);
+        }
+    }
 }
 #endif
