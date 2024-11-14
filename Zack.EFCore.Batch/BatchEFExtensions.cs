@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +20,8 @@ namespace System.Linq
 {
     public static class BatchEFExtensions
     {
+        private static readonly BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+        private static T? Private<T>(this object obj, string privateField) => (T?)obj?.GetType().GetField(privateField, bindingFlags)?.GetValue(obj);
         private static string GenerateDeleteSQL<TEntity>(DbContext ctx, IQueryable<TEntity> queryable, Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters,
             out List<DbParameter> parameters) where TEntity:class
         {
@@ -186,6 +190,15 @@ namespace System.Linq
             RelationalParameterBasedSqlProcessor _relationalParameterBasedSqlProcessor = _relationalParameterBasedSqlProcessorFactory.Create(true);
 
             SelectExpression selectExpression = (SelectExpression)shapedQueryExpression2.QueryExpression;
+            var enumerator = queryable.Provider.Execute<IEnumerable>(queryable.Expression).GetEnumerator();
+            var queryContextrq = enumerator.Private<RelationalQueryContext>("_relationalQueryContext");
+            var parameterValues = queryContextrq?.ParameterValues;
+            if (parameterValues != null) {
+                foreach (var parameterValue in parameterValues)
+                {
+                    queryContext.AddParameter(parameterValue.Key, parameterValue.Value);
+                }
+            }
             selectExpression = _relationalParameterBasedSqlProcessor.Optimize(selectExpression, queryContext.ParameterValues, out bool canCache);
 
             IQuerySqlGeneratorFactory querySqlGeneratorFactory = ctx.GetService<IQuerySqlGeneratorFactory>();
