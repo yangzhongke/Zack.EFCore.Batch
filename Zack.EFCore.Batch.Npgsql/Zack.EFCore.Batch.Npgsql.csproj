@@ -1,25 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-	  <LangVersion>10</LangVersion>
-	  <Nullable>enable</Nullable>
-	  <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFrameworks>net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+    <PackageId>Zack.EFCore.BatchInsert.Npgsql</PackageId>
+    <Version>1.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <RepositoryUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</RepositoryUrl>
-	  <PackageProjectUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</PackageProjectUrl>
-    <Version>1.6.9</Version>
-    <Authors>Zack Yang(杨中科)</Authors>
-    <Description>
-		A Postgresql-specific version of Zack.EFCore.Batch.
-		Using this library, Entity Framework Core users can delete or update multiple records from a LINQ Query in a SQL statement without loading entities. This libary supports Entity Framework Core  5.0. As for EF Core 6 users, please use Zack.EFCore.Batch.Npgsql_NET6.</Description>
+    <Description>A PostgreSQL (Npgsql)-specific package for Zack.EFCore.BatchInsert. Supports EF Core 5, 6, 7 and 8.</Description>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[5.0.0,6.0.0)" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,22 +1,24 @@
 # Zack.EFCore.Batch
-.NET 7¿ªÊ¼£¬EF CoreÒÑ¾­ÄÚÖÃÁË¶ÔÅúÁ¿É¾³ýºÍÅúÁ¿¸üÐÂµÄÖ§³Ö£¬Òò´Ë±¾ÏîÄ¿½«²»ÔÙÔÚ.NET7¼°ÒÔºóµÄ°æ±¾ÖÐÖ§³ÖÕâÁ½¸ö¹¦ÄÜ£¨[ÏêÇéµã»÷ÕâÀï](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)£©¡£µ«ÊÇ±¾ÏîÄ¿ÈÔÈ»ÔÚ.NET 7¼°ÒÔºóµÄ°æ±¾ÖÐÖ§³ÖÊý¾ÝµÄÅúÁ¿²åÈë¡£
+ä»Ž .NET 7 å¼€å§‹ï¼ŒEF Core å·²å†…ç½®æ‰¹é‡åˆ é™¤å’Œæ‰¹é‡æ›´æ–°æ”¯æŒï¼Œå› æ­¤æœ¬åº“ä¸å†å¯¹ .NET 7 åŠä»¥ä¸Šç‰ˆæœ¬æä¾›æ‰¹é‡åˆ é™¤/æ›´æ–°åŠŸèƒ½ï¼Œ[è¯·æŸ¥çœ‹å®˜æ–¹æ–‡æ¡£](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)ã€‚è¯·ä½¿ç”¨å¾®è½¯å®˜æ–¹çš„ `ExecuteDelete` / `ExecuteUpdate` APIã€‚  
+æœ¬åº“åœ¨ .NET 7 åŠä»¥ä¸Šç‰ˆæœ¬ä»ç„¶æ”¯æŒ**æ‰¹é‡æ’å…¥ï¼ˆBulkInsertï¼‰**ã€‚  
+å¦‚éœ€æŸ¥çœ‹æ—§ç‰ˆæ‰¹é‡åˆ é™¤/æ›´æ–°ä»£ç ï¼Œè¯·è®¿é—®å¤‡ä»½åˆ†æ”¯ï¼š[backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
-Ê¹ÓÃÕâ¸ö¿ª·¢°ü, Entity Framework Core ÓÃ»§¿ÉÒÔ¿ìËÙÅúÁ¿²åÈëÊý¾Ý¡£
-Õâ¸ö¿ª·¢°üÖ§³Ö Entity Framework Core 7/8¼°ÒÔÉÏ°æ±¾¡£ 
+ä½¿ç”¨æœ¬åº“ï¼ŒEntity Framework Core ç”¨æˆ·å¯ä»¥å¿«é€Ÿæ‰¹é‡æ’å…¥æ•°æ®ã€‚  
+æœ¬åº“æ”¯æŒ Entity Framework Core 7/8 åŠä»¥ä¸Šç‰ˆæœ¬ã€‚
 
-## ÎªÊ²Ã´¿ª·¢Õâ¸ö¹¦ÄÜ£¿
+## ä¸ºä»€ä¹ˆè¦å¼€å‘è¿™ä¸ªåŠŸèƒ½ï¼Ÿ
 
-Entity Framework CoreÖÐ¿ÉÒÔÍ¨¹ýAddRange()·½·¨À´ÅúÁ¿²åÈëÊý¾Ý£¬µ«ÊÇAddRange()Ìí¼ÓµÄÊý¾ÝÈÔÈ»ÊÇ±»ÖðÌõÖ´ÐÐInsertÓï¾äÀ´²åÈëµ½Êý¾Ý¿âÖÐµÄ£¬Ö´ÐÐÐ§ÂÊ±È½ÏµÍ¡£ÎÒÃÇÖªµÀ£¬ÎÒÃÇ¿ÉÒÔÍ¨¹ýSqlBulkCopyÀ´¿ìËÙµØ²åÈë´óÁ¿µÄÊý¾Ýµ½SQLServerÊý¾Ý¿â£¬ÒòÎªSqlBulkCopyÊÇ°Ñ¶àÌõÊý¾Ý´ò³ÉÒ»¸öÊý¾Ý°ü·¢ËÍµ½SQLServerµÄ£¬ËùÒÔ²åÈëÐ§ÂÊ·Ç³£¸ß¡£MySQL¡¢PostgreSQL¡¢OracleµÈÒ²ÓÐÀàËÆµÄÖ§³Ö¡£
+Entity Framework Core ä¸­å¯ä»¥é€šè¿‡ AddRange() æ–¹æ³•æ‰¹é‡æ·»åŠ æ•°æ®ï¼Œä½† AddRange() æ·»åŠ çš„æ•°æ®ä»ç„¶æ˜¯é€šè¿‡é€æ¡ Insert è¯­å¥æ’å…¥åˆ°æ•°æ®åº“ä¸­çš„ï¼Œæ‰§è¡Œæ•ˆçŽ‡æ¯”è¾ƒä½Žã€‚æˆ‘ä»¬çŸ¥é“å¯ä»¥é€šè¿‡ SqlBulkCopy å¿«é€Ÿåœ°æ‰¹é‡æ’å…¥å¤§é‡æ•°æ®åˆ° SQLServer æ•°æ®åº“ï¼Œå› ä¸º SqlBulkCopy æ˜¯æŠŠå¤šæ¡æ•°æ®æ‰“æˆä¸€ä¸ªæ•°æ®åŒ…å‘é€åˆ° SQLServer çš„ï¼Œæ‰€ä»¥æ’å…¥æ•ˆçŽ‡éžå¸¸é«˜ã€‚MySQLã€PostgreSQLã€Oracle ä¹Ÿæœ‰ç±»ä¼¼çš„æ”¯æŒã€‚
 
-µ±È»£¬Ö±½ÓÊ¹ÓÃSqlBulkCopyÀ´½øÐÐÊý¾Ý²åÈëÐèÒª³ÌÐòÔ±°ÑÊý¾ÝÌî³äµ½DataTable£¬¶øÇÒÐèÒª½øÐÐÁÐµÄÓ³ÉäµÈ²Ù×÷£¬»¹ÐèÒª´¦ÀíValueConverterµÈÎÊÌâ£¬ÓÃÆðÀ´±È½ÏÂé·³¡£Òò´ËÎÒ¶ÔÕâÐ©¹¦ÄÜ·â×°£¬´Ó¶øÈÃEF CoreµÄ¿ª·¢ÕßÄÜ¹»¸ü·½±ãµÄÒÔÃæÏòÄ£ÐÍµÄ·½Ê½À´²åÈëÊý¾Ý¡£
+å½“ç„¶ï¼Œç›´æŽ¥ä½¿ç”¨ SqlBulkCopy æ’å…¥æ•°æ®è¿˜éœ€è¦å¼€å‘è€…æŠŠæ•°æ®å¡«å……åˆ° DataTableï¼Œè¿˜éœ€è¦å¤„ç†åˆ—çš„æ˜ å°„ç­‰ï¼Œè¿˜éœ€è¦å¤„ç† ValueConverter ç­‰é—®é¢˜ï¼Œä½¿ç”¨èµ·æ¥æ¯”è¾ƒç¹çã€‚å› æ­¤æˆ‘å¯¹è¿™äº›èƒ½åŠ›è¿›è¡Œå°è£…ï¼Œä»Žè€Œè®© EF Core çš„å¼€å‘è€…èƒ½å¤Ÿä»¥é¢å‘æ¨¡åž‹çš„æ–¹å¼æ¥æ‰¹é‡æ’å…¥æ•°æ®ã€‚
 
-## ÐÔÄÜ¶Ô±È
+## æ€§èƒ½å¯¹æ¯”
 
-ÎÒÓÃSQLServerÊý¾Ý¿â×öÁËÒ»ÏÂ²åÈë10ÍòÌõÊý¾ÝµÄ²âÊÔ£¬ÓÃAddRange²åÈëºÄÊ±Ô¼21Ãë£¬¶øÓÃÎÒÕâ¸ö¿ªÔ´ÏîÄ¿½øÐÐ²åÈëºÄÊ±Ö»ÓÐÔ¼5Ãë¡£
+ç»è¿‡æµ‹è¯•åœ¨ SQLServer æ•°æ®åº“ä¸­æ’å…¥ 10 ä¸‡æ¡æ•°æ®ï¼Œç”¨ AddRange() æ–¹æ³•è€—æ—¶çº¦ 21 ç§’ï¼Œè€Œä½¿ç”¨æœ¬åº“åªéœ€çº¦ 5 ç§’ã€‚
 
-## ²Ù×÷ËµÃ÷:  
+## å®‰è£…è¯´æ˜Ž:
 
-### °²×°Nuget°ü£º
+### å®‰è£… Nuget åŒ…
 
 .NET 7
 
@@ -35,16 +37,16 @@ MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET8
 Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET8
 ```
 
-### ÅúÁ¿²åÈëÊý¾Ý
-```
+### æ‰¹é‡æ’å…¥ç¤ºä¾‹
+```csharp
 List<Book> books = new List<Book>();
 for (int i = 0; i < 100; i++)
 {
-	books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
+books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
 }
 using (TestDbContext ctx = new TestDbContext())
 {
-	ctx.BulkInsert(books);
+ctx.BulkInsert(books);
 }
 ```
-ÔÚ mysqlÖÐ, Èç¹ûÊ¹ÓÃBulkInsert£¬ÇëÔÚ·þÎñÆ÷¶ËºÍ¿Í»§¶Ë¶¼ÆôÓÃlocal_infile£ºÔÚmysql server·þÎñÆ÷¶ËÆôÓÃ"local_infile=ON"£¬È»ºóÔÚÁ¬½Ó×Ö·û´®ÖÐÌí¼Ó "AllowLoadLocalInfile=true"¡£
+åœ¨ MySQL ä¸­ï¼Œä½¿ç”¨ BulkInsert éœ€è¦åœ¨æœåŠ¡å™¨å’Œå®¢æˆ·ç«¯éƒ½å¼€å¯ local_infileï¼šåœ¨ MySQL server ç«¯æ‰§è¡Œ "local_infile=ON"ï¼Œç„¶åŽåœ¨è¿žæŽ¥å­—ç¬¦ä¸²ä¸­æ·»åŠ  "AllowLoadLocalInfile=true"ã€‚

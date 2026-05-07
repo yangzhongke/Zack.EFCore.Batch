@@ -1,144 +1,66 @@
-# [.NET 7/8 ¼°ÒÔÉÏµÄÓÃ»§£¬Çë¿´ÕâÀï](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_CN_NET7.md) 
-
 # Zack.EFCore.Batch
-Ê¹ÓÃÕâ¸ö¿ª·¢°ü, Entity Framework Core ÓÃ»§¿ÉÒÔÊ¹ÓÃLINQÓï¾äÉ¾³ı»òÕß¸üĞÂ¶àÌõÊı¾İ¿â¼ÇÂ¼£¬²Ù×÷Ö»Ö´ĞĞÒ»ÌõSQLÓï¾ä²¢ÇÒ²»ĞèÒªÊ×ÏÈ°ÑÊµÌå¶ÔÏó¼ÓÔØµ½ÄÚ´æÖĞ¡£ 
-Õâ¸ö¿ª·¢°üÖ§³Ö Entity Framework Core 5/6¡£  
+[English version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README.md)
 
-## ²Ù×÷ËµÃ÷:  
- ##### µÚÒ»²½
+> **âš ï¸ .NET 7 åŠä»¥ä¸Šç”¨æˆ·è¯·æ³¨æ„**  
+> ä» .NET 7 å¼€å§‹ï¼ŒEF Core å·²å†…ç½®æ‰¹é‡åˆ é™¤å’Œæ‰¹é‡æ›´æ–°æ”¯æŒï¼ˆ[`ExecuteDelete` å’Œ `ExecuteUpdate`](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)ï¼‰ã€‚å› æ­¤ï¼Œ**æœ¬åº“å·²ç§»é™¤å¯¹ `DeleteRangeAsync` å’Œ `BatchUpdate` çš„æ”¯æŒ**ï¼Œè¯·ä½¿ç”¨å¾®è½¯å®˜æ–¹ APIã€‚  
+> å·²å‘å¸ƒçš„ .NET 5/6 ç‰ˆæœ¬ NuGet åŒ…ä¸å—å½±å“ã€‚  
+> å¦‚éœ€æŸ¥çœ‹æ—§ç‰ˆä»£ç ï¼Œè¯·è®¿é—®å¤‡ä»½åˆ†æ”¯ï¼š[backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
-¶ÔÓÚ.NET 5ÓÃ»§£º
+ä½¿ç”¨æœ¬åº“ï¼ŒEntity Framework Core ç”¨æˆ·å¯ä»¥å¿«é€Ÿ**æ‰¹é‡æ’å…¥**æ•°æ®ï¼Œæ— éœ€é€æ¡æ‰§è¡Œ INSERT è¯­å¥ã€‚  
+æœ¬åº“æ”¯æŒ .NET 5ã€6ã€7 å’Œ 8ï¼Œå•ä¸ª NuGet åŒ…è¦†ç›–æ‰€æœ‰å—æ”¯æŒçš„ç‰ˆæœ¬ï¼Œæ— éœ€ä¸ºä¸åŒ .NET ç‰ˆæœ¬å®‰è£…ä¸åŒçš„åŒ…ã€‚
+
+> **å…³äºåŒ…åå˜æ›´ï¼š** æ–°åŒ…å‘½åä¸º `Zack.EFCore.BatchInsert.*`ï¼ˆä½“ç°æœ¬åº“ä»…æ”¯æŒæ‰¹é‡æ’å…¥ï¼‰ï¼Œä¸æ—§ç‰ˆ `Zack.EFCore.Batch.*` åŒ…ä¸å†²çªã€‚
+
+## å®‰è£…è¯´æ˜:
+
+##### ç¬¬ä¸€æ­¥
+
+å®‰è£…å¯¹åº”æ•°æ®åº“çš„åŒ…ï¼Œä¸€ä¸ªåŒ…æ”¯æŒ .NET 5 è‡³ 8ï¼š
 ```
-SQLServer: Install-Package Zack.EFCore.Batch.MSSQL
-MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql
-Sqlite: Install-Package Zack.EFCore.Batch.Sqlite
-Oracle:Install-Package Zack.EFCore.Batch.Oracle
-Dm(´ïÃÎ): Install-Package ZackEFCore.Batch.Dm
-In Memory(ÄÚ´æÊı¾İ¿â)£ºInstall-Package Zack.EFCore.Batch.InMemory
-``` 
-¶ÔÓÚ.NET 6ÓÃ»§:
+SQLServer:  Install-Package Zack.EFCore.BatchInsert.MSSQL
+MySQL:      Install-Package Zack.EFCore.BatchInsert.MySQL.Pomelo
+Postgresql: Install-Package Zack.EFCore.BatchInsert.Npgsql
+Oracle:     Install-Package Zack.EFCore.BatchInsert.Oracle
+Dm(è¾¾æ¢¦):   Install-Package Zack.EFCore.BatchInsert.Dm
+In Memory(å†…å­˜æ•°æ®åº“): Install-Package Zack.EFCore.BatchInsert.InMemory
 ```
-SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET6
-MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET6
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET6
-Sqlite: Install-Package Zack.EFCore.Batch.Sqlite_NET6
-Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET6
-In Memory(ÄÚ´æÊı¾İ¿â)£ºInstall-Package Zack.EFCore.Batch.InMemory_NET6
-```
-MySQLÖ§³ÖPomelo.EntityFrameworkCore.MySqlÕâ¸öEF Core Provider£¬²»Ö§³ÖMySQL¹Ù·½EF Core Provider¡£
+> **æ³¨æ„ï¼š** SQLite æ²¡æœ‰åŸç”Ÿçš„æ‰¹é‡å¤åˆ¶ APIï¼Œè¯·ç›´æ¥ä½¿ç”¨ EF Core å†…ç½®çš„ `AddRange` + `SaveChanges`ã€‚
 
+MySQL æ”¯æŒåŸºäº Pomelo.EntityFrameworkCore.MySqlï¼Œä¸æ”¯æŒ MySQL å®˜æ–¹ EF Core Providerã€‚
 
- ##### µÚ¶ş²½:
-¸ù¾İ²»Í¬µÄÊı¾İ¿â£¬Çë·Ö±ğ°ÑÈçÏÂ´úÂëÌí¼Óµ½ÄãµÄDbContextÀàµÄOnConfiguring·½·¨ÖĞ£º
+##### ç¬¬äºŒæ­¥:
+æ ¹æ®ä¸åŒçš„æ•°æ®åº“ï¼Œåœ¨ DbContext çš„ `OnConfiguring` æ–¹æ³•ä¸­æ·»åŠ ä»¥ä¸‹ä»£ç ï¼š
 ```csharp
-optionsBuilder.UseBatchEF_MSSQL();// MSSQL Server ÓÃ»§ÓÃÕâ¸ö
-optionsBuilder.UseBatchEF_Npgsql();//Postgresql ÓÃ»§ÓÃÕâ¸ö
-optionsBuilder.UseBatchEF_MySQLPomelo();//MySQL ÓÃ»§ÓÃÕâ¸ö
-optionsBuilder.UseBatchEF_Sqlite();//Sqlite ÓÃ»§ÓÃÕâ¸ö
-optionsBuilder.UseBatchEF_Oracle();//Oracle ÓÃ»§ÓÃÕâ¸ö
-optionsBuilder.UseBatchEF_DM();//DM(´ïÃÎ) ÓÃ»§ÓÃÕâ¸ö
-optionsBuilder.UseBatchEF_InMemory();//In Memory(ÄÚ´æÊı¾İ¿â) ÓÃ»§ÓÃÕâ¸ö
+optionsBuilder.UseBatchEF_MSSQL();        // SQL Server
+optionsBuilder.UseBatchEF_Npgsql();       // PostgreSQL
+optionsBuilder.UseBatchEF_MySQLPomelo();  // MySQL
+optionsBuilder.UseBatchEF_Oracle();       // Oracle
+optionsBuilder.UseBatchEF_DM();           // DM(è¾¾æ¢¦)
+optionsBuilder.UseBatchEF_InMemory();     // In Memory(å†…å­˜æ•°æ®åº“)
 ```
 
- ##### µÚÈı²½:
-Ê¹ÓÃDbContextµÄÀ©Õ¹·½·¨DeleteRangeAsync()À´É¾³ıÒ»ÅúÊı¾İ.
-DeleteRangeAsync()µÄ²ÎÊı¾ÍÊÇ¹ıÂËÌõ¼şµÄlambda±í´ïÊ½¡£
-Àı×Ó´úÂë:
+## BulkInsertï¼ˆæ‰¹é‡æ’å…¥ï¼‰
+
 ```csharp
-await ctx.DeleteRangeAsync<Book>(b => b.Price > n || b.AuthorName == "zack yang"); 
-```
-
-ÉÏÃæµÄ´úÂë½«»áÔÚÊı¾İ¿âÖĞÖ´ĞĞÈçÏÂSQLÓï¾ä£º
-```SQL
-Delete FROM [T_Books] WHERE ([Price] > @__p_0) OR ([AuthorName] = @__s_1)
-```
-
-DeleteRange()·½·¨ÊÇDeleteRangeAsync()µÄÍ¬²½·½·¨°æ±¾¡£
-
-Ê¹ÓÃDbContextµÄÀ©Õ¹·½·¨BatchUpdate()À´´´½¨Ò»¸öBatchUpdateBuilder¶ÔÏó¡£
-BatchUpdateBuilderÀàÓĞÈçÏÂËÄ¸ö·½·¨£º
-* Set()·½·¨ÓÃÓÚ¸øÒ»¸öÊôĞÔ¸³Öµ¡£·½·¨µÄµÚÒ»¸ö²ÎÊıÊÇÊôĞÔµÄlambda±í´ïÊ½,µÚ¶ş¸ö²ÎÊıÊÇÖµµÄlambda±í´ïÊ½¡£
-* Where() ÊÇ¹ıÂËÌõ¼ş
-* ExecuteAsync()Ê¹ÓÃÓÃÓÚÖ´ĞĞBatchUpdateBuilderµÄÒì²½·½·¨,Execute()ÊÇExecuteAsync()µÄÍ¬²½·½·¨°æ±¾¡£
-
- Àı×Ó´úÂë:
-```csharp
-await ctx.BatchUpdate<Book>()
-    .Set(b => b.Price, b => b.Price + 3)
-    .Set(b => b.Title, b => s)
-    .Set(b=>b.AuthorName,b=>b.Title.Substring(3,2)+b.AuthorName.ToUpper())
-    .Set(b => b.PubTime, DateTime.Now)
-    .Where(b => b.Id > n || b.AuthorName.StartsWith("Zack"))
-    .ExecuteAsync();
-```
-
-ÉÏÃæµÄ´úÂë½«»áÔÚÊı¾İ¿âÖĞÖ´ĞĞÈçÏÂSQLÓï¾ä£º
-```SQL
-Update [T_Books] SET [Price] = [Price] + 3.0E0, [Title] = @__s_1, [AuthorName] = COALESCE(SUBSTRING([Title], 3 + 1, 2), N'') + COALESCE(UPPER([AuthorName]), N''), [PubTime] = GETDATE()
-WHERE ([Id] > @__p_0) OR ([AuthorName] IS NOT NULL AND ([AuthorName] LIKE N'Zack%'))
-```
-
-
-## Take(), Skip()
-Take() and Skip() ¿ÉÒÔÓÃÀ´ÏŞÖÆDeleteRangeAsync ºÍ BatchUpdateÓ°ÏìµÄĞĞÊı£º
-```CSharp
-await ctx.Comments.Where(c => c.Article.Id == id).OrderBy(c => c.Message)
-	.Skip(3).DeleteRangeAsync<Comment>(ctx);
-await ctx.Comments.Where(c => c.Article.Id == id).Skip(3).Take(10).DeleteRangeAsync<Comment>(ctx);
-await ctx.Comments.Where(c => c.Article.Id == id).Take(10).DeleteRangeAsync<Comment>(ctx);
-
-await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
-	.Where(c => c.Article.Id == id)
-	.Skip(3)
-	.ExecuteAsync();
-
-await ctx.BatchUpdate<Comment>()
-	.Set(c => c.Message, c => "abc")
-	.Where(c => c.Article.Id == id)
-	.ExecuteAsync();
-	
-await ctx.BatchUpdate<Comment>()
-	.Set("Message","abc")
-	.Where(c => c.Article.Id == id)
-	.ExecuteAsync();
-
-await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
-	.Where(c => c.Article.Id == id)
-	.Skip(3)
-	.Take(10)
-	.ExecuteAsync();
-await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc")
-   .Where(c => c.Article.Id == id)
-   .Take(10)
-   .ExecuteAsync();
-```
-
-## BulkInsertÅúÁ¿²åÈë
-
-Ä¿Ç°£¬ÅúÁ¿²åÈëÔİ²»Ö§³ÖSQLite¡£
-```
 List<Book> books = new List<Book>();
 for (int i = 0; i < 100; i++)
 {
-	books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
+    books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
 }
 using (TestDbContext ctx = new TestDbContext())
 {
-	ctx.BulkInsert(books);
+    ctx.BulkInsert(books);
 }
 ```
-ÔÚ mysqlÖĞ, Èç¹ûÊ¹ÓÃBulkInsert£¬ÇëÔÚ·şÎñÆ÷¶ËºÍ¿Í»§¶Ë¶¼ÆôÓÃlocal_infile£ºÔÚmysql server·şÎñÆ÷¶ËÆôÓÃ"local_infile=ON"£¬È»ºóÔÚÁ¬½Ó×Ö·û´®ÖĞÌí¼Ó "AllowLoadLocalInfile=true"¡£
+åœ¨ MySQL ä¸­ï¼Œä½¿ç”¨ BulkInsert éœ€è¦åœ¨æœåŠ¡å™¨å’Œå®¢æˆ·ç«¯éƒ½å¼€å¯ local_infileï¼šåœ¨ MySQL server ç«¯æ‰§è¡Œ `local_infile=ON`ï¼Œç„¶ååœ¨è¿æ¥å­—ç¬¦ä¸²ä¸­æ·»åŠ  `AllowLoadLocalInfile=true`ã€‚
 
-## ÆäËûËµÃ÷
+## è¡¥å……è¯´æ˜
 
-Õâ¸ö¿ª·¢°üÊ¹ÓÃEF CoreÊµÏÖµÄlambda±í´ïÊ½µ½SQLÓï¾äµÄ·­Òë£¬ËùÒÔ¼¸ºõËùÓĞEF CoreÖ§³ÖµÄlambda±í´ïÊ½Ğ´·¨¶¼±»Ö§³Ö¡£
+æœ¬åº“åˆ©ç”¨ EF Core å®ç°çš„ lambda è¡¨è¾¾å¼åˆ° SQL è¯­å¥çš„ç¿»è¯‘ï¼Œå› æ­¤æ”¯æŒå‡ ä¹æ‰€æœ‰ EF Core æ”¯æŒçš„ lambda è¡¨è¾¾å¼å†™æ³•ã€‚
 
-ÒÔÏÂÊı¾İ¿âÒÑ¾­¹ı²âÊÔ£¬¿ÉÒÔ±»Zack.EFCore.BatchÖ§³Ö: MS SQLServer(Microsoft.EntityFrameworkCore.SqlServer), MySQL(Pomelo.EntityFrameworkCore.MySql), PostgreSQL(Npgsql.EntityFrameworkCore.PostgreSQL), Oracle(Oracle.EntityFrameworkCore)¡£
-
-ÀíÂÛÉÏÀ´Ëµ£¬Ö»ÒªÒ»¸öÊı¾İ¿âÓĞ¶ÔÓ¦µÄEF Core 5/6µÄProvider£¬ÄÇÃ´Zack.EFCore.Batch¾Í¿ÉÒÔÖ§³ÖÕâ¸öÊı¾İ¿â¡£Èç¹ûÄúÊ¹ÓÃµÄÊı¾İ¿âÄ¿Ç°²»ÔÚ±»Ö§³ÖµÄ·¶Î§ÄÚ£¬ÇëÌá½»Issue£¬ÎÒÒ»°ã¿ÉÒÔÔÚÒ»¸ö¹¤×÷ÈÕÄÚ¿ª·¢Íê³É¡£
+å·²ç»è¿‡æµ‹è¯•å¯ä»¥æ­£å¸¸ä½¿ç”¨çš„æ•°æ®åº“ï¼šMS SQLServerã€MySQL (Pomelo)ã€PostgreSQL (Npgsql)ã€Oracleã€‚
 
 
-[¹ØÓÚÕâ¸ö¿âµÄ¿ª·¢±¨¸æ£¨BÕ¾£©](https://www.bilibili.com/read/cv8545714)  
+[æœ¬é¡¹ç›®ä»‹ç»æ–‡ç« ï¼ˆBç«™ä¸“æ ï¼‰](https://www.bilibili.com/read/cv8545714)
 
-[¹ØÓÚÕâ¸ö¿âµÄ¿ª·¢±¨¸æ£¨½ñÈÕÍ·Ìõ£©](https://www.toutiao.com/i6899423396355293708/)  
+[æœ¬é¡¹ç›®ä»‹ç»æ–‡ç« ï¼ˆä»Šæ—¥å¤´æ¡ï¼‰](https://www.toutiao.com/i6899423396355293708/)

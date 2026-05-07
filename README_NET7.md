@@ -1,5 +1,7 @@
 # Zack.EFCore.Batch
-Since EFCore 7/8 has built-in support of 'batch update and delete' ([please see this page](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)), this library doesn't support EFCore 7 and higher anymore), but BulkInsert is still supported.
+Since EFCore 7/8 has built-in support of 'batch update and delete' ([please see this page](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)), this library no longer supports `DeleteRangeAsync` or `BatchUpdate`. Please use Microsoft's official `ExecuteDelete` / `ExecuteUpdate` APIs instead.  
+BulkInsert is still supported.  
+To view the legacy code, see the backup branch: [backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
  Using this library, Entity Framework Core users can insert multiple records quickly.
  This libary supports Entity Framework Core 7/8 and above.  

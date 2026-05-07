@@ -1,18 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Demo.Base
+﻿namespace Demo.Base
 {
     public class TestCase2
     {
-        public static async Task RunAsync(BaseDbContext ctx)
+        public static Task RunAsync(BaseDbContext ctx)
         {
-            int id = Convert.ToInt32("3");
-            await ctx.DeleteRangeAsync<Comment>(c => c.Article.Id == id);
-            await ctx.BatchUpdate<Comment>().Set(c => c.Message, c => c.Message + "abc" )
-                .Where(c => c.Article.Id == id)
-                .ExecuteAsync();
+            // DeleteRangeAsync and BatchUpdate have been removed from this library.
+            // .NET 7+ users: please use EF Core's built-in ExecuteDelete / ExecuteUpdate instead.
+            // See: https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew#executeupdate-and-executedelete-bulk-updates
+            // For legacy code, see the backup branch: backup#before_batch_update_delete_being_removed
+            return Task.CompletedTask;
         }
     }
 }
