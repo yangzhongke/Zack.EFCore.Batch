@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using Zack.EFCore.Batch.Oracle;
 
 namespace Demo
 {

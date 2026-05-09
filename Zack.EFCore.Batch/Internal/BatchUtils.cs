@@ -5,17 +5,11 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Zack.EFCore.Batch.Internal
 {

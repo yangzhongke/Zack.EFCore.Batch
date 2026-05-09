@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
 using Zack.EFCore.Batch.Internal;
 
 namespace System.Linq

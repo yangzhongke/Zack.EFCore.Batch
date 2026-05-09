@@ -14,7 +14,6 @@ namespace Demo
                 }
             });
             optionsBuilder.UseInMemoryDatabase(databaseName: "Test");
-            optionsBuilder.UseBatchEF_InMemory();            
         }
     }
 }

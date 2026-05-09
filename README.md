@@ -28,15 +28,7 @@ In Memory:  Install-Package Zack.EFCore.BatchInsert.InMemory
 Support of MySQL is based on Pomelo.EntityFrameworkCore.MySql.
 
 ##### Step 2:
-Depending on the database, add the following code into `OnConfiguring()` method of your DbContext respectively.
-```csharp
-optionsBuilder.UseBatchEF_MSSQL();        // SQL Server
-optionsBuilder.UseBatchEF_Npgsql();       // PostgreSQL
-optionsBuilder.UseBatchEF_MySQLPomelo();  // MySQL
-optionsBuilder.UseBatchEF_Oracle();       // Oracle
-optionsBuilder.UseBatchEF_DM();           // DM (达梦)
-optionsBuilder.UseBatchEF_InMemory();     // In-Memory
-```
+No extra configuration is required anymore. After installing the provider package, you can call `BulkInsert`/`BulkInsertAsync` directly.
 
 ## BulkInsert
 

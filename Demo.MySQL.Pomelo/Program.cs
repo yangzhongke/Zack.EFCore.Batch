@@ -112,7 +112,6 @@ namespace Demo
                 {
                     builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
                 });
-                optionsBuilder.UseBatchEF_MySQLPomelo();
             });
             services.AddDbContext<Issue24Context>();            
         }

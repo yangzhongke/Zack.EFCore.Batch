@@ -15,7 +15,6 @@ namespace Demo
                 }
             });
             optionsBuilder.UseDm(SQLHelper.ConnStr);
-            optionsBuilder.UseBatchEF_DM();            
         }
     }
 }

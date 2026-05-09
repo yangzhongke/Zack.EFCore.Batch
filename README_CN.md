@@ -29,15 +29,7 @@ In Memory(内存数据库): Install-Package Zack.EFCore.BatchInsert.InMemory
 MySQL 支持基于 Pomelo.EntityFrameworkCore.MySql，不支持 MySQL 官方 EF Core Provider。
 
 ##### 第二步:
-根据不同的数据库，在 DbContext 的 `OnConfiguring` 方法中添加以下代码：
-```csharp
-optionsBuilder.UseBatchEF_MSSQL();        // SQL Server
-optionsBuilder.UseBatchEF_Npgsql();       // PostgreSQL
-optionsBuilder.UseBatchEF_MySQLPomelo();  // MySQL
-optionsBuilder.UseBatchEF_Oracle();       // Oracle
-optionsBuilder.UseBatchEF_DM();           // DM(达梦)
-optionsBuilder.UseBatchEF_InMemory();     // In Memory(内存数据库)
-```
+现在不再需要额外配置。安装对应数据库包后，可直接调用 `BulkInsert`/`BulkInsertAsync`。
 
 ## BulkInsert（批量插入）
 
