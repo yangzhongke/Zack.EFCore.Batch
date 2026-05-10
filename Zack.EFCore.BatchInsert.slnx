@@ -10,5 +10,6 @@
   <Project Path="Zack.EFCore.Batch.Npgsql/Zack.EFCore.Batch.Npgsql.csproj" />
   <Project Path="Zack.EFCore.Batch.Oracle/Zack.EFCore.Batch.Oracle.csproj" />
   <Project Path="Zack.EFCore.Batch/Zack.EFCore.Batch.csproj" />
+  <Project Path="Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj" />
   <Project Path="ZackEFCore.Batch.Dm/ZackEFCore.Batch.Dm.csproj" />
 </Solution>

@@ -1,21 +1,30 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections;
+using Zack.EFCore.Batch;
 using Zack.EFCore.Batch.Internal;
 
 namespace Zack.EFCore.Batch.Oracle
 {
-	public static class OracleBulkInsertExtensions
+	public class OracleBulkInsertExecutor : IBulkInsertExecutor
 	{
-		private static OracleBulkCopy BuildSqlBulkCopy<TEntity>(OracleConnection conn, DbContext dbCtx, OracleBulkCopyOptions copyOptions) where TEntity : class
+		private const string ProviderName = "Oracle.EntityFrameworkCore";
+
+		public bool CanHandle(DbContext dbCtx)
 		{
-			var dbSet = dbCtx.Set<TEntity>();
-			var entityType = dbSet.EntityType;
-			var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(dbCtx, entityType);
+			return string.Equals(dbCtx.Database.ProviderName, ProviderName, StringComparison.OrdinalIgnoreCase);
+		}
 
-			OracleBulkCopy bulkCopy = new OracleBulkCopy(conn, copyOptions);
+		private static OracleBulkCopy BuildSqlBulkCopy(OracleConnection conn, DbContext dbCtx, Type entityType,
+			Microsoft.EntityFrameworkCore.Metadata.IEntityType efEntityType)
+		{
+			var dbProps = BulkInsertUtils.ParseDbProps(dbCtx, efEntityType, entityType);
 
-			bulkCopy.DestinationTableName = $"\"{entityType.GetTableName()}\"" ;
+			OracleBulkCopy bulkCopy = new OracleBulkCopy(conn, OracleBulkCopyOptions.Default);
+
+			bulkCopy.DestinationTableName = $"\"{efEntityType.GetTableName()}\"";
 
 			foreach (var dbProp in dbProps)
 			{
@@ -25,36 +34,36 @@ namespace Zack.EFCore.Batch.Oracle
 			return bulkCopy;
 		}
 
-		public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-			IEnumerable<TEntity> items, OracleBulkCopyOptions copyOptions = OracleBulkCopyOptions.Default, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
+		public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items, CancellationToken cancellationToken = default)
 		{
 			var conn = dbCtx.Database.GetDbConnection();
-			await conn.OpenIfNeededAsync(cancellationToken);
-			DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
-			using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx, copyOptions))
+			if (conn is not OracleConnection oracleConn)
 			{
-				if (bulkCopyTimeoutInSecond != null)
-				{
-					bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
-				}
-
-
+				throw new InvalidOperationException("OracleBulkInsertExecutor can only handle Oracle connections.");
+			}
+			await conn.OpenIfNeededAsync(cancellationToken);
+			var efEntityType = dbCtx.Model.FindEntityType(entityType)
+				?? throw new InvalidOperationException($"Cannot resolve EF entity type for {entityType.FullName}.");
+			DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, efEntityType, entityType, items);
+			using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy(oracleConn, dbCtx, entityType, efEntityType))
+			{
 				bulkCopy.WriteToServer(dataTable);
 			}
 		}
 
-		public static void BulkInsert<TEntity>(this DbContext dbCtx,
-			IEnumerable<TEntity> items, OracleBulkCopyOptions copyOptions = OracleBulkCopyOptions.Default, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
+		public void BulkInsert(DbContext dbCtx, Type entityType, IEnumerable items)
 		{
 			var conn = dbCtx.Database.GetDbConnection();
-			conn.OpenIfNeeded();
-			DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
-			using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((OracleConnection)conn, dbCtx, copyOptions))
+			if (conn is not OracleConnection oracleConn)
 			{
-				if (bulkCopyTimeoutInSecond != null)
-				{
-					bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
-				}
+				throw new InvalidOperationException("OracleBulkInsertExecutor can only handle Oracle connections.");
+			}
+			conn.OpenIfNeeded();
+			var efEntityType = dbCtx.Model.FindEntityType(entityType)
+				?? throw new InvalidOperationException($"Cannot resolve EF entity type for {entityType.FullName}.");
+			DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, efEntityType, entityType, items);
+			using (OracleBulkCopy bulkCopy = BuildSqlBulkCopy(oracleConn, dbCtx, entityType, efEntityType))
+			{
 				bulkCopy.WriteToServer(dataTable);
 			}
 		}

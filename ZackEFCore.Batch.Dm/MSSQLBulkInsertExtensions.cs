@@ -1,27 +1,39 @@
 ﻿using Dm;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Zack.EFCore.Batch;
 using Zack.EFCore.Batch.Internal;
 
-namespace System.Linq
+namespace Zack.EFCore.Batch.DM
 {
-    public static class MSSQLBulkInsertExtensions
+    public class DmBulkInsertExecutor : IBulkInsertExecutor
     {
-        public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, DmTransaction externalTransaction = null, DmBulkCopyOptions copyOptions = DmBulkCopyOptions.Default, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
+        public bool CanHandle(DbContext dbCtx)
+        {
+            var providerName = dbCtx.Database.ProviderName;
+            return providerName != null &&
+                (providerName.IndexOf("EntityFrameworkCore.Dm", StringComparison.OrdinalIgnoreCase) >= 0
+                || string.Equals(providerName, "Dm.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase));
+        }
+
+        public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items, CancellationToken cancellationToken = default)
         {
             var conn = dbCtx.Database.GetDbConnection();
-            await conn.OpenIfNeededAsync(cancellationToken);
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
-            using (DmBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((DmConnection)conn, dbCtx,externalTransaction,copyOptions))
+            if (conn is not DmConnection dmConn)
             {
-                if (bulkCopyTimeoutInSecond != null)
-                {
-                    bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
-                }
+                throw new InvalidOperationException("DmBulkInsertExecutor can only handle DM connections.");
+            }
+            await conn.OpenIfNeededAsync(cancellationToken);
+            var efEntityType = dbCtx.Model.FindEntityType(entityType)
+                ?? throw new InvalidOperationException($"Cannot resolve EF entity type for {entityType.FullName}.");
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, efEntityType, entityType, items);
+            using (DmBulkCopy bulkCopy = BuildSqlBulkCopy(dmConn, dbCtx, entityType, efEntityType))
+            {
                 await Task.Run(() => {
                     WriteToServer(bulkCopy,dataTable);
                 },cancellationToken);
@@ -47,13 +59,11 @@ namespace System.Linq
             }
         }
 
-        private static DmBulkCopy BuildSqlBulkCopy<TEntity>(DmConnection conn,DbContext dbCtx, DmTransaction externalTransaction, DmBulkCopyOptions copyOptions) where TEntity : class
+        private static DmBulkCopy BuildSqlBulkCopy(DmConnection conn, DbContext dbCtx, Type entityType, Microsoft.EntityFrameworkCore.Metadata.IEntityType efEntityType)
         {
-            DmBulkCopy bulkCopy = new DmBulkCopy(conn,copyOptions,externalTransaction);
-            var dbSet = dbCtx.Set<TEntity>();
-            var entityType = dbSet.EntityType;
-            var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(dbCtx, entityType);
-            bulkCopy.DestinationTableName = entityType.GetSchemaQualifiedTableName();//Schema may be used
+            DmBulkCopy bulkCopy = new DmBulkCopy(conn, DmBulkCopyOptions.Default, null);
+            var dbProps = BulkInsertUtils.ParseDbProps(dbCtx, efEntityType, entityType);
+            bulkCopy.DestinationTableName = efEntityType.GetSchemaQualifiedTableName();//Schema may be used
             foreach (var dbProp in dbProps)
             {
                 string columnName = dbProp.ColumnName;
@@ -62,18 +72,19 @@ namespace System.Linq
             return bulkCopy;
         }
 
-        public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, DmTransaction externalTransaction = null, DmBulkCopyOptions copyOptions = DmBulkCopyOptions.Default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
+        public void BulkInsert(DbContext dbCtx, Type entityType, IEnumerable items)
         {            
             var conn = dbCtx.Database.GetDbConnection();
-            conn.OpenIfNeeded();
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
-            using (DmBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((DmConnection)conn, dbCtx,externalTransaction,copyOptions))
+            if (conn is not DmConnection dmConn)
             {
-                if (bulkCopyTimeoutInSecond != null)
-                {
-                    bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
-                }
+                throw new InvalidOperationException("DmBulkInsertExecutor can only handle DM connections.");
+            }
+            conn.OpenIfNeeded();
+            var efEntityType = dbCtx.Model.FindEntityType(entityType)
+                ?? throw new InvalidOperationException($"Cannot resolve EF entity type for {entityType.FullName}.");
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, efEntityType, entityType, items);
+            using (DmBulkCopy bulkCopy = BuildSqlBulkCopy(dmConn, dbCtx, entityType, efEntityType))
+            {
                 WriteToServer(bulkCopy, dataTable);
             }
         }

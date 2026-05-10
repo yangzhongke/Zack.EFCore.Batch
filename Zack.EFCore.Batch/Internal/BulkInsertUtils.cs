@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Collections;
 using System.Data;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -62,8 +63,13 @@ namespace Zack.EFCore.Batch.Internal
 		/// <returns></returns>
 		public static DbProp[] ParseDbProps<TEntity>(DbContext dbCtx, IEntityType entityType) where TEntity : class
 		{
+			return ParseDbProps(dbCtx, entityType, typeof(TEntity));
+		}
+
+		public static DbProp[] ParseDbProps(DbContext dbCtx, IEntityType entityType, Type entityClrType)
+		{
 			//skip navigationProperties
-			var props = typeof(TEntity).GetProperties().Where(p => IsOwnedProp(entityType, p) || !IsNavigationProp(entityType, p) && p.CanRead);
+			var props = entityClrType.GetProperties().Where(p => IsOwnedProp(entityType, p) || !IsNavigationProp(entityType, p) && p.CanRead);
 			List<DbProp> propFields = new List<DbProp>();
 
 			foreach (var prop in props)
@@ -118,7 +124,13 @@ namespace Zack.EFCore.Batch.Internal
 			IEnumerable<TEntity> items) where TEntity : class
 		{
 			var entityType = dbSet.EntityType;
-			var dbProps = ParseDbProps<TEntity>(dbCtx, entityType);
+			return BuildDataTable(dbCtx, entityType, typeof(TEntity), items);
+		}
+
+		public static DataTable BuildDataTable(DbContext dbCtx, IEntityType entityType, Type entityClrType,
+			IEnumerable items)
+		{
+			var dbProps = ParseDbProps(dbCtx, entityType, entityClrType);
 			DataTable dataTable = new DataTable();
 			foreach (var dbProp in dbProps)
 			{

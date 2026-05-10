@@ -1,7 +1,5 @@
 ﻿using Demo.Base;
 using System.Threading.Tasks;
-using Oracle.ManagedDataAccess.Client;
-using Zack.EFCore.Batch.Oracle;
 
 namespace Demo
 {
@@ -19,7 +17,7 @@ namespace Demo
 				list.Add(new Book { Title = "3", Price = new Random().Next(0, 100), PubTime = DateTime.Now, AuthorName = "v", Pages = 2 });
 				list.Add(new Book { Title = "4", Price = new Random().Next(0, 100), PubTime = DateTime.Now, AuthorName = "v", Pages = 2 });
 
-				await ctx.BulkInsertAsync(list, OracleBulkCopyOptions.UseInternalTransaction);
+				await ctx.BulkInsertAsync(list);
 			}
 		}
 	}

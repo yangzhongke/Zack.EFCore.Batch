@@ -1,23 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using System;
+using System.Collections;
 using System.Data;
+using Zack.EFCore.Batch;
 using Zack.EFCore.Batch.Internal;
 
-namespace System.Linq
+namespace Zack.EFCore.Batch.MySQL.Pomelo
 {
-    public static class MySQLBulkInsertExtensions
+    public class MySQLBulkInsertExecutor : IBulkInsertExecutor
     {
+        private const string ProviderName = "Pomelo.EntityFrameworkCore.MySql";
 
-        private static MySqlBulkCopy BuildSqlBulkCopy<TEntity>(MySqlConnection conn, DbContext dbCtx,
-            MySqlTransaction? transaction = null) where TEntity : class
+        public bool CanHandle(DbContext dbCtx)
         {
-            var dbSet = dbCtx.Set<TEntity>();
-            var entityType = dbSet.EntityType;
-            var dbProps = BulkInsertUtils.ParseDbProps<TEntity>(dbCtx,entityType);
-            
-            MySqlBulkCopy bulkCopy = new MySqlBulkCopy(conn, transaction);
+            return string.Equals(dbCtx.Database.ProviderName, ProviderName, StringComparison.OrdinalIgnoreCase);
+        }
 
-            bulkCopy.DestinationTableName = entityType.GetTableName();//Schema is not supported by MySQL
+
+        private static MySqlBulkCopy BuildSqlBulkCopy(MySqlConnection conn, DbContext dbCtx,
+            Type entityType, Microsoft.EntityFrameworkCore.Metadata.IEntityType efEntityType)
+        {
+            var dbProps = BulkInsertUtils.ParseDbProps(dbCtx, efEntityType, entityType);
+            
+            MySqlBulkCopy bulkCopy = new MySqlBulkCopy(conn);
+
+            bulkCopy.DestinationTableName = efEntityType.GetTableName();//Schema is not supported by MySQL
             int sourceOrdinal = 0;
             foreach (var dbProp in dbProps)
             {
@@ -28,31 +36,33 @@ namespace System.Linq
             return bulkCopy;
         }
 
-        public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, MySqlTransaction? transaction = null,CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
+        public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items, CancellationToken cancellationToken = default)
         {
             var conn = dbCtx.Database.GetDbConnection();
-            await conn.OpenIfNeededAsync(cancellationToken);
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
-            MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn,dbCtx, transaction);
-            if (bulkCopyTimeoutInSecond != null)
+            if (conn is not MySqlConnection mySqlConn)
             {
-                bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+                throw new InvalidOperationException("MySQLBulkInsertExecutor can only handle MySQL connections.");
             }
+            await conn.OpenIfNeededAsync(cancellationToken);
+            var efEntityType = dbCtx.Model.FindEntityType(entityType)
+                ?? throw new InvalidOperationException($"Cannot resolve EF entity type for {entityType.FullName}.");
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, efEntityType, entityType, items);
+            MySqlBulkCopy bulkCopy = BuildSqlBulkCopy(mySqlConn, dbCtx, entityType, efEntityType);
             await bulkCopy.WriteToServerAsync(dataTable, cancellationToken);
         }
 
-        public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, MySqlTransaction? transaction = null, CancellationToken cancellationToken = default, int? bulkCopyTimeoutInSecond = null) where TEntity : class
+        public void BulkInsert(DbContext dbCtx, Type entityType, IEnumerable items)
         {
             var conn = dbCtx.Database.GetDbConnection();
-            conn.OpenIfNeeded();
-            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, dbCtx.Set<TEntity>(), items);
-            MySqlBulkCopy bulkCopy = BuildSqlBulkCopy<TEntity>((MySqlConnection)conn, dbCtx, transaction);
-            if (bulkCopyTimeoutInSecond != null)
+            if (conn is not MySqlConnection mySqlConn)
             {
-                bulkCopy.BulkCopyTimeout = bulkCopyTimeoutInSecond.Value;
+                throw new InvalidOperationException("MySQLBulkInsertExecutor can only handle MySQL connections.");
             }
+            conn.OpenIfNeeded();
+            var efEntityType = dbCtx.Model.FindEntityType(entityType)
+                ?? throw new InvalidOperationException($"Cannot resolve EF entity type for {entityType.FullName}.");
+            DataTable dataTable = BulkInsertUtils.BuildDataTable(dbCtx, efEntityType, entityType, items);
+            MySqlBulkCopy bulkCopy = BuildSqlBulkCopy(mySqlConn, dbCtx, entityType, efEntityType);
             bulkCopy.WriteToServer(dataTable);
         }
     }
