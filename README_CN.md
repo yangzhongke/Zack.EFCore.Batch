@@ -22,9 +22,7 @@ MySQL:      Install-Package Zack.EFCore.BatchInsert.MySQL.Pomelo
 Postgresql: Install-Package Zack.EFCore.BatchInsert.Npgsql
 Oracle:     Install-Package Zack.EFCore.BatchInsert.Oracle
 Dm(达梦):   Install-Package Zack.EFCore.BatchInsert.Dm
-In Memory(内存数据库): Install-Package Zack.EFCore.BatchInsert.InMemory
 ```
-> **注意：** SQLite 没有原生的批量复制 API，请直接使用 EF Core 内置的 `AddRange` + `SaveChanges`。
 
 MySQL 支持基于 Pomelo.EntityFrameworkCore.MySql，不支持 MySQL 官方 EF Core Provider。
 

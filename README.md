@@ -21,9 +21,7 @@ MySQL:      Install-Package Zack.EFCore.BatchInsert.MySQL.Pomelo
 Postgresql: Install-Package Zack.EFCore.BatchInsert.Npgsql
 Oracle:     Install-Package Zack.EFCore.BatchInsert.Oracle
 Dm(达梦):   Install-Package Zack.EFCore.BatchInsert.Dm
-In Memory:  Install-Package Zack.EFCore.BatchInsert.InMemory
 ```
-> **Note:** Sqlite does not have a native bulk-copy API. For Sqlite, use EF Core's built-in `AddRange` + `SaveChanges`.
 
 Support of MySQL is based on Pomelo.EntityFrameworkCore.MySql.
 
