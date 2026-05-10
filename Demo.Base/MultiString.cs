@@ -1,8 +1,7 @@
-﻿namespace Demo.Base
+﻿namespace Demo.Base;
+
+public class MultiString
 {
-    public class MultiString
-    {
-        public string? Chinese { get; set; }
-        public string? English { get; set; }
-    }
+    public string? Chinese { get; set; }
+    public string? English { get; set; }
 }

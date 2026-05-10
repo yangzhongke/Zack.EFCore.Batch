@@ -1,15 +1,15 @@
 <Solution>
-  <Project Path="Demo.Base/Demo.Base.csproj" />
-  <Project Path="Demo.DM/Demo.DM.csproj" />
-  <Project Path="Demo.MSSQLServer/Demo.MSSQLServer.csproj" />
-  <Project Path="Demo.MySQL.Pomelo/Demo.MySQL.Pomelo.csproj" />
-  <Project Path="Demo.Oracle/Demo.Oracle.csproj" />
-  <Project Path="Demo.PostgreSQL.Npgsql/Demo.PostgreSQL.Npgsql.csproj" />
-  <Project Path="Zack.EFCore.Batch.MSSQL/Zack.EFCore.Batch.MSSQL.csproj" />
-  <Project Path="Zack.EFCore.Batch.MySQL.Pomelo/Zack.EFCore.Batch.MySQL.Pomelo.csproj" />
-  <Project Path="Zack.EFCore.Batch.Npgsql/Zack.EFCore.Batch.Npgsql.csproj" />
-  <Project Path="Zack.EFCore.Batch.Oracle/Zack.EFCore.Batch.Oracle.csproj" />
-  <Project Path="Zack.EFCore.Batch/Zack.EFCore.Batch.csproj" />
-  <Project Path="Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj" />
-  <Project Path="ZackEFCore.Batch.Dm/ZackEFCore.Batch.Dm.csproj" />
+    <Project Path="Demo.Base/Demo.Base.csproj"/>
+    <Project Path="Demo.DM/Demo.DM.csproj"/>
+    <Project Path="Demo.MSSQLServer/Demo.MSSQLServer.csproj"/>
+    <Project Path="Demo.MySQL.Pomelo/Demo.MySQL.Pomelo.csproj"/>
+    <Project Path="Demo.Oracle/Demo.Oracle.csproj"/>
+    <Project Path="Demo.PostgreSQL.Npgsql/Demo.PostgreSQL.Npgsql.csproj"/>
+    <Project Path="Zack.EFCore.Batch.MSSQL/Zack.EFCore.Batch.MSSQL.csproj"/>
+    <Project Path="Zack.EFCore.Batch.MySQL.Pomelo/Zack.EFCore.Batch.MySQL.Pomelo.csproj"/>
+    <Project Path="Zack.EFCore.Batch.Npgsql/Zack.EFCore.Batch.Npgsql.csproj"/>
+    <Project Path="Zack.EFCore.Batch.Oracle/Zack.EFCore.Batch.Oracle.csproj"/>
+    <Project Path="Zack.EFCore.Batch/Zack.EFCore.Batch.csproj"/>
+    <Project Path="Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj"/>
+    <Project Path="ZackEFCore.Batch.Dm/ZackEFCore.Batch.Dm.csproj"/>
 </Solution>

@@ -1,19 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using System;
 
-namespace Demo.MySQL.Pomelo
+namespace Demo.MySQL.Pomelo;
+
+public class Issue24Context : DbContext
 {
-    public class Issue24Context: DbContext
+    public DbSet<Base.Issue24.Book> Books { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        public DbSet<Demo.Base.Issue24.Book> Books { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.LogTo(Console.WriteLine);
-            string connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
-            optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)), builder => {
-                builder.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-            });
-        }
+        optionsBuilder.LogTo(Console.WriteLine);
+        var connStr = "server=localhost;user=root;password=root;database=zackbatch;AllowLoadLocalInfile=true";
+        optionsBuilder.UseMySql(connStr, new MySqlServerVersion(new Version(5, 6, 20)),
+            builder => { builder.SchemaBehavior(MySqlSchemaBehavior.Ignore); });
     }
 }

@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
-    <PackageId>Zack.EFCore.BatchInsert.Dm</PackageId>
-    <Version>1.0.0</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>A DM (达梦数据库)-specific package for Zack.EFCore.BatchInsert. Supports EF Core 5 and 6.</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+        <PackageId>Zack.EFCore.BatchInsert.Dm</PackageId>
+        <Version>1.0.0</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Description>A DM (达梦数据库)-specific package for Zack.EFCore.BatchInsert. Supports EF Core 5 and 6.</Description>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="EFCore.Dm" Version="5.0.1" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="dmdbms.Microsoft.EntityFrameworkCore.Dm" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.16" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+        <PackageReference Include="EFCore.Dm" Version="5.0.1"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="dmdbms.Microsoft.EntityFrameworkCore.Dm" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.16"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj"/>
+    </ItemGroup>
 
 </Project>

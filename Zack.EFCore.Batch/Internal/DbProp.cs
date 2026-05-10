@@ -1,17 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
-using System.Reflection;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Zack.EFCore.Batch.Internal
+namespace Zack.EFCore.Batch.Internal;
+
+public class DbProp
 {
-    public class DbProp
-    {
-        public ValueConverter? ValueConverter { get; set; }
-        public string ColumnName { get; set; }
+    public Func<object, object?> GetValueFunc;
+    public ValueConverter? ValueConverter { get; set; }
 
-        public Func<object, object?> GetValueFunc;
-        //public PropertyInfo Property { get; set; }
-        public Type PropertyType { get; set; }
-    }
+    public string ColumnName { get; set; }
+
+    //public PropertyInfo Property { get; set; }
+    public Type PropertyType { get; set; }
 }

@@ -1,21 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 
-namespace Demo
+namespace Demo;
+
+internal class TestDbContext : BaseDbContext
 {
-    class TestDbContext : BaseDbContext
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        optionsBuilder.LogTo(msg =>
         {
-            optionsBuilder.LogTo(msg=> { 
-                if(msg.Contains("QueryExecutionPlanned"))
-                {
-                    Console.WriteLine(msg);
-                }
-            });
-            string connStr = "Server=.;Database=demoBatch;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
-            optionsBuilder.UseSqlServer(connStr, x => x.UseNodaTime());
-
-        }
+            if (msg.Contains("QueryExecutionPlanned")) Console.WriteLine(msg);
+        });
+        var connStr =
+            "Server=.;Database=demoBatch;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+        optionsBuilder.UseSqlServer(connStr, x => x.UseNodaTime());
     }
 }

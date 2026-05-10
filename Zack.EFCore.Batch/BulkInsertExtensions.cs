@@ -1,62 +1,56 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Zack.EFCore.Batch.Internal;
 
-namespace System.Linq
+namespace System.Linq;
+
+public static class BulkInsertExtensions
 {
-    public static class BulkInsertExtensions
+    public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
+        IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
     {
-        public static async Task BulkInsertAsync<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items, CancellationToken cancellationToken = default) where TEntity : class
+        var executor = BulkInsertExecutorResolver.Resolve(dbCtx);
+        if (executor == null)
         {
-            var executor = BulkInsertExecutorResolver.Resolve(dbCtx);
-            if (executor == null)
-            {
-                LogFallback(dbCtx, typeof(TEntity));
-                dbCtx.AddRange(items);
-                await dbCtx.SaveChangesAsync(cancellationToken);
-                return;
-            }
-
-            await executor.BulkInsertAsync(dbCtx, typeof(TEntity), items, cancellationToken);
+            LogFallback(dbCtx, typeof(TEntity));
+            dbCtx.AddRange(items);
+            await dbCtx.SaveChangesAsync(cancellationToken);
+            return;
         }
 
-        public static void BulkInsert<TEntity>(this DbContext dbCtx,
-            IEnumerable<TEntity> items) where TEntity : class
-        {
-            var executor = BulkInsertExecutorResolver.Resolve(dbCtx);
-            if (executor == null)
-            {
-                LogFallback(dbCtx, typeof(TEntity));
-                dbCtx.AddRange(items);
-                dbCtx.SaveChanges();
-                return;
-            }
+        await executor.BulkInsertAsync(dbCtx, typeof(TEntity), items, cancellationToken);
+    }
 
-            executor.BulkInsert(dbCtx, typeof(TEntity), items);
+    public static void BulkInsert<TEntity>(this DbContext dbCtx,
+        IEnumerable<TEntity> items) where TEntity : class
+    {
+        var executor = BulkInsertExecutorResolver.Resolve(dbCtx);
+        if (executor == null)
+        {
+            LogFallback(dbCtx, typeof(TEntity));
+            dbCtx.AddRange(items);
+            dbCtx.SaveChanges();
+            return;
         }
 
-        private static void LogFallback(DbContext dbCtx, Type entityType)
+        executor.BulkInsert(dbCtx, typeof(TEntity), items);
+    }
+
+    private static void LogFallback(DbContext dbCtx, Type entityType)
+    {
+        try
         {
-            try
-            {
-                var loggerFactory = dbCtx.GetService<ILoggerFactory>();
-                var logger = loggerFactory.CreateLogger("Zack.EFCore.Batch.BulkInsert");
-                logger.LogInformation(
-                    "No IBulkInsertExecutor matched provider {ProviderName}. Falling back to AddRange + SaveChanges for entity {EntityType}.",
-                    dbCtx.Database.ProviderName ?? "<unknown>",
-                    entityType.FullName ?? entityType.Name);
-            }
-            catch
-            {
-                // Logging failures should not block fallback insertion.
-            }
+            var loggerFactory = dbCtx.GetService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger("Zack.EFCore.Batch.BulkInsert");
+            logger.LogInformation(
+                "No IBulkInsertExecutor matched provider {ProviderName}. Falling back to AddRange + SaveChanges for entity {EntityType}.",
+                dbCtx.Database.ProviderName ?? "<unknown>",
+                entityType.FullName ?? entityType.Name);
+        }
+        catch
+        {
+            // Logging failures should not block fallback insertion.
         }
     }
 }
-

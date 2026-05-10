@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Collections;
-using System.Linq;
+﻿using System.Collections;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
-using Zack.EFCore.Batch;
 using Zack.EFCore.Batch.Internal;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
@@ -99,7 +97,8 @@ public class BulkInsertExecutorRoutingTests
             return MatchInMemoryProvider && dbCtx.Database.ProviderName == InMemoryProviderName;
         }
 
-        public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items, CancellationToken cancellationToken = default)
+        public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items,
+            CancellationToken cancellationToken = default)
         {
             AsyncCallCount++;
             dbCtx.AddRange(items.Cast<object>());
@@ -120,4 +119,3 @@ public class BulkInsertExecutorRoutingTests
         }
     }
 }
-

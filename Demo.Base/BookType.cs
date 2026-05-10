@@ -1,7 +1,9 @@
-﻿namespace Demo
+﻿namespace Demo;
+
+public enum BookType
 {
-	public enum BookType
-	{
-		Fictional, Scientific, Historical, Other
-	}
+    Fictional,
+    Scientific,
+    Historical,
+    Other
 }

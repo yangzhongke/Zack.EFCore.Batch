@@ -1,13 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Demo
+namespace Demo;
+
+[Table("T_Authors")]
+public class Author
 {
-    [Table("T_Authors")]
-    public class Author
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<string>? Tags { get; set; }
-    }
+    public long Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<string>? Tags { get; set; }
 }

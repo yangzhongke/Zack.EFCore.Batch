@@ -1,22 +1,15 @@
 ﻿using Demo.Base;
-using Demo.DM_NET6;
-using Dm;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Threading.Tasks;
 
-namespace Demo
+namespace Demo;
+
+internal class Program
 {
-    class Program
+    private static async Task Main(string[] args)
     {
-        static async Task Main(string[] args)
-        {
-            using TestDbContext ctx = new TestDbContext();
-            List<Book> books = TestBulkInsert1.BuildBooks();
-            ctx.BulkInsert(books);
-            List<Author> authors = TestBulkInsert1.BuildAuthors();
-            ctx.BulkInsert(authors);
-        }
+        using var ctx = new TestDbContext();
+        var books = TestBulkInsert1.BuildBooks();
+        ctx.BulkInsert(books);
+        var authors = TestBulkInsert1.BuildAuthors();
+        ctx.BulkInsert(authors);
     }
 }
