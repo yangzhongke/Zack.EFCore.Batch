@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Zack.EFCore.Batch.Internal;
@@ -64,6 +65,40 @@ public class BulkInsertExecutorRoutingTests
         Assert.Equal(2, await dbCtx.Entities.CountAsync());
     }
 
+    [Fact]
+    public async Task SqliteProvider_NoMatchedExecutor_UsesFallbackPath_ForAsyncBulkInsert()
+    {
+        FakeTestExecutor.Reset();
+        FakeTestExecutor.MatchInMemoryProvider = false;
+        BulkInsertExecutorResolver.ClearCache();
+
+        await using var dbCtx = new SqliteRoutingTestDbContext();
+        await dbCtx.Database.EnsureCreatedAsync();
+
+        await dbCtx.BulkInsertAsync(new[] { new RoutingEntity { Name = "A" }, new RoutingEntity { Name = "B" } });
+
+        Assert.Equal(0, FakeTestExecutor.AsyncCallCount);
+        Assert.Equal(1, FakeTestExecutor.CanHandleCallCount);
+        Assert.Equal(2, await dbCtx.Entities.CountAsync());
+    }
+
+    [Fact]
+    public async Task SqliteProvider_NoMatchedExecutor_UsesFallbackPath_ForSyncBulkInsert()
+    {
+        FakeTestExecutor.Reset();
+        FakeTestExecutor.MatchInMemoryProvider = false;
+        BulkInsertExecutorResolver.ClearCache();
+
+        await using var dbCtx = new SqliteRoutingTestDbContext();
+        await dbCtx.Database.EnsureCreatedAsync();
+
+        dbCtx.BulkInsert(new[] { new RoutingEntity { Name = "A" }, new RoutingEntity { Name = "B" } });
+
+        Assert.Equal(0, FakeTestExecutor.AsyncCallCount);
+        Assert.Equal(1, FakeTestExecutor.CanHandleCallCount);
+        Assert.Equal(2, await dbCtx.Entities.CountAsync());
+    }
+
     private sealed class RoutingTestDbContext : DbContext
     {
         public DbSet<RoutingEntity> Entities => Set<RoutingEntity>();
@@ -79,6 +114,30 @@ public class BulkInsertExecutorRoutingTests
         public int Id { get; set; }
 
         public string? Name { get; set; }
+    }
+
+    private sealed class SqliteRoutingTestDbContext : DbContext
+    {
+        private readonly SqliteConnection _connection;
+
+        public SqliteRoutingTestDbContext()
+        {
+            _connection = new SqliteConnection("Data Source=:memory:");
+            _connection.Open();
+        }
+
+        public DbSet<RoutingEntity> Entities => Set<RoutingEntity>();
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(_connection);
+        }
+
+        public override async ValueTask DisposeAsync()
+        {
+            await base.DisposeAsync();
+            await _connection.DisposeAsync();
+        }
     }
 
     public sealed class FakeTestExecutor : IBulkInsertExecutor

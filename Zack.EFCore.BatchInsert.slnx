@@ -8,6 +8,10 @@
         <Project Path="Demo/Demo.PostgreSQL.Npgsql/Demo.PostgreSQL.Npgsql.csproj" />
     </Folder>
     <Folder Name="/Tests/">
+        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.SqlServer/Zack.EFCore.Batch.IntegrationTests.SqlServer.csproj" />
+        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj" />
+        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Npgsql/Zack.EFCore.Batch.IntegrationTests.Npgsql.csproj" />
+        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj" />
         <Project Path="Tests/Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj" />
     </Folder>
     <Project Path="Zack.EFCore.Batch.MSSQL/Zack.EFCore.Batch.MSSQL.csproj" />

@@ -1,0 +1,147 @@
+﻿rrname: pr-integration-tests
+
+on:
+  pull_request:
+
+jobs:
+  fallback-tests:
+    name: fallback-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Run fallback and routing tests
+        run: dotnet test Tests/Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj --configuration Release --nologo
+
+  sqlserver-integration:
+    name: sqlserver-integration
+    runs-on: ubuntu-latest
+    env:
+      SA_PASSWORD: Your_strong_password123!
+      TEST_DB_SQLSERVER_CS: Server=127.0.0.1,1433;Database=efcorebatch_test;User Id=sa;Password=Your_strong_password123!;TrustServerCertificate=True
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: Your_strong_password123!
+        ports:
+          - 1433:1433
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Wait for SQL Server and create database
+        run: |
+          for i in {1..60}; do
+            if docker exec ${{ job.services.sqlserver.id }} /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -Q "SELECT 1" -C >/dev/null 2>&1; then
+              break
+            fi
+            sleep 2
+          done
+          docker exec ${{ job.services.sqlserver.id }} /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('efcorebatch_test') IS NULL CREATE DATABASE efcorebatch_test;" -C
+      - name: Run SQL Server integration tests
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.SqlServer/Zack.EFCore.Batch.IntegrationTests.SqlServer.csproj --configuration Release --nologo
+
+  mysql-integration:
+    name: mysql-integration
+    runs-on: ubuntu-latest
+    env:
+      TEST_DB_MYSQL_CS: Server=127.0.0.1;Port=3306;Database=efcorebatch_test;User=root;Password=root;AllowLoadLocalInfile=true
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: efcorebatch_test
+          MYSQL_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Wait for MySQL
+        run: |
+          for i in {1..60}; do
+            if docker exec ${{ job.services.mysql.id }} mysqladmin ping -h localhost -uroot -proot --silent; then
+              break
+            fi
+            sleep 2
+          done
+      - name: Run MySQL integration tests
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj --configuration Release --nologo
+
+  npgsql-integration:
+    name: npgsql-integration
+    runs-on: ubuntu-latest
+    env:
+      TEST_DB_PG_CS: Host=127.0.0.1;Port=5432;Database=efcorebatch_test;Username=postgres;Password=postgres
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: efcorebatch_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..60}; do
+            if docker exec ${{ job.services.postgres.id }} pg_isready -U postgres >/dev/null 2>&1; then
+              break
+            fi
+            sleep 2
+          done
+      - name: Run PostgreSQL integration tests
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Npgsql/Zack.EFCore.Batch.IntegrationTests.Npgsql.csproj --configuration Release --nologo
+
+  oracle-integration:
+    name: oracle-integration
+    runs-on: ubuntu-latest
+    env:
+      TEST_DB_ORACLE_CS: User Id=app;Password=app_password;Data Source=127.0.0.1:1521/FREEPDB1
+
+    services:
+      oracle:
+        image: gvenzl/oracle-free:23-slim
+        env:
+          ORACLE_PASSWORD: oracle_password
+          APP_USER: app
+          APP_USER_PASSWORD: app_password
+        ports:
+          - 1521:1521
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Wait for Oracle
+        run: |
+          for i in {1..120}; do
+            if docker exec ${{ job.services.oracle.id }} bash -lc "echo 'SELECT 1 FROM dual;' | sqlplus -s app/app_password@localhost/FREEPDB1" | grep -q "1"; then
+              break
+            fi
+            sleep 5
+          done
+      - name: Run Oracle integration tests
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj --configuration Release --nologo
+

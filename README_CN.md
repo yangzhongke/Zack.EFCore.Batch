@@ -50,6 +50,23 @@ using (TestDbContext ctx = new TestDbContext())
 
 已经过测试可以正常使用的数据库：MS SQLServer、MySQL (Pomelo)、PostgreSQL (Npgsql)、Oracle。
 
+## CI 集成测试
+
+针对 Pull Request，GitHub Actions 会连接真实数据库运行集成测试，当前覆盖 SQL Server、MySQL、PostgreSQL、Oracle。
+
+工作流文件：`.github/workflows/pr-integration.yml`。
+
+连接字符串通过以下环境变量配置：
+
+- `TEST_DB_SQLSERVER_CS`
+- `TEST_DB_MYSQL_CS`
+- `TEST_DB_PG_CS`
+- `TEST_DB_ORACLE_CS`
+
+对于不支持的数据库，保底行为（`AddRange + SaveChanges`）通过 `Tests/Zack.EFCore.Batch.Tests/BulkInsertExecutorRoutingTests.cs` 中的 SQLite 测试覆盖。
+
+DM 的集成测试暂未纳入 PR 自动流程。
+
 
 [本项目介绍文章（B站专栏）](https://www.bilibili.com/read/cv8545714)
 

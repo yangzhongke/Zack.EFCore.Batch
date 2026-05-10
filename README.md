@@ -49,4 +49,21 @@ This library utilizes EF Core to translate lambda expressions to SQL statements,
 
 The following databases have been tested: MS SQLServer, MySQL (Pomelo), PostgreSQL (Npgsql), Oracle.
 
+## Integration tests in CI
+
+Pull requests run real-database integration tests for SQL Server, MySQL, PostgreSQL, and Oracle with GitHub Actions.
+
+The workflow file is `.github/workflows/pr-integration.yml`.
+
+Connection strings are configured through environment variables:
+
+- `TEST_DB_SQLSERVER_CS`
+- `TEST_DB_MYSQL_CS`
+- `TEST_DB_PG_CS`
+- `TEST_DB_ORACLE_CS`
+
+For unsupported databases, fallback behavior (`AddRange + SaveChanges`) is covered by tests in `Tests/Zack.EFCore.Batch.Tests/BulkInsertExecutorRoutingTests.cs` using SQLite.
+
+DM integration tests are not part of the PR workflow yet.
+
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  
