@@ -1,4 +1,4 @@
-﻿rrname: pr-integration-tests
+﻿name: pr-integration-tests
 
 on:
   pull_request:
