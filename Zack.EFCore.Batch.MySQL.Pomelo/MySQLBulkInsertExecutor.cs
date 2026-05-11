@@ -8,11 +8,9 @@ namespace Zack.EFCore.Batch.MySQL.Pomelo;
 
 public class MySQLBulkInsertExecutor : IBulkInsertExecutor
 {
-    private const string ProviderName = "Pomelo.EntityFrameworkCore.MySql";
-
     public bool CanHandle(DbContext dbCtx)
     {
-        return string.Equals(dbCtx.Database.ProviderName, ProviderName, StringComparison.OrdinalIgnoreCase);
+        return dbCtx.Database.GetDbConnection() is MySqlConnection;
     }
 
     public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items,

@@ -8,11 +8,9 @@ namespace Zack.EFCore.Batch.Oracle;
 
 public class OracleBulkInsertExecutor : IBulkInsertExecutor
 {
-    private const string ProviderName = "Oracle.EntityFrameworkCore";
-
     public bool CanHandle(DbContext dbCtx)
     {
-        return string.Equals(dbCtx.Database.ProviderName, ProviderName, StringComparison.OrdinalIgnoreCase);
+        return dbCtx.Database.GetDbConnection() is OracleConnection;
     }
 
     public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items,

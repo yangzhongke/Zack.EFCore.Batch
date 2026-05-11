@@ -8,11 +8,9 @@ namespace Zack.EFCore.Batch.MSSQL;
 
 public class MSSQLBulkInsertExecutor : IBulkInsertExecutor
 {
-    private const string ProviderName = "Microsoft.EntityFrameworkCore.SqlServer";
-
     public bool CanHandle(DbContext dbCtx)
     {
-        return string.Equals(dbCtx.Database.ProviderName, ProviderName, StringComparison.OrdinalIgnoreCase);
+        return dbCtx.Database.GetDbConnection() is SqlConnection;
     }
 
     public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items,

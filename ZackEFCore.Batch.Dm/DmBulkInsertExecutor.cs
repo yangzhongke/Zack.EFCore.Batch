@@ -11,10 +11,7 @@ public class DmBulkInsertExecutor : IBulkInsertExecutor
 {
     public bool CanHandle(DbContext dbCtx)
     {
-        var providerName = dbCtx.Database.ProviderName;
-        return providerName != null &&
-               (providerName.IndexOf("EntityFrameworkCore.Dm", StringComparison.OrdinalIgnoreCase) >= 0
-                || string.Equals(providerName, "Dm.EntityFrameworkCore", StringComparison.OrdinalIgnoreCase));
+        return dbCtx.Database.GetDbConnection() is DmConnection;
     }
 
     public async Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items,

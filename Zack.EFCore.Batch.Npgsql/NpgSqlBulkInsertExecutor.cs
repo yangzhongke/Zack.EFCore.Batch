@@ -78,8 +78,6 @@ public class NpgSqlBulkInsertExecutor : IBulkInsertExecutor
                 writer.Write(value);
             }
         }
-
-        ;
         return writer;
     }
 }

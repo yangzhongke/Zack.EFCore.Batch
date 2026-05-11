@@ -5,52 +5,23 @@ namespace Zack.EFCore.Batch.Internal;
 
 internal static class BulkInsertExecutorResolver
 {
-    private const string EmptyProviderCacheKey = "<EMPTY_PROVIDER_NAME>";
     private static readonly object SyncRoot = new();
-    private static readonly Dictionary<string, IBulkInsertExecutor?> ProviderCache = new();
-    private static List<IBulkInsertExecutor>? _executors;
-
-    static BulkInsertExecutorResolver()
-    {
-        AppDomain.CurrentDomain.AssemblyLoad += (_, _) =>
-        {
-            lock (SyncRoot)
-            {
-                _executors = null;
-                ProviderCache.Clear();
-            }
-        };
-    }
 
     public static IBulkInsertExecutor? Resolve(DbContext dbCtx)
     {
-        var providerCacheKey = GetProviderCacheKey(dbCtx.Database.ProviderName);
         lock (SyncRoot)
         {
-            if (ProviderCache.TryGetValue(providerCacheKey, out var cachedExecutor)) return cachedExecutor;
-
-            var executors = GetExecutorsUnsafe();
+            var executors = GetExecutors();
             foreach (var executor in executors)
                 if (executor.CanHandle(dbCtx))
-                {
-                    ProviderCache[providerCacheKey] = executor;
                     return executor;
-                }
 
-            ProviderCache[providerCacheKey] = null;
             return null;
         }
     }
 
-    private static string GetProviderCacheKey(string? providerName)
+    private static List<IBulkInsertExecutor> GetExecutors()
     {
-        return string.IsNullOrEmpty(providerName) ? EmptyProviderCacheKey : providerName;
-    }
-
-    private static List<IBulkInsertExecutor> GetExecutorsUnsafe()
-    {
-        if (_executors != null) return _executors;
-
         var result = new List<IBulkInsertExecutor>();
         var interfaceType = typeof(IBulkInsertExecutor);
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -78,15 +49,6 @@ internal static class BulkInsertExecutorResolver
             }
         }
 
-        _executors = result;
         return result;
-    }
-
-    internal static void ClearCache()
-    {
-        lock (SyncRoot)
-        {
-            ProviderCache.Clear();
-        }
     }
 }

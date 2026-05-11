@@ -11,11 +11,10 @@ namespace Zack.EFCore.Batch.Tests;
 public class BulkInsertExecutorRoutingTests
 {
     [Fact]
-    public async Task MatchedExecutor_IsCachedByProviderName()
+    public async Task MatchedExecutor_IsResolvedForEachCall()
     {
         FakeTestExecutor.Reset();
         FakeTestExecutor.MatchInMemoryProvider = true;
-        BulkInsertExecutorResolver.ClearCache();
 
         await using var dbCtx = new RoutingTestDbContext();
 
@@ -23,16 +22,15 @@ public class BulkInsertExecutorRoutingTests
         await dbCtx.BulkInsertAsync(new[] { new RoutingEntity { Name = "B" } });
 
         Assert.Equal(2, FakeTestExecutor.AsyncCallCount);
-        Assert.Equal(1, FakeTestExecutor.CanHandleCallCount);
+        Assert.Equal(2, FakeTestExecutor.CanHandleCallCount);
         Assert.Equal(2, await dbCtx.Entities.CountAsync());
     }
 
     [Fact]
-    public async Task SameProviderAcrossDifferentContexts_HitsProviderCache()
+    public async Task SameProviderAcrossDifferentContexts_ResolvesEachTime()
     {
         FakeTestExecutor.Reset();
         FakeTestExecutor.MatchInMemoryProvider = true;
-        BulkInsertExecutorResolver.ClearCache();
 
         await using (var dbCtx1 = new RoutingTestDbContext())
         {
@@ -45,7 +43,7 @@ public class BulkInsertExecutorRoutingTests
         }
 
         Assert.Equal(2, FakeTestExecutor.AsyncCallCount);
-        Assert.Equal(1, FakeTestExecutor.CanHandleCallCount);
+        Assert.Equal(2, FakeTestExecutor.CanHandleCallCount);
     }
 
     [Fact]
@@ -53,7 +51,6 @@ public class BulkInsertExecutorRoutingTests
     {
         FakeTestExecutor.Reset();
         FakeTestExecutor.MatchInMemoryProvider = false;
-        BulkInsertExecutorResolver.ClearCache();
 
         await using var dbCtx = new RoutingTestDbContext();
 
@@ -61,7 +58,7 @@ public class BulkInsertExecutorRoutingTests
         await dbCtx.BulkInsertAsync(new[] { new RoutingEntity { Name = "B" } });
 
         Assert.Equal(0, FakeTestExecutor.AsyncCallCount);
-        Assert.Equal(1, FakeTestExecutor.CanHandleCallCount);
+        Assert.Equal(2, FakeTestExecutor.CanHandleCallCount);
         Assert.Equal(2, await dbCtx.Entities.CountAsync());
     }
 
@@ -70,7 +67,6 @@ public class BulkInsertExecutorRoutingTests
     {
         FakeTestExecutor.Reset();
         FakeTestExecutor.MatchInMemoryProvider = false;
-        BulkInsertExecutorResolver.ClearCache();
 
         await using var dbCtx = new SqliteRoutingTestDbContext();
         await dbCtx.Database.EnsureCreatedAsync();
@@ -87,7 +83,6 @@ public class BulkInsertExecutorRoutingTests
     {
         FakeTestExecutor.Reset();
         FakeTestExecutor.MatchInMemoryProvider = false;
-        BulkInsertExecutorResolver.ClearCache();
 
         await using var dbCtx = new SqliteRoutingTestDbContext();
         await dbCtx.Database.EnsureCreatedAsync();
