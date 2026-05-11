@@ -62,6 +62,8 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: efcorebatch_test
           MYSQL_ROOT_HOST: '%'
+        options: >-
+          --local-infile=1
         ports:
           - 3306:3306
 
@@ -78,6 +80,8 @@ jobs:
             fi
             sleep 2
           done
+          docker exec ${{ job.services.mysql.id }} mysql -h localhost -uroot -proot -e "SET GLOBAL local_infile = 1;"
+          docker exec ${{ job.services.mysql.id }} mysql -h localhost -uroot -proot -e "SHOW GLOBAL VARIABLES LIKE 'local_infile';"
       - name: Run MySQL integration tests
         run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj --configuration Release --nologo
 
