@@ -1,8 +1,10 @@
 ﻿using Demo;
 using Demo.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Xunit;
+using Zack.EFCore.Batch.IntegrationTests.Shared;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
@@ -11,6 +13,7 @@ namespace Zack.EFCore.Batch.IntegrationTests.MySql;
 public class MySqlBulkInsertIntegrationTests
 {
     private const string ConnectionStringEnvName = "TEST_DB_MYSQL_CS";
+    private const string FallbackLogPrefix = "No IBulkInsertExecutor matched provider";
 
     [Fact]
     public async Task BulkInsertAndBulkInsertAsync_InsertExpectedRows()
@@ -18,7 +21,14 @@ public class MySqlBulkInsertIntegrationTests
         var connStr = Environment.GetEnvironmentVariable(ConnectionStringEnvName);
         if (string.IsNullOrWhiteSpace(connStr)) return;
 
-        await using var dbCtx = new MySqlIntegrationDbContext(connStr);
+        using var fallbackLogSink = new FallbackLogSink();
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Information);
+            builder.AddProvider(fallbackLogSink);
+        });
+
+        await using var dbCtx = new MySqlIntegrationDbContext(connStr, loggerFactory);
         await dbCtx.Database.EnsureCreatedAsync();
         dbCtx.Comments.RemoveRange(dbCtx.Comments);
         dbCtx.Articles.RemoveRange(dbCtx.Articles);
@@ -41,23 +51,29 @@ public class MySqlBulkInsertIntegrationTests
         Assert.True(await dbCtx.Books.AnyAsync(b => b.BookType == BookType.Fictional));
         Assert.True(await dbCtx.Articles.AnyAsync(a =>
             a.Remarks != null && a.Remarks.Chinese != null && a.Remarks.Chinese.Contains("中国人")));
+        Assert.DoesNotContain(fallbackLogSink.Messages,
+            m => m.Contains(FallbackLogPrefix, StringComparison.Ordinal));
     }
 
     private sealed class MySqlIntegrationDbContext : BaseDbContext
     {
         private readonly string _connStr;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public MySqlIntegrationDbContext(string connStr)
+        public MySqlIntegrationDbContext(string connStr, ILoggerFactory loggerFactory)
         {
             _connStr = connStr;
+            _loggerFactory = loggerFactory;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql(_connStr, ServerVersion.AutoDetect(_connStr),
                 builder => { builder.SchemaBehavior(MySqlSchemaBehavior.Ignore); });
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
     }
+
 }
 
 

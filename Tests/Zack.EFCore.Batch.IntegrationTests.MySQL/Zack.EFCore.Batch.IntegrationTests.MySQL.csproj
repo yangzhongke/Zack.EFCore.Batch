@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Demo\Demo.Base\Demo.Base.csproj" />
     <ProjectReference Include="..\..\Zack.EFCore.Batch.MySQL.Pomelo\Zack.EFCore.Batch.MySQL.Pomelo.csproj" />
+    <ProjectReference Include="..\Zack.EFCore.Batch.IntegrationTests.Shared\Zack.EFCore.Batch.IntegrationTests.Shared.csproj" />
   </ItemGroup>
 
 </Project>

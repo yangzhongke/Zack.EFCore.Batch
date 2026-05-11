@@ -1,7 +1,9 @@
 ﻿using Demo;
 using Demo.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Xunit;
+using Zack.EFCore.Batch.IntegrationTests.Shared;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
@@ -10,6 +12,7 @@ namespace Zack.EFCore.Batch.IntegrationTests.SqlServer;
 public class SqlServerBulkInsertIntegrationTests
 {
     private const string ConnectionStringEnvName = "TEST_DB_SQLSERVER_CS";
+    private const string FallbackLogPrefix = "No IBulkInsertExecutor matched provider";
 
     [Fact]
     public async Task BulkInsertAndBulkInsertAsync_InsertExpectedRows()
@@ -17,7 +20,14 @@ public class SqlServerBulkInsertIntegrationTests
         var connStr = Environment.GetEnvironmentVariable(ConnectionStringEnvName);
         if (string.IsNullOrWhiteSpace(connStr)) return;
 
-        await using var dbCtx = new SqlServerIntegrationDbContext(connStr);
+        using var fallbackLogSink = new FallbackLogSink();
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Information);
+            builder.AddProvider(fallbackLogSink);
+        });
+
+        await using var dbCtx = new SqlServerIntegrationDbContext(connStr, loggerFactory);
         await dbCtx.Database.EnsureCreatedAsync();
         dbCtx.Comments.RemoveRange(dbCtx.Comments);
         dbCtx.Articles.RemoveRange(dbCtx.Articles);
@@ -40,22 +50,28 @@ public class SqlServerBulkInsertIntegrationTests
         Assert.True(await dbCtx.Books.AnyAsync(b => b.BookType == BookType.Fictional));
         Assert.True(await dbCtx.Articles.AnyAsync(a =>
             a.Remarks != null && a.Remarks.English != null && a.Remarks.English.Contains("Chinese")));
+        Assert.DoesNotContain(fallbackLogSink.Messages,
+            m => m.Contains(FallbackLogPrefix, StringComparison.Ordinal));
     }
 
     private sealed class SqlServerIntegrationDbContext : BaseDbContext
     {
         private readonly string _connStr;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public SqlServerIntegrationDbContext(string connStr)
+        public SqlServerIntegrationDbContext(string connStr, ILoggerFactory loggerFactory)
         {
             _connStr = connStr;
+            _loggerFactory = loggerFactory;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connStr);
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
     }
+
 }
 
 

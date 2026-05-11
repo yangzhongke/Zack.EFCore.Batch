@@ -1,7 +1,9 @@
 ﻿using Demo;
 using Demo.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Xunit;
+using Zack.EFCore.Batch.IntegrationTests.Shared;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
@@ -10,6 +12,7 @@ namespace Zack.EFCore.Batch.IntegrationTests.Oracle;
 public class OracleBulkInsertIntegrationTests
 {
     private const string ConnectionStringEnvName = "TEST_DB_ORACLE_CS";
+    private const string FallbackLogPrefix = "No IBulkInsertExecutor matched provider";
 
     [Fact]
     public async Task BulkInsertAndBulkInsertAsync_InsertExpectedRows()
@@ -17,7 +20,14 @@ public class OracleBulkInsertIntegrationTests
         var connStr = Environment.GetEnvironmentVariable(ConnectionStringEnvName);
         if (string.IsNullOrWhiteSpace(connStr)) return;
 
-        await using var dbCtx = new OracleIntegrationDbContext(connStr);
+        using var fallbackLogSink = new FallbackLogSink();
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Information);
+            builder.AddProvider(fallbackLogSink);
+        });
+
+        await using var dbCtx = new OracleIntegrationDbContext(connStr, loggerFactory);
         await dbCtx.Database.EnsureCreatedAsync();
         dbCtx.Comments.RemoveRange(dbCtx.Comments);
         dbCtx.Articles.RemoveRange(dbCtx.Articles);
@@ -40,20 +50,25 @@ public class OracleBulkInsertIntegrationTests
         Assert.True(await dbCtx.Books.AnyAsync(b => b.BookType == BookType.Fictional));
         Assert.True(await dbCtx.Articles.AnyAsync(a =>
             a.Remarks != null && a.Remarks.Chinese != null && a.Remarks.Chinese.Contains("中国人")));
+        Assert.DoesNotContain(fallbackLogSink.Messages,
+            m => m.Contains(FallbackLogPrefix, StringComparison.Ordinal));
     }
 
     private sealed class OracleIntegrationDbContext : BaseDbContext
     {
         private readonly string _connStr;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public OracleIntegrationDbContext(string connStr)
+        public OracleIntegrationDbContext(string connStr, ILoggerFactory loggerFactory)
         {
             _connStr = connStr;
+            _loggerFactory = loggerFactory;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseOracle(_connStr);
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,6 +77,7 @@ public class OracleBulkInsertIntegrationTests
             modelBuilder.Entity<Book>().ToTable("T_Books");
         }
     }
+
 }
 
 

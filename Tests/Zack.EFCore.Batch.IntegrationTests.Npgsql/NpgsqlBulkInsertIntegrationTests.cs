@@ -1,7 +1,9 @@
 ﻿using Demo;
 using Demo.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Xunit;
+using Zack.EFCore.Batch.IntegrationTests.Shared;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
@@ -10,6 +12,7 @@ namespace Zack.EFCore.Batch.IntegrationTests.Npgsql;
 public class NpgsqlBulkInsertIntegrationTests
 {
     private const string ConnectionStringEnvName = "TEST_DB_PG_CS";
+    private const string FallbackLogPrefix = "No IBulkInsertExecutor matched provider";
 
     [Fact]
     public async Task BulkInsertAndBulkInsertAsync_InsertExpectedRows()
@@ -17,7 +20,14 @@ public class NpgsqlBulkInsertIntegrationTests
         var connStr = Environment.GetEnvironmentVariable(ConnectionStringEnvName);
         if (string.IsNullOrWhiteSpace(connStr)) return;
 
-        await using var dbCtx = new NpgsqlIntegrationDbContext(connStr);
+        using var fallbackLogSink = new FallbackLogSink();
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Information);
+            builder.AddProvider(fallbackLogSink);
+        });
+
+        await using var dbCtx = new NpgsqlIntegrationDbContext(connStr, loggerFactory);
         await dbCtx.Database.EnsureCreatedAsync();
         dbCtx.Comments.RemoveRange(dbCtx.Comments);
         dbCtx.Articles.RemoveRange(dbCtx.Articles);
@@ -40,23 +50,29 @@ public class NpgsqlBulkInsertIntegrationTests
         Assert.True(await dbCtx.Books.AnyAsync(b => b.BookType == BookType.Scientific));
         Assert.True(await dbCtx.Articles.AnyAsync(a =>
             a.Remarks != null && a.Remarks.English != null && a.Remarks.English.Contains("Chinese")));
+        Assert.DoesNotContain(fallbackLogSink.Messages,
+            m => m.Contains(FallbackLogPrefix, StringComparison.Ordinal));
     }
 
     private sealed class NpgsqlIntegrationDbContext : BaseDbContext
     {
         private readonly string _connStr;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public NpgsqlIntegrationDbContext(string connStr)
+        public NpgsqlIntegrationDbContext(string connStr, ILoggerFactory loggerFactory)
         {
             _connStr = connStr;
+            _loggerFactory = loggerFactory;
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql(_connStr);
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
         }
     }
+
 }
 
 
