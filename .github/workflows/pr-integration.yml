@@ -62,10 +62,10 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: efcorebatch_test
           MYSQL_ROOT_HOST: '%'
-        options: >-
-          --local-infile=1
+        options: --health-cmd="mysqladmin ping -h localhost" --health-interval 10s --health-timeout 5s --health-retries 3
         ports:
           - 3306:3306
+        command: --local-infile=1
 
     steps:
       - uses: actions/checkout@v4
