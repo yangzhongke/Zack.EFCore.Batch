@@ -10,6 +10,7 @@
     <Folder Name="/Tests/">
         <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Shared/Zack.EFCore.Batch.IntegrationTests.Shared.csproj" />
         <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.SqlServer/Zack.EFCore.Batch.IntegrationTests.SqlServer.csproj" />
+        <File Path="Tests/DOTNET_VERSION_SUPPORT_DECISION.md" />
         <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj" />
         <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Npgsql/Zack.EFCore.Batch.IntegrationTests.Npgsql.csproj" />
         <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj" />
