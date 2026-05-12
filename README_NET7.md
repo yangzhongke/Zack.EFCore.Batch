@@ -19,37 +19,6 @@ This library currently supports MS SQLServer, MySQL, PostgreSQL, and Oracle data
 I did a test of inserting 100,000 pieces of data with SQLServer database, and the insertion took about 21 seconds with AddRange(), compared to only about 5 seconds with my open-source project.
 
 ## Instructions:  
- 
-### Install Nuget package:
-
-.NET 7
-
-```
-SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET7
-MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET7
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET7
-Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET7 
-```
-
-.NET 8
-
-```
-SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET8
-MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET8
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET8
-```
-
-### BulkInsert
-
-```
-List<Book> books = new List<Book>();
-for (int i = 0; i < 100; i++)
-{
-	books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
-}
-using (TestDbContext ctx = new TestDbContext())
-{
-	ctx.BulkInsert(books);
-}
-```
 On mysql, to use BulkInsert, please enable local_infile on server side and client side: enable "local_infile=ON" on mysql server, and add "AllowLoadLocalInfile=true" to connection string on client side.
+
+After `BulkInsert`/`BulkInsertAsync` succeeds, inserted entities are marked as `Unchanged` in EF Core change tracking. For database-generated values (identity/default/computed/trigger-generated), values are not automatically reloaded into in-memory entities; reload entities manually when required.

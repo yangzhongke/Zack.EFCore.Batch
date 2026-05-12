@@ -16,37 +16,6 @@ Entity Framework Core 中可以通过 AddRange() 方法批量添加数据，但 
 
 经过测试在 SQLServer 数据库中插入 10 万条数据，用 AddRange() 方法耗时约 21 秒，而使用本库只需约 5 秒。
 
-## 安装说明:
-
-### 安装 Nuget 包
-
-.NET 7
-
-```
-SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET7
-MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET7
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET7
-Oracle: Install-Package Zack.EFCore.Batch.Oracle_NET7 
-```
-
-.NET 8
-
-```
-SQLServer: Install-Package Zack.EFCore.Batch.MSSQL_NET8
-MySQL: Install-Package Zack.EFCore.Batch.MySQL.Pomelo_NET8
-Postgresql: Install-Package Zack.EFCore.Batch.Npgsql_NET8
-```
-
-### 批量插入示例
-```csharp
-List<Book> books = new List<Book>();
-for (int i = 0; i < 100; i++)
-{
-books.Add(new Book { AuthorName = "abc" + i, Price = new Random().NextDouble(), PubTime = DateTime.Now, Title = Guid.NewGuid().ToString() });
-}
-using (TestDbContext ctx = new TestDbContext())
-{
-ctx.BulkInsert(books);
-}
-```
 在 MySQL 中，使用 BulkInsert 需要在服务器和客户端都开启 local_infile：在 MySQL server 端执行 "local_infile=ON"，然后在连接字符串中添加 "AllowLoadLocalInfile=true"。
+
+`BulkInsert`/`BulkInsertAsync` 成功后，已插入实体会在 EF Core 变更跟踪中被标记为 `Unchanged`。如果存在数据库生成值（如自增列、默认值、计算列、触发器写入等），这些值不会自动回填到内存实体；请在需要时手动重新加载实体。

@@ -94,6 +94,70 @@ public class BulkInsertExecutorRoutingTests
         Assert.Equal(2, await dbCtx.Entities.CountAsync());
     }
 
+    [Fact]
+    public async Task MatchedExecutor_WithoutTracking_MarksEntitiesUnchanged_ForAsyncBulkInsert()
+    {
+        FakeTestExecutor.Reset();
+        FakeTestExecutor.MatchInMemoryProvider = false;
+        StateOnlyTestExecutor.Reset();
+        StateOnlyTestExecutor.MatchInMemoryProvider = true;
+
+        await using var dbCtx = new RoutingTestDbContext();
+        var entities = new[]
+        {
+            new RoutingEntity { Id = 1, Name = "A" },
+            new RoutingEntity { Id = 2, Name = "B" }
+        };
+
+        await dbCtx.BulkInsertAsync(entities);
+
+        Assert.Equal(1, StateOnlyTestExecutor.AsyncCallCount);
+        Assert.All(entities, e => Assert.Equal(EntityState.Unchanged, dbCtx.Entry(e).State));
+    }
+
+    [Fact]
+    public void MatchedExecutor_WithoutTracking_MarksEntitiesUnchanged_ForSyncBulkInsert()
+    {
+        FakeTestExecutor.Reset();
+        FakeTestExecutor.MatchInMemoryProvider = false;
+        StateOnlyTestExecutor.Reset();
+        StateOnlyTestExecutor.MatchInMemoryProvider = true;
+
+        using var dbCtx = new RoutingTestDbContext();
+        var entities = new[]
+        {
+            new RoutingEntity { Id = 1, Name = "A" },
+            new RoutingEntity { Id = 2, Name = "B" }
+        };
+
+        dbCtx.BulkInsert(entities);
+
+        Assert.Equal(1, StateOnlyTestExecutor.SyncCallCount);
+        Assert.All(entities, e => Assert.Equal(EntityState.Unchanged, dbCtx.Entry(e).State));
+    }
+
+    [Fact]
+    public async Task MatchedExecutor_WhenEntitiesAlreadyAdded_StillMarksEntitiesUnchanged()
+    {
+        FakeTestExecutor.Reset();
+        FakeTestExecutor.MatchInMemoryProvider = false;
+        StateOnlyTestExecutor.Reset();
+        StateOnlyTestExecutor.MatchInMemoryProvider = true;
+
+        await using var dbCtx = new RoutingTestDbContext();
+        var entities = new[]
+        {
+            new RoutingEntity { Id = 1, Name = "A" },
+            new RoutingEntity { Id = 2, Name = "B" }
+        };
+        dbCtx.AddRange(entities);
+
+        await dbCtx.BulkInsertAsync(entities);
+
+        Assert.Equal(EntityState.Unchanged, dbCtx.Entry(entities[0]).State);
+        Assert.Equal(EntityState.Unchanged, dbCtx.Entry(entities[1]).State);
+    }
+
     private sealed class RoutingTestDbContext : DbContext
     {
         public DbSet<RoutingEntity> Entities => Set<RoutingEntity>();
@@ -169,6 +233,42 @@ public class BulkInsertExecutorRoutingTests
         {
             CanHandleCallCount = 0;
             AsyncCallCount = 0;
+            MatchInMemoryProvider = false;
+            StateOnlyTestExecutor.Reset();
+        }
+    }
+
+    public sealed class StateOnlyTestExecutor : IBulkInsertExecutor
+    {
+        private const string InMemoryProviderName = "Microsoft.EntityFrameworkCore.InMemory";
+
+        public static int AsyncCallCount { get; private set; }
+
+        public static int SyncCallCount { get; private set; }
+
+        public static bool MatchInMemoryProvider { get; set; }
+
+        public bool CanHandle(DbContext dbCtx)
+        {
+            return MatchInMemoryProvider && dbCtx.Database.ProviderName == InMemoryProviderName;
+        }
+
+        public Task BulkInsertAsync(DbContext dbCtx, Type entityType, IEnumerable items,
+            CancellationToken cancellationToken = default)
+        {
+            AsyncCallCount++;
+            return Task.CompletedTask;
+        }
+
+        public void BulkInsert(DbContext dbCtx, Type entityType, IEnumerable items)
+        {
+            SyncCallCount++;
+        }
+
+        public static void Reset()
+        {
+            AsyncCallCount = 0;
+            SyncCallCount = 0;
             MatchInMemoryProvider = false;
         }
     }

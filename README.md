@@ -43,6 +43,8 @@ using (TestDbContext ctx = new TestDbContext())
 ```
 On MySQL, to use BulkInsert, please enable `local_infile` on both the server and client side: set `local_infile=ON` on the MySQL server, and add `AllowLoadLocalInfile=true` to the connection string on the client side.
 
+After `BulkInsert`/`BulkInsertAsync` succeeds, the inserted entities are marked as `Unchanged` in EF Core change tracking. If your table uses database-generated values (for example identity columns, default values, computed values, or triggers), those generated values are not automatically reloaded into the in-memory entities; reload them manually when needed.
+
 
 ## Misc
 This library utilizes EF Core to translate lambda expressions to SQL statements, so it supports nearly all lambda expressions which EF Core supports.
