@@ -5,20 +5,52 @@ on:
 
 jobs:
   fallback-tests:
-    name: fallback-tests
+    name: fallback-tests (${{ matrix.tfm }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tfm: net5.0
+            dotnet: 5.0.x
+          - tfm: net6.0
+            dotnet: 6.0.x
+          - tfm: net7.0
+            dotnet: 7.0.x
+          - tfm: net8.0
+            dotnet: 8.0.x
+          - tfm: net9.0
+            dotnet: 9.0.x
+          - tfm: net10.0
+            dotnet: 10.0.x
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Run fallback and routing tests
-        run: dotnet test Tests/Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj --configuration Release --nologo
+        run: dotnet test Tests/Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
   sqlserver-integration:
-    name: sqlserver-integration
+    name: sqlserver-integration (${{ matrix.tfm }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tfm: net5.0
+            dotnet: 5.0.x
+          - tfm: net6.0
+            dotnet: 6.0.x
+          - tfm: net7.0
+            dotnet: 7.0.x
+          - tfm: net8.0
+            dotnet: 8.0.x
+          - tfm: net9.0
+            dotnet: 9.0.x
+          - tfm: net10.0
+            dotnet: 10.0.x
     env:
       SA_PASSWORD: Your_strong_password123!
       TEST_DB_SQLSERVER_CS: Server=127.0.0.1,1433;Database=efcorebatch_test;User Id=sa;Password=Your_strong_password123!;TrustServerCertificate=True
@@ -36,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Wait for SQL Server and create database
         run: |
           for i in {1..60}; do
@@ -47,11 +79,25 @@ jobs:
           done
           docker exec ${{ job.services.sqlserver.id }} /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('efcorebatch_test') IS NULL CREATE DATABASE efcorebatch_test;" -C
       - name: Run SQL Server integration tests
-        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.SqlServer/Zack.EFCore.Batch.IntegrationTests.SqlServer.csproj --configuration Release --nologo
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.SqlServer/Zack.EFCore.Batch.IntegrationTests.SqlServer.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
   mysql-integration:
-    name: mysql-integration
+    name: mysql-integration (${{ matrix.tfm }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tfm: net5.0
+            dotnet: 5.0.x
+          - tfm: net6.0
+            dotnet: 6.0.x
+          - tfm: net7.0
+            dotnet: 7.0.x
+          - tfm: net8.0
+            dotnet: 8.0.x
+          - tfm: net9.0
+            dotnet: 9.0.x
     env:
       TEST_DB_MYSQL_CS: Server=127.0.0.1;Port=3306;Database=efcorebatch_test;User=root;Password=root;AllowLoadLocalInfile=true
 
@@ -71,7 +117,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Wait for MySQL
         run: |
           for i in {1..60}; do
@@ -83,11 +129,27 @@ jobs:
           docker exec ${{ job.services.mysql.id }} mysql -h localhost -uroot -proot -e "SET GLOBAL local_infile = 1;"
           docker exec ${{ job.services.mysql.id }} mysql -h localhost -uroot -proot -e "SHOW GLOBAL VARIABLES LIKE 'local_infile';"
       - name: Run MySQL integration tests
-        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj --configuration Release --nologo
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
   npgsql-integration:
-    name: npgsql-integration
+    name: npgsql-integration (${{ matrix.tfm }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tfm: net5.0
+            dotnet: 5.0.x
+          - tfm: net6.0
+            dotnet: 6.0.x
+          - tfm: net7.0
+            dotnet: 7.0.x
+          - tfm: net8.0
+            dotnet: 8.0.x
+          - tfm: net9.0
+            dotnet: 9.0.x
+          - tfm: net10.0
+            dotnet: 10.0.x
     env:
       TEST_DB_PG_CS: Host=127.0.0.1;Port=5432;Database=efcorebatch_test;Username=postgres;Password=postgres
 
@@ -105,7 +167,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Wait for PostgreSQL
         run: |
           for i in {1..60}; do
@@ -115,11 +177,27 @@ jobs:
             sleep 2
           done
       - name: Run PostgreSQL integration tests
-        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Npgsql/Zack.EFCore.Batch.IntegrationTests.Npgsql.csproj --configuration Release --nologo
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Npgsql/Zack.EFCore.Batch.IntegrationTests.Npgsql.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
   oracle-integration:
-    name: oracle-integration
+    name: oracle-integration (${{ matrix.tfm }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tfm: net5.0
+            dotnet: 5.0.x
+          - tfm: net6.0
+            dotnet: 6.0.x
+          - tfm: net7.0
+            dotnet: 7.0.x
+          - tfm: net8.0
+            dotnet: 8.0.x
+          - tfm: net9.0
+            dotnet: 9.0.x
+          - tfm: net10.0
+            dotnet: 10.0.x
     env:
       TEST_DB_ORACLE_CS: User Id=app;Password=app_password;Data Source=127.0.0.1:1521/FREEPDB1
 
@@ -137,7 +215,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Wait for Oracle
         run: |
           for i in {1..120}; do
@@ -147,5 +225,5 @@ jobs:
             sleep 5
           done
       - name: Run Oracle integration tests
-        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj --configuration Release --nologo
+        run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
