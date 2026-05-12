@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-        <PackageReference Include="EFCore.Dm" Version="5.0.1"/>
+        <PackageReference Include="EFCore.Dm" Version="$(EfCoreDmVersion_Net50)"/>
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-        <PackageReference Include="dmdbms.Microsoft.EntityFrameworkCore.Dm" Version="6.0.1"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.16"/>
+        <PackageReference Include="dmdbms.Microsoft.EntityFrameworkCore.Dm" Version="$(EfCoreDmDbmsVersion_Net60)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfCoreRelationalDmVersion_Net60)"/>
     </ItemGroup>
 
     <ItemGroup>

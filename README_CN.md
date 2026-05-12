@@ -7,7 +7,7 @@
 > 如需查看旧版代码，请访问备份分支：[backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
 使用本库，Entity Framework Core 用户可以快速**批量插入**数据，无需逐条执行 INSERT 语句。  
-本库支持 .NET 5、6、7 和 8，单个 NuGet 包覆盖所有受支持的版本，无需为不同 .NET 版本安装不同的包。
+本库支持 .NET 5、6、7、8、9 和 10，单个 NuGet 包覆盖所有受支持的版本，无需为不同 .NET 版本安装不同的包。
 
 > **关于包名变更：** 新包命名为 `Zack.EFCore.BatchInsert.*`（体现本库仅支持批量插入），与旧版 `Zack.EFCore.Batch.*` 包不冲突。
 

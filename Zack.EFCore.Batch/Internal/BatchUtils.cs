@@ -126,7 +126,7 @@ public static class BatchUtils
                 return selectExpression.Projection.Select(delegate(ProjectionExpression pe, int index)
                 {
                     var columnExpression = pe.Expression as ColumnExpression;
-                    if (columnExpression != null && string.Equals(columnExpression.Table.Alias, setOperation.Alias,
+                    if (columnExpression != null && string.Equals(GetTableAlias(columnExpression), setOperation.Alias,
                             StringComparison.OrdinalIgnoreCase))
                         return string.Equals(columnExpression.Name, setOperation.Source1.Projection[index].Alias,
                             StringComparison.OrdinalIgnoreCase);
@@ -135,6 +135,15 @@ public static class BatchUtils
         }
 
         return false;
+    }
+
+    private static string? GetTableAlias(ColumnExpression columnExpression)
+    {
+#if NET9_0_OR_GREATER
+        return columnExpression.TableAlias;
+#else
+        return columnExpression.Table.Alias;
+#endif
     }
 
     public static void OpenIfNeeded(this IDbConnection conn)

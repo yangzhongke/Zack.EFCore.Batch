@@ -7,7 +7,7 @@
 > To view the legacy code, see the backup branch: [backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
 Using this library, Entity Framework Core users can **insert multiple records quickly** (BulkInsert).  
-This library supports .NET 5, 6, 7, and 8. A single NuGet package covers all supported versions — no need to install different packages per .NET version.
+This library supports .NET 5, 6, 7, 8, 9, and 10. A single NuGet package covers all supported versions — no need to install different packages per .NET version.
 
 > **Note on package naming:** The new packages are named `Zack.EFCore.BatchInsert.*` (reflecting that only BulkInsert is supported going forward). They do not conflict with the legacy `Zack.EFCore.Batch.*` packages.
 
