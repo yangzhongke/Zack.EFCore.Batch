@@ -47,6 +47,11 @@ jobs:
           SA_PASSWORD: Your_strong_password123!
         ports:
           - 1433:1433
+        options: |
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S . -U sa -P Your_strong_password123! -Q 'SELECT 1' -C"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v4
@@ -57,8 +62,10 @@ jobs:
         run: |
           for i in {1..60}; do
             if docker exec ${{ job.services.sqlserver.id }} /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -Q "SELECT 1" -C >/dev/null 2>&1; then
+              echo "SQL Server is ready"
               break
             fi
+            echo "Waiting for SQL Server... ($i/60)"
             sleep 2
           done
           docker exec ${{ job.services.sqlserver.id }} /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('efcorebatch_test') IS NULL CREATE DATABASE efcorebatch_test;" -C
@@ -178,14 +185,33 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-      - name: Wait for Oracle
+      - name: Wait for Oracle database startup
         run: |
-          for i in {1..120}; do
-            if docker exec ${{ job.services.oracle.id }} bash -lc "echo 'SELECT 1 FROM dual;' | sqlplus -s app/app_password@localhost/FREEPDB1" | grep -q "1"; then
-              break
+          # Wait for Oracle container to start (max 10 minutes)
+          MAX_ATTEMPTS=300
+          ATTEMPT=0
+          
+          echo "Waiting for Oracle database to initialize..."
+          
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            # Check if listener is running
+            if docker exec ${{ job.services.oracle.id }} bash -lc 'lsnrctl status 2>&1 | grep -q "Listening"' 2>/dev/null; then
+              # Check if FREEPDB1 service is registered
+              if docker exec ${{ job.services.oracle.id }} bash -lc 'lsnrctl status 2>&1 | grep -q "FREEPDB1"' 2>/dev/null; then
+                echo "Oracle listener and FREEPDB1 service are ready!"
+                exit 0
+              fi
             fi
-            sleep 5
+            
+            ATTEMPT=$((ATTEMPT + 1))
+            if [ $((ATTEMPT % 10)) -eq 0 ]; then
+              echo "Still waiting... ($ATTEMPT/$MAX_ATTEMPTS)"
+            fi
+            sleep 2
           done
+          
+          echo "ERROR: Oracle failed to start within 10 minutes"
+          exit 1
       - name: Run Oracle integration tests
         run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
