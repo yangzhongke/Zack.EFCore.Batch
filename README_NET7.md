@@ -21,4 +21,3 @@ I did a test of inserting 100,000 pieces of data with SQLServer database, and th
 ## Instructions:  
 On mysql, to use BulkInsert, please enable local_infile on server side and client side: enable "local_infile=ON" on mysql server, and add "AllowLoadLocalInfile=true" to connection string on client side.
 
-After `BulkInsert`/`BulkInsertAsync` succeeds, inserted entities are marked as `Unchanged` in EF Core change tracking. For database-generated values (identity/default/computed/trigger-generated), values are not automatically reloaded into in-memory entities; reload entities manually when required.

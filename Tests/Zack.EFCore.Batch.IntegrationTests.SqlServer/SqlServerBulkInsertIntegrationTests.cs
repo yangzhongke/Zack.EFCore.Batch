@@ -37,15 +37,12 @@ public class SqlServerBulkInsertIntegrationTests
 
         var authors = TestBulkInsert1.BuildAuthors().Take(20).ToList();
         dbCtx.BulkInsert(authors);
-        Assert.All(authors, a => Assert.Equal(EntityState.Unchanged, dbCtx.Entry(a).State));
 
         var books = TestBulkInsert1.BuildBooks().Take(20).ToList();
         await dbCtx.BulkInsertAsync(books);
-        Assert.All(books, b => Assert.Equal(EntityState.Unchanged, dbCtx.Entry(b).State));
 
         var articles = TestOwnedType.BuildArticlesForInsert(8).ToList();
         await dbCtx.BulkInsertAsync(articles);
-        Assert.All(articles, a => Assert.Equal(EntityState.Unchanged, dbCtx.Entry(a).State));
 
         Assert.Equal(20, await dbCtx.Authors.CountAsync());
         Assert.Equal(20, await dbCtx.Books.CountAsync());

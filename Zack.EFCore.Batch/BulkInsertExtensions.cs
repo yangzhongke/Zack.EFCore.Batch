@@ -17,12 +17,10 @@ public static class BulkInsertExtensions
             LogFallback(dbCtx, typeof(TEntity));
             dbCtx.AddRange(entityList);
             await dbCtx.SaveChangesAsync(cancellationToken);
-            MarkEntitiesUnchanged(dbCtx, entityList);
             return;
         }
 
         await executor.BulkInsertAsync(dbCtx, typeof(TEntity), entityList, cancellationToken);
-        MarkEntitiesUnchanged(dbCtx, entityList);
     }
 
     public static void BulkInsert<TEntity>(this DbContext dbCtx,
@@ -35,21 +33,10 @@ public static class BulkInsertExtensions
             LogFallback(dbCtx, typeof(TEntity));
             dbCtx.AddRange(entityList);
             dbCtx.SaveChanges();
-            MarkEntitiesUnchanged(dbCtx, entityList);
             return;
         }
 
         executor.BulkInsert(dbCtx, typeof(TEntity), entityList);
-        MarkEntitiesUnchanged(dbCtx, entityList);
-    }
-
-    private static void MarkEntitiesUnchanged<TEntity>(DbContext dbCtx, IEnumerable<TEntity> entities)
-        where TEntity : class
-    {
-        foreach (var entity in entities)
-        {
-            dbCtx.Entry(entity).State = EntityState.Unchanged;
-        }
     }
 
     private static void LogFallback(DbContext dbCtx, Type entityType)

@@ -18,4 +18,3 @@ Entity Framework Core 中可以通过 AddRange() 方法批量添加数据，但 
 
 在 MySQL 中，使用 BulkInsert 需要在服务器和客户端都开启 local_infile：在 MySQL server 端执行 "local_infile=ON"，然后在连接字符串中添加 "AllowLoadLocalInfile=true"。
 
-`BulkInsert`/`BulkInsertAsync` 成功后，已插入实体会在 EF Core 变更跟踪中被标记为 `Unchanged`。如果存在数据库生成值（如自增列、默认值、计算列、触发器写入等），这些值不会自动回填到内存实体；请在需要时手动重新加载实体。
