@@ -67,4 +67,10 @@ For unsupported databases, fallback behavior (`AddRange + SaveChanges`) is cover
 
 DM integration tests are not part of the PR workflow yet.
 
+## Release to NuGet (maintainers)
+
+NuGet publishing is automated by `.github/workflows/publish-nuget.yml`.
+
+Release instructions (git tag trigger or GitHub Actions UI trigger) are documented in `NUGET_TAG_RELEASE.md`.
+
 [Report of this library](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)  
