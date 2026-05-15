@@ -183,27 +183,34 @@ jobs:
           dotnet-version: ${{ matrix.dotnet }}
       - name: Wait for Oracle database startup
         run: |
-          # Wait for Oracle container to start (max 15 minutes)
-          MAX_ATTEMPTS=450
+          # Wait for Oracle container to start (max 20 minutes)
+          MAX_ATTEMPTS=600
           ATTEMPT=0
           
           echo "Waiting for Oracle database to initialize..."
           
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-            # Try to connect with sqlplus to verify database is ready
-            if docker exec ${{ job.services.oracle.id }} bash -lc 'echo "SELECT 1 FROM dual;" | sqlplus -s app/app_password@localhost:1521/FREEPDB1' 2>/dev/null | grep -q "^1"; then
-              echo "Oracle database is ready!"
-              exit 0
+            # Check if Oracle is listening on port 1521
+            if timeout 2 bash -c "cat < /dev/null > /dev/tcp/127.0.0.1/1521" 2>/dev/null; then
+              # Check if the container's Oracle process is running
+              if docker exec ${{ job.services.oracle.id }} bash -lc 'ps aux | grep -i "[o]racledb" >/dev/null 2>&1 && exit 0 || exit 1' 2>/dev/null; then
+                # Wait one more second to ensure fully ready
+                sleep 1
+                echo "Oracle database listener is ready!"
+                exit 0
+              fi
             fi
             
             ATTEMPT=$((ATTEMPT + 1))
-            if [ $((ATTEMPT % 15)) -eq 0 ]; then
-              echo "Still waiting... ($ATTEMPT/$MAX_ATTEMPTS, ~$((ATTEMPT * 2 / 60)) minutes)"
+            if [ $((ATTEMPT % 20)) -eq 0 ]; then
+              echo "Still waiting... (attempt $ATTEMPT/$MAX_ATTEMPTS, ~$((ATTEMPT / 30)) min)"
             fi
-            sleep 2
+            sleep 1
           done
           
-          echo "ERROR: Oracle failed to start within 15 minutes"
+          echo "ERROR: Oracle failed to start within 20 minutes"
+          echo "Checking Oracle container logs:"
+          docker logs ${{ job.services.oracle.id }} | tail -50
           exit 1
       - name: Run Oracle integration tests
         run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
