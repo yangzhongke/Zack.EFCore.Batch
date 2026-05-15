@@ -39,15 +39,15 @@ jobs:
       SA_PASSWORD: Your_strong_password123!
       TEST_DB_SQLSERVER_CS: Server=127.0.0.1,1433;Database=efcorebatch_test;User Id=sa;Password=Your_strong_password123!;TrustServerCertificate=True
 
-     services:
-       sqlserver:
-         image: mcr.microsoft.com/mssql/server:2022-latest
-         env:
-           ACCEPT_EULA: Y
-           SA_PASSWORD: Your_strong_password123!
-         ports:
-           - 1433:1433
-         options: --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S . -U sa -P Your_strong_password123! -Q 'SELECT 1' -C" --health-interval 10s --health-timeout 5s --health-retries 5
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: Your_strong_password123!
+        ports:
+          - 1433:1433
+        options: --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S . -U sa -P Your_strong_password123! -Q 'SELECT 1' -C" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - uses: actions/checkout@v4
@@ -181,30 +181,30 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-       - name: Wait for Oracle database startup
-         run: |
-           # Wait for Oracle container to start (max 15 minutes)
-           MAX_ATTEMPTS=450
-           ATTEMPT=0
-           
-           echo "Waiting for Oracle database to initialize..."
-           
-           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-             # Try to connect with sqlplus to verify database is ready
-             if docker exec ${{ job.services.oracle.id }} bash -lc 'echo "SELECT 1 FROM dual;" | sqlplus -s app/app_password@localhost:1521/FREEPDB1' 2>/dev/null | grep -q "^1"; then
-               echo "Oracle database is ready!"
-               exit 0
-             fi
-             
-             ATTEMPT=$((ATTEMPT + 1))
-             if [ $((ATTEMPT % 15)) -eq 0 ]; then
-               echo "Still waiting... ($ATTEMPT/$MAX_ATTEMPTS, ~$((ATTEMPT * 2 / 60)) minutes)"
-             fi
-             sleep 2
-           done
-           
-           echo "ERROR: Oracle failed to start within 15 minutes"
-           exit 1
+      - name: Wait for Oracle database startup
+        run: |
+          # Wait for Oracle container to start (max 15 minutes)
+          MAX_ATTEMPTS=450
+          ATTEMPT=0
+          
+          echo "Waiting for Oracle database to initialize..."
+          
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            # Try to connect with sqlplus to verify database is ready
+            if docker exec ${{ job.services.oracle.id }} bash -lc 'echo "SELECT 1 FROM dual;" | sqlplus -s app/app_password@localhost:1521/FREEPDB1' 2>/dev/null | grep -q "^1"; then
+              echo "Oracle database is ready!"
+              exit 0
+            fi
+            
+            ATTEMPT=$((ATTEMPT + 1))
+            if [ $((ATTEMPT % 15)) -eq 0 ]; then
+              echo "Still waiting... ($ATTEMPT/$MAX_ATTEMPTS, ~$((ATTEMPT * 2 / 60)) minutes)"
+            fi
+            sleep 2
+          done
+          
+          echo "ERROR: Oracle failed to start within 15 minutes"
+          exit 1
       - name: Run Oracle integration tests
         run: dotnet test Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj --configuration Release --framework ${{ matrix.tfm }} --nologo
 
