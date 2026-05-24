@@ -1,9 +1,9 @@
 # Zack.EFCore.BatchInsert
 [中文文档 Chinese version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_CN.md)  
 
-> **⚠️ Notice for .NET 7+ users**  
+> **⚠️ Notice for users of old Zack.EFCore.Batch packages**  
 > Since .NET 7, EF Core has built-in support for batch delete and update via [`ExecuteDelete` and `ExecuteUpdate`](https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates). Therefore, **this library no longer supports `DeleteRangeAsync` or `BatchUpdate`**. Please use Microsoft's official APIs instead.  
-> Existing published NuGet packages for .NET 5/6 are not affected.  
+> Existing published NuGet packages are not affected.  
 > To view the legacy code, see the backup branch: [backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
 Using this library, Entity Framework Core users can **insert multiple records quickly** (BulkInsert).  
@@ -46,8 +46,6 @@ On MySQL, to use BulkInsert, please enable `local_infile` on both the server and
 
 
 ## Misc
-This library utilizes EF Core to translate lambda expressions to SQL statements, so it supports nearly all lambda expressions which EF Core supports.
-
 The following databases have been tested: MS SQLServer, MySQL (Pomelo), PostgreSQL (Npgsql), Oracle.
 
 ## Integration tests in CI

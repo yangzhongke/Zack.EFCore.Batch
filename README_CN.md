@@ -1,9 +1,9 @@
 # Zack.EFCore.BatchInsert
 [English version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README.md)
 
-> **⚠️ .NET 7 及以上用户请注意**  
+> **⚠️ 使用旧版Zack.EFCore.Batch包的用户请注意**  
 > 从 .NET 7 开始，EF Core 已内置批量删除和批量更新支持（[`ExecuteDelete` 和 `ExecuteUpdate`](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)）。因此，**本库已移除对 `DeleteRangeAsync` 和 `BatchUpdate` 的支持**，请使用微软官方 API。  
-> 已发布的 .NET 5/6 版本 NuGet 包不受影响。  
+> 已发布的NuGet 包不受影响。  
 > 如需查看旧版代码，请访问备份分支：[backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)
 
 使用本库，Entity Framework Core 用户可以快速**批量插入**数据（BulkInsert）。  
@@ -46,8 +46,6 @@ using (TestDbContext ctx = new TestDbContext())
 
 
 ## 补充说明
-本库利用 EF Core 将 lambda 表达式翻译为 SQL 语句，因此支持几乎所有 EF Core 支持的 lambda 表达式写法。
-
 已测试可正常使用的数据库：MS SQLServer、MySQL (Pomelo)、PostgreSQL (Npgsql)、Oracle。
 
 ## CI 集成测试
@@ -72,5 +70,3 @@ DM 的集成测试暂未纳入 PR 自动流程。
 NuGet 发布由 `.github/workflows/publish-nuget.yml` 自动完成。
 
 发布说明（git tag 触发或 GitHub Actions 界面触发）详见 `NUGET_TAG_RELEASE.md`。
-
-[本项目介绍文章](https://www.reddit.com/r/dotnetcore/comments/k1esra/how_to_batch_delete_or_update_in_entity_framework/)
