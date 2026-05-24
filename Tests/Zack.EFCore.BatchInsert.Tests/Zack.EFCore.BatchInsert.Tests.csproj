@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net5.0;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EfCoreInMemoryVersion_Net50)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreSqliteVersion_Net50)"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EfCoreInMemoryVersion_Net60)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreSqliteVersion_Net60)"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EfCoreInMemoryVersion_Net70)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreSqliteVersion_Net70)"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EfCoreInMemoryVersion_Net80)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreSqliteVersion_Net80)"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EfCoreInMemoryVersion_Net90)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreSqliteVersion_Net90)"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EfCoreInMemoryVersion_Net100)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreSqliteVersion_Net100)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
+        <PackageReference Include="xunit" Version="2.9.2"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Zack.EFCore.BatchInsert\Zack.EFCore.BatchInsert.csproj"/>
+    </ItemGroup>
+
+</Project>
+

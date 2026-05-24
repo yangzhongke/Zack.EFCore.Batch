@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Zack.EFCore.Batch\Zack.EFCore.Batch.csproj"/>
+        <ProjectReference Include="..\..\Zack.EFCore.BatchInsert\Zack.EFCore.BatchInsert.csproj"/>
     </ItemGroup>
 
 </Project>

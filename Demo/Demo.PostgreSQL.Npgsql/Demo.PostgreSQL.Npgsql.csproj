@@ -14,7 +14,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Demo.Base\Demo.Base.csproj"/>
-        <ProjectReference Include="..\..\Zack.EFCore.Batch.Npgsql\Zack.EFCore.Batch.Npgsql.csproj"/>
+        <ProjectReference Include="..\..\Zack.EFCore.BatchInsert.Npgsql\Zack.EFCore.BatchInsert.Npgsql.csproj"/>
     </ItemGroup>
 
 </Project>

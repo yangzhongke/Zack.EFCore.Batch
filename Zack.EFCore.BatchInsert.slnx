@@ -8,19 +8,19 @@
         <Project Path="Demo/Demo.PostgreSQL.Npgsql/Demo.PostgreSQL.Npgsql.csproj" />
     </Folder>
     <Folder Name="/Tests/">
-        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Shared/Zack.EFCore.Batch.IntegrationTests.Shared.csproj" />
-        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.SqlServer/Zack.EFCore.Batch.IntegrationTests.SqlServer.csproj" />
+        <Project Path="Tests/Zack.EFCore.BatchInsert.IntegrationTests.Shared/Zack.EFCore.BatchInsert.IntegrationTests.Shared.csproj" />
+        <Project Path="Tests/Zack.EFCore.BatchInsert.IntegrationTests.SqlServer/Zack.EFCore.BatchInsert.IntegrationTests.SqlServer.csproj" />
         <File Path="Tests/DOTNET_VERSION_SUPPORT_DECISION.md" />
         <File Path="Tests/ORACLE_CONNECTION_ISSUE.md" />
-        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.MySQL/Zack.EFCore.Batch.IntegrationTests.MySQL.csproj" />
-        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Npgsql/Zack.EFCore.Batch.IntegrationTests.Npgsql.csproj" />
-        <Project Path="Tests/Zack.EFCore.Batch.IntegrationTests.Oracle/Zack.EFCore.Batch.IntegrationTests.Oracle.csproj" />
-        <Project Path="Tests/Zack.EFCore.Batch.Tests/Zack.EFCore.Batch.Tests.csproj" />
+        <Project Path="Tests/Zack.EFCore.BatchInsert.IntegrationTests.MySQL/Zack.EFCore.BatchInsert.IntegrationTests.MySQL.csproj" />
+        <Project Path="Tests/Zack.EFCore.BatchInsert.IntegrationTests.Npgsql/Zack.EFCore.BatchInsert.IntegrationTests.Npgsql.csproj" />
+        <Project Path="Tests/Zack.EFCore.BatchInsert.IntegrationTests.Oracle/Zack.EFCore.BatchInsert.IntegrationTests.Oracle.csproj" />
+        <Project Path="Tests/Zack.EFCore.BatchInsert.Tests/Zack.EFCore.BatchInsert.Tests.csproj" />
     </Folder>
-    <Project Path="Zack.EFCore.Batch.MSSQL/Zack.EFCore.Batch.MSSQL.csproj" />
-    <Project Path="Zack.EFCore.Batch.MySQL.Pomelo/Zack.EFCore.Batch.MySQL.Pomelo.csproj" />
-    <Project Path="Zack.EFCore.Batch.Npgsql/Zack.EFCore.Batch.Npgsql.csproj" />
-    <Project Path="Zack.EFCore.Batch.Oracle/Zack.EFCore.Batch.Oracle.csproj" />
-    <Project Path="Zack.EFCore.Batch/Zack.EFCore.Batch.csproj" />
-    <Project Path="ZackEFCore.Batch.Dm/ZackEFCore.Batch.Dm.csproj" />
+    <Project Path="Zack.EFCore.BatchInsert.MSSQL/Zack.EFCore.BatchInsert.MSSQL.csproj" />
+    <Project Path="Zack.EFCore.BatchInsert.MySQL.Pomelo/Zack.EFCore.BatchInsert.MySQL.Pomelo.csproj" />
+    <Project Path="Zack.EFCore.BatchInsert.Npgsql/Zack.EFCore.BatchInsert.Npgsql.csproj" />
+    <Project Path="Zack.EFCore.BatchInsert.Oracle/Zack.EFCore.BatchInsert.Oracle.csproj" />
+    <Project Path="Zack.EFCore.BatchInsert/Zack.EFCore.BatchInsert.csproj" />
+    <Project Path="ZackEFCore.BatchInsert.Dm/ZackEFCore.BatchInsert.Dm.csproj" />
 </Solution>

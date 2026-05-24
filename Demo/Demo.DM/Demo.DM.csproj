@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Demo.Base\Demo.Base.csproj"/>
-        <ProjectReference Include="..\..\ZackEFCore.Batch.Dm\ZackEFCore.Batch.Dm.csproj"/>
+        <ProjectReference Include="..\..\ZackEFCore.BatchInsert.Dm\ZackEFCore.BatchInsert.Dm.csproj"/>
     </ItemGroup>
 
 </Project>
