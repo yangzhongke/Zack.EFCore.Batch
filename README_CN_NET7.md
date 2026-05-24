@@ -1,4 +1,4 @@
-# Zack.EFCore.Batch
+# Zack.EFCore.BatchInsert
 从 .NET 7 开始，EF Core 已内置批量删除和批量更新支持，因此本库不再对 .NET 7 及以上版本提供批量删除/更新功能，[请查看官方文档](https://learn.microsoft.com/zh-cn/ef/core/what-is-new/ef-core-7.0/whatsnew?WT.mc_id=DT-MVP-5004444#executeupdate-and-executedelete-bulk-updates)。请使用微软官方的 `ExecuteDelete` / `ExecuteUpdate` API。  
 本库在 .NET 7 及以上版本仍然支持**批量插入（BulkInsert）**。  
 如需查看旧版批量删除/更新代码，请访问备份分支：[backup#before_batch_update_delete_being_removed](https://github.com/yangzhongke/Zack.EFCore.Batch/tree/backup%23before_batch_update_delete_being_removed)

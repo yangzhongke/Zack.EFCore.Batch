@@ -1,4 +1,4 @@
-# Zack.EFCore.Batch
+# Zack.EFCore.BatchInsert
 [中文文档 Chinese version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README_CN.md)  
 
 > **⚠️ Notice for .NET 7+ users**  
@@ -9,7 +9,7 @@
 Using this library, Entity Framework Core users can **insert multiple records quickly** (BulkInsert).  
 This library supports .NET 5, 6, 7, 8, 9, and 10. A single NuGet package covers all supported versions — no need to install different packages per .NET version.
 
-> **Note on package naming:** The new packages are named `Zack.EFCore.BatchInsert.*` (reflecting that only BulkInsert is supported going forward). They do not conflict with the legacy `Zack.EFCore.Batch.*` packages.
+> **Note on package naming:** Packages are named `Zack.EFCore.BatchInsert.*` (reflecting that only BulkInsert is supported). The legacy `Zack.EFCore.Batch.*` packages (for .NET 5/6) remain on NuGet but are no longer maintained.
 
 ## Instructions:  
  
@@ -63,7 +63,7 @@ Connection strings are configured through environment variables:
 - `TEST_DB_PG_CS`
 - `TEST_DB_ORACLE_CS`
 
-For unsupported databases, fallback behavior (`AddRange + SaveChanges`) is covered by tests in `Tests/Zack.EFCore.Batch.Tests/BulkInsertExecutorRoutingTests.cs` using SQLite.
+For unsupported databases, fallback behavior (`AddRange + SaveChanges`) is covered by tests in `Tests/Zack.EFCore.BatchInsert.Tests/BulkInsertExecutorRoutingTests.cs` using SQLite.
 
 DM integration tests are not part of the PR workflow yet.
 

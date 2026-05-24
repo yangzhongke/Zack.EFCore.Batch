@@ -1,4 +1,4 @@
-# Zack.EFCore.Batch
+# Zack.EFCore.BatchInsert
 [English version](https://github.com/yangzhongke/Zack.EFCore.Batch/blob/main/README.md)
 
 > **⚠️ .NET 7 及以上用户请注意**  
@@ -9,7 +9,7 @@
 使用本库，Entity Framework Core 用户可以快速**批量插入**数据，无需逐条执行 INSERT 语句。  
 本库支持 .NET 5、6、7、8、9 和 10，单个 NuGet 包覆盖所有受支持的版本，无需为不同 .NET 版本安装不同的包。
 
-> **关于包名变更：** 新包命名为 `Zack.EFCore.BatchInsert.*`（体现本库仅支持批量插入），与旧版 `Zack.EFCore.Batch.*` 包不冲突。
+> **关于包名：** 包命名为 `Zack.EFCore.BatchInsert.*`（体现本库仅支持批量插入）。旧版 `Zack.EFCore.Batch.*` 包（适用于 .NET 5/6）仍在 NuGet 上，但不再维护。
 
 ## 安装说明:
 
@@ -64,7 +64,7 @@ using (TestDbContext ctx = new TestDbContext())
 - `TEST_DB_PG_CS`
 - `TEST_DB_ORACLE_CS`
 
-对于不支持的数据库，保底行为（`AddRange + SaveChanges`）通过 `Tests/Zack.EFCore.Batch.Tests/BulkInsertExecutorRoutingTests.cs` 中的 SQLite 测试覆盖。
+对于不支持的数据库，保底行为（`AddRange + SaveChanges`）通过 `Tests/Zack.EFCore.BatchInsert.Tests/BulkInsertExecutorRoutingTests.cs` 中的 SQLite 测试覆盖。
 
 DM 的集成测试暂未纳入 PR 自动流程。
 
