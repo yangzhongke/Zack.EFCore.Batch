@@ -1,0 +1,63 @@
+﻿<Project>
+    <PropertyGroup>
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Authors>Zack Yang(杨中科)</Authors>
+        <RepositoryUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/yangzhongke/Zack.EFCore.Batch</PackageProjectUrl>
+
+        <!-- EF Core / provider versions centralized for multi-target packaging -->
+        <EfCoreRelationalVersion_Net50>[5.0.5,6.0.0)</EfCoreRelationalVersion_Net50>
+        <EfCoreRelationalVersion_Net60>6.0.11</EfCoreRelationalVersion_Net60>
+        <EfCoreRelationalVersion_Net70>7.0.0</EfCoreRelationalVersion_Net70>
+        <EfCoreRelationalVersion_Net80>8.0.0</EfCoreRelationalVersion_Net80>
+        <EfCoreRelationalVersion_Net90>9.0.0</EfCoreRelationalVersion_Net90>
+        <EfCoreRelationalVersion_Net100>10.0.0</EfCoreRelationalVersion_Net100>
+
+        <EfCoreInMemoryVersion_Net50>5.0.0</EfCoreInMemoryVersion_Net50>
+        <EfCoreInMemoryVersion_Net60>6.0.0</EfCoreInMemoryVersion_Net60>
+        <EfCoreInMemoryVersion_Net70>7.0.0</EfCoreInMemoryVersion_Net70>
+        <EfCoreInMemoryVersion_Net80>8.0.0</EfCoreInMemoryVersion_Net80>
+        <EfCoreInMemoryVersion_Net90>9.0.0</EfCoreInMemoryVersion_Net90>
+        <EfCoreInMemoryVersion_Net100>10.0.0</EfCoreInMemoryVersion_Net100>
+
+        <EfCoreSqliteVersion_Net50>5.0.0</EfCoreSqliteVersion_Net50>
+        <EfCoreSqliteVersion_Net60>6.0.0</EfCoreSqliteVersion_Net60>
+        <EfCoreSqliteVersion_Net70>7.0.0</EfCoreSqliteVersion_Net70>
+        <EfCoreSqliteVersion_Net80>8.0.0</EfCoreSqliteVersion_Net80>
+        <EfCoreSqliteVersion_Net90>9.0.0</EfCoreSqliteVersion_Net90>
+        <EfCoreSqliteVersion_Net100>10.0.0</EfCoreSqliteVersion_Net100>
+
+        <EfCoreSqlServerVersion_Net50>[5.0.0,6.0.0)</EfCoreSqlServerVersion_Net50>
+        <EfCoreSqlServerVersion_Net60>6.0.0</EfCoreSqlServerVersion_Net60>
+        <EfCoreSqlServerVersion_Net70>7.0.0</EfCoreSqlServerVersion_Net70>
+        <EfCoreSqlServerVersion_Net80>8.0.0</EfCoreSqlServerVersion_Net80>
+        <EfCoreSqlServerVersion_Net90>9.0.0</EfCoreSqlServerVersion_Net90>
+        <EfCoreSqlServerVersion_Net100>10.0.0</EfCoreSqlServerVersion_Net100>
+
+        <EfCoreNpgsqlVersion_Net50>[5.0.0,6.0.0)</EfCoreNpgsqlVersion_Net50>
+        <EfCoreNpgsqlVersion_Net60>6.0.0</EfCoreNpgsqlVersion_Net60>
+        <EfCoreNpgsqlVersion_Net70>7.0.0</EfCoreNpgsqlVersion_Net70>
+        <EfCoreNpgsqlVersion_Net80>8.0.0</EfCoreNpgsqlVersion_Net80>
+        <EfCoreNpgsqlVersion_Net90>9.0.0</EfCoreNpgsqlVersion_Net90>
+        <EfCoreNpgsqlVersion_Net100>10.0.0</EfCoreNpgsqlVersion_Net100>
+
+        <EfCorePomeloVersion_Net50>[5.0.0,6.0.0)</EfCorePomeloVersion_Net50>
+        <EfCorePomeloVersion_Net60>6.0.0</EfCorePomeloVersion_Net60>
+        <EfCorePomeloVersion_Net70>7.0.0</EfCorePomeloVersion_Net70>
+        <EfCorePomeloVersion_Net80>8.0.0-beta.2</EfCorePomeloVersion_Net80>
+        <EfCorePomeloVersion_Net90>9.0.0</EfCorePomeloVersion_Net90>
+
+        <EfCoreOracleVersion_Net50>[5.21.1,6.0.0)</EfCoreOracleVersion_Net50>
+        <EfCoreOracleVersion_Net60>6.21.4</EfCoreOracleVersion_Net60>
+        <EfCoreOracleVersion_Net70>7.21.12</EfCoreOracleVersion_Net70>
+        <EfCoreOracleVersion_Net80>8.21.121</EfCoreOracleVersion_Net80>
+        <EfCoreOracleVersion_Net90>9.23.0</EfCoreOracleVersion_Net90>
+        <EfCoreOracleVersion_Net100>10.23.0</EfCoreOracleVersion_Net100>
+
+        <EfCoreDmVersion_Net50>5.0.1</EfCoreDmVersion_Net50>
+        <EfCoreDmDbmsVersion_Net60>6.0.1</EfCoreDmDbmsVersion_Net60>
+        <EfCoreRelationalDmVersion_Net60>6.0.16</EfCoreRelationalDmVersion_Net60>
+    </PropertyGroup>
+</Project>

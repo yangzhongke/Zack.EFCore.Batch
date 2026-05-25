@@ -1,0 +1,102 @@
+﻿name: publish-nuget
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "NuGet package version (for example: 1.0.1 or 1.0.1-beta.1)"
+        required: true
+        type: string
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-nuget-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
+
+jobs:
+  publish:
+    name: Pack and publish NuGet packages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Resolve package version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+
+          if [ -z "$VERSION" ]; then
+            echo "Package version is required."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Using package version: $VERSION"
+
+      - name: Restore
+        run: dotnet restore Zack.EFCore.BatchInsert.slnx
+
+      - name: Pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          OUTPUT_DIR="${{ github.workspace }}/artifacts/nuget"
+          mkdir -p "$OUTPUT_DIR"
+
+          dotnet pack Zack.EFCore.BatchInsert/Zack.EFCore.BatchInsert.csproj -c Release --no-restore -o "$OUTPUT_DIR" -p:PackageVersion="$VERSION"
+          dotnet pack Zack.EFCore.BatchInsert.MSSQL/Zack.EFCore.BatchInsert.MSSQL.csproj -c Release --no-restore -o "$OUTPUT_DIR" -p:PackageVersion="$VERSION"
+          dotnet pack Zack.EFCore.BatchInsert.MySQL.Pomelo/Zack.EFCore.BatchInsert.MySQL.Pomelo.csproj -c Release --no-restore -o "$OUTPUT_DIR" -p:PackageVersion="$VERSION"
+          dotnet pack Zack.EFCore.BatchInsert.Npgsql/Zack.EFCore.BatchInsert.Npgsql.csproj -c Release --no-restore -o "$OUTPUT_DIR" -p:PackageVersion="$VERSION"
+          dotnet pack Zack.EFCore.BatchInsert.Oracle/Zack.EFCore.BatchInsert.Oracle.csproj -c Release --no-restore -o "$OUTPUT_DIR" -p:PackageVersion="$VERSION"
+          dotnet pack ZackEFCore.BatchInsert.Dm/ZackEFCore.BatchInsert.Dm.csproj -c Release --no-restore -o "$OUTPUT_DIR" -p:PackageVersion="$VERSION"
+
+          ls -la "$OUTPUT_DIR"
+
+      - name: Publish to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "Missing required secret: NUGET_API_KEY"
+            exit 1
+          fi
+
+          shopt -s nullglob
+          PACKAGES=("${{ github.workspace }}/artifacts/nuget"/*.nupkg)
+          if [ ${#PACKAGES[@]} -eq 0 ]; then
+            echo "No .nupkg files found to publish."
+            exit 1
+          fi
+
+          for pkg in "${PACKAGES[@]}"; do
+            dotnet nuget push "$pkg" \
+              --api-key "$NUGET_API_KEY" \
+              --source "$NUGET_SOURCE" \
+              --skip-duplicate
+          done
+
+
