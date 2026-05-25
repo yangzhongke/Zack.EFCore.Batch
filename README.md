@@ -43,6 +43,47 @@ using (TestDbContext ctx = new TestDbContext())
 ```
 On MySQL, to use BulkInsert, please enable `local_infile` on both the server and client side: set `local_infile=ON` on the MySQL server, and add `AllowLoadLocalInfile=true` to the connection string on the client side.
 
+## ⚠️ Important: Entity State After BulkInsert
+
+`BulkInsert`/`BulkInsertAsync` bypasses EF Core's change tracker. It generates bulk-load SQL commands and executes them **directly against the database**, without going through EF Core's `SaveChanges` pipeline.
+
+This has two important consequences:
+
+**1. Database-generated values are not written back to entities.**  
+Auto-increment primary keys, server-side defaults, and computed columns remain at their original in-memory values after the call. For example, if `Book.Id` is a database-generated integer, it will still be `0` on every entity object even after a successful insert.
+
+**2. The DbContext cache is unaware of the inserted rows.**  
+EF Core maintains an internal identity map (first-level cache). Because BulkInsert does not go through `SaveChanges`, the inserted rows are never registered in this cache. If you call `ctx.Books.Find(someId)` or run a LINQ query against the **same** DbContext immediately afterwards, EF Core may return stale results or miss the newly inserted rows entirely.
+
+### Recommendation
+
+After calling `BulkInsert`/`BulkInsertAsync`, choose one of the following patterns:
+
+**Option A — Create a new DbContext (simplest):**
+```csharp
+using (var ctx = new TestDbContext())
+{
+    ctx.BulkInsert(books);
+}
+// Use a fresh DbContext for any subsequent queries
+using (var ctx2 = new TestDbContext())
+{
+    var inserted = ctx2.Books.ToList();
+}
+```
+
+**Option B — Re-query with the same DbContext:**
+```csharp
+using (var ctx = new TestDbContext())
+{
+    ctx.BulkInsert(books);
+    // Re-query to get the up-to-date data including generated values
+    var inserted = ctx.Books.AsNoTracking().ToList();
+}
+```
+
+> **Note:** `AsNoTracking()` bypasses the identity cache so EF Core reads fresh data from the database instead of returning cached entities.
+
 
 
 ## Misc
