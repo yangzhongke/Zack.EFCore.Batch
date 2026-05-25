@@ -4,7 +4,7 @@
         <TargetFrameworks>net5.0;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
         <PackageId>Zack.EFCore.BatchInsert</PackageId>
         <Version>1.0.0</Version>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        
         <Description>Using this library, Entity Framework Core users can insert items in batch. This is a basic support package; please use a database-specific package like Zack.EFCore.BatchInsert.MSSQL, Zack.EFCore.BatchInsert.Npgsql, etc.</Description>
     </PropertyGroup>
 
